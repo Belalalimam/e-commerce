@@ -6,27 +6,26 @@ export default function AddUser() {
   const [data, setData] = React.useState({
     email: "",
     password: "",
+    role:"",
+    name: "",
+    age:""
   });
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    axios.post('http://localhost:3000/api/users/addUser',  {data})
-    .then(response => {
-      console.log(response.data);
-      }).catch
-      (error => {
-        console.error(error);
-        });
+  const handleSubmit =  async (e) => {
+    e.preventDefault()
 
-  
-}
+        const res =  await axios.post("http://localhost:3000/api/users/addUser", data);
+        console.log(res.data);
+        alert("User added successfully");
+        
+        }
 
-// useEffect(()=>{
-//   axios.get("http://localhost:3000/api/users").then((res) => {
-//     setName(res.data.data.users)
-//     console.log(res.data.data.users[0])
-//     });
-//     },[]);
+      
+
+
+
+        
+
 
   return (
     <div
@@ -46,7 +45,7 @@ export default function AddUser() {
             <input
               value={data.email}
               onChange={(e) => setData({ ...data, email: e.target.value })}
-              type="email"
+              type="text"
               className="form-control"
               id="exampleFormControlInput1"
               placeholder="name@example.com"
@@ -63,6 +62,45 @@ export default function AddUser() {
               className="form-control"
               id="exampleFormControlInput2"
               placeholder="password"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleFormControlInput3" class="form-label">
+              password
+            </label>
+            <input
+              value={data.role}
+              onChange={(e) => setData({ ...data, role: e.target.value })}
+              type="text"
+              className="form-control"
+              id="exampleFormControlInput3"
+              placeholder="role"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleFormControlInput4" class="form-label">
+              name
+            </label>
+            <input
+              value={data.name}
+              onChange={(e) => setData({ ...data, name: e.target.value })}
+              type="text"
+              className="form-control"
+              id="exampleFormControlInput4"
+              placeholder="name"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="exampleFormControlInput5" class="form-label">
+              age
+            </label>
+            <input
+              value={data.age}
+              onChange={(e) => setData({ ...data, age: e.target.value })}
+              type="number"
+              className="form-control"
+              id="exampleFormControlInput5"
+              placeholder="age"
             />
           </div>
           {/* <div class="mb-3">
@@ -100,3 +138,12 @@ export default function AddUser() {
     </div>
   );
 }
+
+
+// import React from 'react'
+
+// export default function AddUser() {
+//   return (
+//     <div>AddUser</div>
+//   )
+// }

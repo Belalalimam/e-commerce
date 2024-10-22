@@ -14,7 +14,8 @@ import { Link } from "react-router-dom";
 
 export default function AnchorTemporaryDrawer() {
   const [state, setState] = React.useState({ left: false });
-  const pages = ["login", "getUsers", "addUser"];
+  const pages = ["login", "getUsers", "addUser",  "EditUser", "deleteUser", "getUser"];
+
   // eslint-disable-next-line no-unused-vars
   const [anchorElNav, setAnchorElNav] = React.useState(null);
 

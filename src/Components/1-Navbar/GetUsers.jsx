@@ -11,33 +11,28 @@ export default function AddUser() {
     age: "",
   });
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    try {
-    axios.get("http://localhost:3000/api/users").then((res) => {
-      setName(res.data.data.users[0])
-      console.log(res.data.data.users)
-    });
-    
-  } catch (error) {
-    if  (error.response && error.response.status >= 400 && error.response.status < 500)  {
-      console.log(error.response.data)
-    } 
-    
-  }
-  
-}
 
 useEffect(()=>{
-  axios.get("http://localhost:3000/api/users").then((res) => {
+  const JWT =  localStorage.getItem("token");
+
+  axios.get(`http://localhost:3000/api/users?authorization=Bearar ${JWT}`).then((res) => {
+
     setName(res.data.data.users.map((e)=>{
+      // console.log(e)
       return <>
+      <div style={{borderBlock:"2px solid red"}}>
       <h1>{e._id}</h1>
       <h1>{e.email}</h1>
       <h1>{e.role}</h1>
+      <h1>{e.age}</h1>
+      <h1>{e.name}</h1>
+      <h1>{e.token}</h1>
+      <img src={`${e.avatar}.png`} alt="img" />
+      <h1>{e.avatar}</h1>
+      </div>
       </>
     }))
-    console.log(res.data.data.users[0])
+    // console.log(res.data.data.users[0])
     });
     },[]);
 
@@ -49,3 +44,11 @@ useEffect(()=>{
     </>
     );
     }
+
+// import React from 'react'
+
+// export default function GetUsers() {
+//   return (
+//     <div>GetUsers</div>
+//   )
+// }
