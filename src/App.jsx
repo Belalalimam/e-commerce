@@ -1,5 +1,6 @@
 import Navbar from "./Components/1-Navbar/Navbar";
-// import Swiper from './Components/2-HomePage/SwiperC'
+import Swiper from './Components/2-HomePage/SwiperC'
+import SliderCategory  from './Components/3-Category/SliderCategory'
 // eslint-disable-next-line no-unused-vars
 import HeaderNav from "./Components/1-Navbar/HeaderNav";
 import "./App.css";
@@ -30,7 +31,8 @@ function App() {
 
         <ThemeProvider theme={theme}>
           <Navbar />
-          {/* <Swiper /> */}
+          <Swiper />
+          <SliderCategory />
         </ThemeProvider>
       </BrowserRouter>
     </>
