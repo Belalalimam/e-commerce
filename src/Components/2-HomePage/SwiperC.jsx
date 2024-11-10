@@ -32,17 +32,17 @@ export default function App() {
         modules={[Autoplay, Pagination, Navigation]}
         className="mySwiper"
       >
-        <SwiperSlide>
-          <img src="https://picsum.photos/1000/400" alt="" />
+        <SwiperSlide style={{height:"400px"}}>
+          <img src="/img/img1.jpg" alt="" />
         </SwiperSlide>
-        <SwiperSlide>
-          <img src="https://picsum.photos/1000/400" alt="" />
+        <SwiperSlide style={{height:"400px"}}>
+          <img src="/img/img2.jpg" alt="" />
         </SwiperSlide>
-        <SwiperSlide>
-          <img src="https://picsum.photos/1000/400" alt="" />
+        <SwiperSlide style={{height:"400px"}}>
+          <img src="/img/img3.jpg" alt="" />
         </SwiperSlide>
-        <SwiperSlide>
-          <img src="https://picsum.photos/1000/400" alt="" />
+        <SwiperSlide style={{height:"400px"}}>
+          <img src="/img/img5.jpg" alt="" />
         </SwiperSlide>
       </Swiper>
     </>
