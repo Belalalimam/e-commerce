@@ -24,7 +24,7 @@ export default function Navbar() {
       {/* <ResponsiveAppBar /> */}
 
 
-      <Routes>
+      {/* <Routes>
         <Route path="/addUser" element={< AddUser />} />
         <Route path="/Login" element={< Login />} />
         <Route path="/getUsers" element={< GetUsers />} />
@@ -32,7 +32,7 @@ export default function Navbar() {
         <Route path="/deleteUser" element={<DeleateUser />} />
         <Route path="/getUser" element={<GetUser />} />
       </Routes>
-      
+       */}
     </>
   )
 }
