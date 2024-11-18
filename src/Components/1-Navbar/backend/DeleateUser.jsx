@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import usersApi from "../../api/users";
+import usersApi from "../../../api/users";
 import axios from "axios";
 
 export default function DeleateUser() {
