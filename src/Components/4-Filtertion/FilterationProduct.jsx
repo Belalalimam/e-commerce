@@ -1,6 +1,6 @@
 import React from 'react'
 import Filteration from './Filtertion'
-import Product from '../4-Products/Product';
+import Product from '../4-Products/FeaturedProducts';
 
 export default function FilterationProduct() {
   const handleFilterChange = (filters) => {

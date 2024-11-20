@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaShoppingCart, FaUser, FaSearch, FaMapMarkerAlt, FaHeart } from 'react-icons/fa';
 
+import './Navbar.css'
+
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');

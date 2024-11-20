@@ -1,0 +1,40 @@
+.category-card {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.category-image {
+    height: 250px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.category-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.category-card:hover .category-image img {
+    transform: scale(1.15);
+}
+
+/* Add hover effect for the button */
+.shop-now-btn {
+    transform: translateY(0);
+    transition: all 0.3s ease;
+}
+
+.category-card:hover .shop-now-btn {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(156, 130, 117, 0.4);
+}
