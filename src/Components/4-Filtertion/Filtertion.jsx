@@ -44,7 +44,7 @@ const FilterSection = ({ onFilterChange }) => {
           ? prev[type].filter(item => item !== value)
           : [...prev[type], value]
       };
-      
+
       onFilterChange?.(updatedFilters);
       return updatedFilters;
     });
@@ -65,7 +65,7 @@ const FilterSection = ({ onFilterChange }) => {
 
   return (
     <div className="filter-section">
-      <button 
+      <button
         className="mobile-filter-btn"
         onClick={() => setShowMobileFilters(!showMobileFilters)}
       >
@@ -85,14 +85,13 @@ const FilterSection = ({ onFilterChange }) => {
           <h4>Colors</h4>
           <div className="color-options">
             {colors.map(color => (
-              <div 
+              <div
                 key={color.id}
-                className={`color-option ${
-                  selectedFilters.colors.includes(color.name) ? 'selected' : ''
-                }`}
+                className={`color-option ${selectedFilters.colors.includes(color.name) ? 'selected' : ''
+                  }`}
                 onClick={() => handleFilterChange('colors', color.name)}
               >
-                <span 
+                <span
                   className="color-circle"
                   style={{ backgroundColor: color.hex }}
                 ></span>
@@ -126,9 +125,8 @@ const FilterSection = ({ onFilterChange }) => {
             {sizes.map(size => (
               <button
                 key={size}
-                className={`size-btn ${
-                  selectedFilters.sizes.includes(size) ? 'selected' : ''
-                }`}
+                className={`size-btn ${selectedFilters.sizes.includes(size) ? 'selected' : ''
+                  }`}
                 onClick={() => handleFilterChange('sizes', size)}
               >
                 {size}

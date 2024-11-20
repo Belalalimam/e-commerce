@@ -93,8 +93,8 @@ const FeaturedCategories = () => {
     if (!category) return null;
 
     return (
-      <Dialog 
-        open={open} 
+      <Dialog
+        open={open}
         onClose={onClose}
         maxWidth="md"
         fullWidth
@@ -140,9 +140,9 @@ const FeaturedCategories = () => {
               <Typography variant="body1" paragraph>
                 {category.description}
               </Typography>
-              
+
               <Divider sx={{ my: 2 }} />
-              
+
               <Typography variant="h6" gutterBottom>
                 Product Details
               </Typography>
@@ -152,7 +152,7 @@ const FeaturedCategories = () => {
               <Typography variant="body2" gutterBottom>
                 Width: {category.details.width}
               </Typography>
-              
+
               <Box sx={{ mt: 2 }}>
                 <Typography variant="subtitle1" gutterBottom>
                   Available Colors:
@@ -163,7 +163,7 @@ const FeaturedCategories = () => {
                   ))}
                 </Box>
               </Box>
-              
+
               <Box sx={{ mt: 3 }}>
                 <Typography variant="subtitle1" gutterBottom>
                   Features:
@@ -178,14 +178,14 @@ const FeaturedCategories = () => {
           </Grid>
         </DialogContent>
         <DialogActions sx={{ p: 3 }}>
-          <Button 
-            variant="outlined" 
+          <Button
+            variant="outlined"
             startIcon={<FavoriteIcon />}
           >
             Add to Wishlist
           </Button>
-          <Button 
-            variant="contained" 
+          <Button
+            variant="contained"
             startIcon={<ShoppingBagIcon />}
           >
             Add to Cart
@@ -198,18 +198,18 @@ const FeaturedCategories = () => {
   return (
     <Box sx={{ py: 8, backgroundColor: '#fafafa' }}>
       <Container maxWidth="lg">
-        <Typography 
-          variant="h3" 
-          align="center" 
+        <Typography
+          variant="h3"
+          align="center"
           gutterBottom
           sx={{ fontWeight: 600 }}
         >
           Premium Lace Collection
         </Typography>
-        <Typography 
-          variant="h6" 
-          align="center" 
-          color="text.secondary" 
+        <Typography
+          variant="h6"
+          align="center"
+          color="text.secondary"
           sx={{ mb: 6 }}
         >
           Discover our exquisite selection of wedding fabrics
@@ -242,7 +242,7 @@ const FeaturedCategories = () => {
           ))}
         </Grid>
 
-        <CategoryModal 
+        <CategoryModal
           category={selectedCategory}
           open={Boolean(selectedCategory)}
           onClose={() => setSelectedCategory(null)}

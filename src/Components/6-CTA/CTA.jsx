@@ -1,33 +1,90 @@
-import React from "react";
+import { Box, Container, Paper, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { useState } from 'react';
 
-export default function CTA() {
+const CategoryItem = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(2),
+  textAlign: 'center',
+  cursor: 'pointer',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    transform: 'translateY(-5px)',
+    boxShadow: theme.shadows[4],
+  },
+}));
+
+const Categories = () => {
+  const [categories] = useState([
+    {
+      id: 1,
+      name: 'Electronics',
+      image: '/images/electronics.png',
+    },
+    {
+      id: 2,
+      name: 'Fashion',
+      image: '/images/fashion.png',
+    },
+    {
+      id: 3,
+      name: 'Home & Kitchen',
+      image: '/images/home.png',
+    },
+    {
+      id: 4,
+      name: 'Beauty',
+      image: '/images/beauty.png',
+    },
+    {
+      id: 5,
+      name: 'Sports',
+      image: '/images/sports.png',
+    },
+    {
+      id: 6,
+      name: 'Books',
+      image: '/images/books.png',
+    },
+  ]);
+
   return (
-    <div>
-      <section className="bsb-cta-2 py-5">
-        <div className="container-fluid">
-          <div className="card border-0 rounded-3 overflow-hidden text-center bsb-overlay" style={{backgroundImage:"url('https://picsum.photos/350/200')", }}>
-            <div className="card-body">
-              <div className="row align-items-center justify-content-center">
-                <div className="col-12 col-md-10 col-xl-8 col-xxl-7">
-                  <h1 className="h5 mb-4 text-black text-uppercase">
-                    Our Services & Expertise and this is cta
-                  </h1>
-                  {/* <h2 className="display-4 text-white mb-5">
-                    We are a design agency studio delivering custom creative &
-                    unique websites.
-                  </h2> */}
-                  <a
-                    href="#!"
-                    className="btn btn-light bsb-btn-3xl rounded mb-0 text-nowrap"
-                  >
-                    Get Started
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
+    <Container maxWidth="lg" sx={{ my: 4 }}>
+      <Typography variant="h4" component="h2" gutterBottom sx={{ fontWeight: 'bold', mb: 4 }}>
+        Shop By Category
+      </Typography>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: {
+            xs: 'repeat(2, 1fr)',
+            sm: 'repeat(3, 1fr)',
+            md: 'repeat(6, 1fr)',
+          },
+          gap: 2,
+        }}
+      >
+        {categories.map((category) => (
+          <CategoryItem key={category.id}>
+            <Box
+              component="img"
+              src={category.image}
+              alt={category.name}
+              sx={{
+                width: '100%',
+                height: 'auto',
+                maxHeight: 120,
+                objectFit: 'contain',
+                mb: 1,
+              }}
+            />
+            <Typography variant="subtitle1" sx={{ fontWeight: 'medium' }}>
+              {category.name}
+            </Typography>
+          </CategoryItem>
+        ))}
+      </Box>
+    </Container>
   );
-}
+};
+
+export default Categories;

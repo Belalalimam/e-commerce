@@ -1,26 +1,27 @@
 import Navbar from "./Components/1-Navbar/Navbar"
 import Swiper from './Components/2-HomePage/SwiperC'
-import FeaturedCategories from './Components/3-Category/FeaturedCategories'
+import Categories from './Components/3-Category/Categories'
 import FilterationProduct from './Components/4-Filtertion/FilterationProduct'
 import FeaturedProducts from './Components/4-Products/FeaturedProducts'
 // import HeaderNav from "./Components/1-Navbar/HeaderNav";
 import "./App.css";
 import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
-import { cyan, red, purple } from "@mui/material/colors";
+import { cyan, red, purple, lightBlue } from "@mui/material/colors";
 import { BrowserRouter } from "react-router-dom";
+import Footer from "./Components/8-Footer/Footer"
 
 function App() {
   const theme = createTheme({
     palette: {
       primary: {
-        main: red[700],
+        main: lightBlue[900],
         main1: "#000000",
       },
       secondary: {
         main: "#f44336",
       },
     },
-  });
+  }); 
 
   
 
@@ -37,10 +38,12 @@ function App() {
 
           <Navbar />
           <Swiper />
-          <FeaturedCategories />
+          <Categories />
+          <FeaturedProducts name={'New Arrivals'} />
+          <FeaturedProducts name={'Recently Viewed'} />
           <FilterationProduct />
-          <FeaturedProducts />
-          <FeaturedProducts />
+          <FeaturedProducts name={'Featured Products'} />
+          <Footer />
 
           
 
