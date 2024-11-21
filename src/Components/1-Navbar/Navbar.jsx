@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaShoppingCart, FaUser, FaSearch, FaMapMarkerAlt, FaHeart } from 'react-icons/fa';
+import { FaUser, FaSearch, FaMapMarkerAlt, FaHeart, FaShoppingCart } from 'react-icons/fa';
+import { IconButton, Badge } from "@mui/material";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+
 
 import './Navbar.css'
 
-const Header = () => {
+const Header = ({ onCartClick,onWishlistClick  }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
 
@@ -50,7 +53,7 @@ const Header = () => {
 
           <div className="search-section">
             <div className="category-select">
-              <select 
+              <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
               >
@@ -76,17 +79,28 @@ const Header = () => {
 
           <div className="user-actions">
             <Link to="/wishlist" className="action-item">
-              <FaHeart />
-              <span>Wishlist</span>
+              <IconButton onClick={onWishlistClick}>
+                <Badge badgeContent={3} color="primary">
+                  <FaHeart />
+                </Badge>
+              </IconButton>
+                <span>Wishlist</span>
             </Link>
             <Link to="/cart" className="action-item">
-              <FaShoppingCart />
-              <span>Cart</span>
-              <div className="cart-badge">3</div>
+              <IconButton onClick={onCartClick}>
+                <Badge badgeContent={3} color="primary">
+                  <FaShoppingCart />
+                </Badge>
+              </IconButton>
+                <span>Cart</span>
             </Link>
             <Link to="/account" className="action-item">
-              <FaUser />
-              <span>Account</span>
+            <IconButton onClick={onCartClick}>
+                <Badge badgeContent={3} color="primary">
+                  <FaUser />
+                </Badge>
+              </IconButton>
+                <span>account</span>
             </Link>
           </div>
         </div>

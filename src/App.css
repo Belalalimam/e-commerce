@@ -10,4 +10,10 @@
   .category-image:hover {
     transform: scale(1.05);
   }
-  
+  .color{
+    color: #021024;
+    color: #052659;
+    color: #5483B3;
+    color: #7DA0CA;
+    color: #C1E8FF;
+  }

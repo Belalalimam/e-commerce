@@ -107,94 +107,6 @@ const products = [
     status: "Premium",
     description: "Luxury sequin fabric with crystal embellishments",
     perMeter: true
-  },
-  {
-    id: 4,
-    name: "Crystal Sequin Fabric",
-    image: "/img/img1.jpg",
-    price: 449.99,
-    rating: 4.9,
-    reviews: 78,
-    status: "Premium",
-    description: "Luxury sequin fabric with crystal embellishments",
-    perMeter: true
-  },
-  {
-    id: 4,
-    name: "Crystal Sequin Fabric",
-    image: "/img/img1.jpg",
-    price: 449.99,
-    rating: 4.9,
-    reviews: 78,
-    status: "Premium",
-    description: "Luxury sequin fabric with crystal embellishments",
-    perMeter: true
-  },
-  {
-    id: 4,
-    name: "Crystal Sequin Fabric",
-    image: "/img/img1.jpg",
-    price: 449.99,
-    rating: 4.9,
-    reviews: 78,
-    status: "Premium",
-    description: "Luxury sequin fabric with crystal embellishments",
-    perMeter: true
-  },
-  {
-    id: 4,
-    name: "Crystal Sequin Fabric",
-    image: "/img/img1.jpg",
-    price: 449.99,
-    rating: 4.9,
-    reviews: 78,
-    status: "Premium",
-    description: "Luxury sequin fabric with crystal embellishments",
-    perMeter: true
-  },
-  {
-    id: 4,
-    name: "Crystal Sequin Fabric",
-    image: "/img/img1.jpg",
-    price: 449.99,
-    rating: 4.9,
-    reviews: 78,
-    status: "Premium",
-    description: "Luxury sequin fabric with crystal embellishments",
-    perMeter: true
-  },
-  {
-    id: 4,
-    name: "Crystal Sequin Fabric",
-    image: "/img/img1.jpg",
-    price: 449.99,
-    rating: 4.9,
-    reviews: 78,
-    status: "Premium",
-    description: "Luxury sequin fabric with crystal embellishments",
-    perMeter: true
-  },
-  {
-    id: 4,
-    name: "Crystal Sequin Fabric",
-    image: "/img/img1.jpg",
-    price: 449.99,
-    rating: 4.9,
-    reviews: 78,
-    status: "Premium",
-    description: "Luxury sequin fabric with crystal embellishments",
-    perMeter: true
-  },
-  {
-    id: 4,
-    name: "Crystal Sequin Fabric",
-    image: "/img/img1.jpg",
-    price: 449.99,
-    rating: 4.9,
-    reviews: 78,
-    status: "Premium",
-    description: "Luxury sequin fabric with crystal embellishments",
-    perMeter: true
   }
 ];
 
@@ -242,9 +154,9 @@ const FeaturedProducts = ({name}) => {
               <Typography variant="h4" gutterBottom>
                 {product.name}
               </Typography>
-              <Typography variant="h5" color="primary" gutterBottom>
+              {/* <Typography variant="h5" color="primary" gutterBottom>
                 {product.price}
-              </Typography>
+              </Typography> */}
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Rating value={product.rating} precision={0.1} readOnly />
                 <Typography variant="body2" sx={{ ml: 1 }}>
@@ -400,7 +312,7 @@ const FeaturedProducts = ({name}) => {
                     </Typography>
                   </Box>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Typography variant="h6" color="primary">
+                    {/* <Typography variant="h6" color="primary">
                       ${product.price}
                       <Typography
                         component="span"
@@ -409,7 +321,7 @@ const FeaturedProducts = ({name}) => {
                       >
                         /meter
                       </Typography>
-                    </Typography>
+                    </Typography> */}
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                       <LocalShippingIcon
                         sx={{

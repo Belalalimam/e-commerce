@@ -7,22 +7,45 @@ import FeaturedProducts from './Components/4-Products/FeaturedProducts'
 import "./App.css";
 import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
 import { cyan, red, purple, lightBlue } from "@mui/material/colors";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Footer from "./Components/8-Footer/Footer"
+import { useState } from "react";
+import CartModal from "./Components/1-Navbar/CartModal";
+import WishlistModal from "./Components/1-Navbar/WishlistModal";
+import ProductPage from './Components/5-Card/ProductPage';
+
+// .color{
+//   color: #021024;
+//   color: #052659;
+//   color: #5483B3;
+//   color: #7DA0CA;
+//   color: #C1E8FF;
+// }
 
 function App() {
   const theme = createTheme({
     palette: {
       primary: {
-        main: lightBlue[900],
+        main: '#021024', //lightBlue[900],
         main1: "#000000",
       },
       secondary: {
         main: "#f44336",
+        main1: "#f44336",
       },
     },
   }); 
 
+  const [isCartOpen, setCartOpen] = useState(false);
+  const [isWishlistOpen, setWishlistOpen] = useState(false);
+
+  const handleCartClick = () => {
+    setCartOpen(!isCartOpen);
+  };
+
+  const handleWishlistClick = () => {
+    setWishlistOpen(!isWishlistOpen);
+  };
   
 
   return (
@@ -36,7 +59,9 @@ function App() {
 
 
 
-          <Navbar />
+          <Navbar onCartClick={handleCartClick} onWishlistClick={handleWishlistClick} />
+          <CartModal open={isCartOpen} onClose={() => setCartOpen(false)} />
+          <WishlistModal open={isWishlistOpen} onClose={() => setWishlistOpen(false)} />
           <Swiper />
           <Categories />
           <FeaturedProducts name={'New Arrivals'} />
@@ -44,6 +69,10 @@ function App() {
           <FilterationProduct />
           <FeaturedProducts name={'Featured Products'} />
           <Footer />
+
+          <Routes>
+          <Route path="/product/:id" render={({ match }) => <ProductPage productId={match.params._id} />} />
+          </Routes>
 
           
 
