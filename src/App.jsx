@@ -67,43 +67,20 @@ function App() {
             open={isWishlistOpen}
             onClose={() => setWishlistOpen(false)}
           />
-{/* 
-          <Swiper />
-          <Categories />
-          <FeaturedProducts name={"New Arivve"} category={"lace"} />
-          <FeaturedProducts name={"Recently visite"} category={"fabric"} />
-          <FilterationProduct />
-          <FeaturedProducts name={"Featured Products"} category={"all"} />
-          <Footer /> */}
 
           <Routes>
-
-            {/* <Route path="/" element={<Navbar onCartClick={handleCartClick} onWishlistClick={handleWishlistClick}  />} />
-            <Route path="/" element={<CartModal open={isCartOpen} onClose={() => setCartOpen(false)} />} />
-            <Route path="/" element={<WishlistModal open={isWishlistOpen} onClose={() => setWishlistOpen(false)} />} /> */}
-
-            {/* <Route path="/" element={<Swiper />} />
-            <Route path="/" element={<Categories />} />
-            <Route path="/" element={<FeaturedProducts name={"New Arivve"} category={"lace"} />} />
-            <Route path="/" element={<FeaturedProducts name={"Recently visite"} category={"fabric"} />} />
-            <Route path="/" element={<FilterationProduct />} />
-            <Route path="/" element={<FeaturedProducts name={"Featured Products"} category={"all"} />} />
-            <Route path="/" element={<Footer />} /> */}
-            
             <Route path="/" element={homepage} />
 
             <Route path="/addProduct" element={<AddUser />} />
             <Route path="/product/:productId" element={<ProductPage />} />
+            <Route path="/test3" element={<Test3 />} />
+            <Route path="/category/:category" element={<Test3 />} />
+            <Route path="/" element={<FeaturedProducts name="Featured Products" />} />
           </Routes>
 
-          {/* <Routes>
-            <Route
-              path="/product/:id"
-              render={({ match }) => (
-                <ProductPage productId={match.params._id} />
-              )}
-            />
-          </Routes> */}
+          <Footer />
+
+         
         </ThemeProvider>
       </BrowserRouter>
     </>

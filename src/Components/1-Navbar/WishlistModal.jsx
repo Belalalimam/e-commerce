@@ -1,6 +1,8 @@
-import React from "react";
+// WishlistModal.js
+import React, { useEffect, useState } from 'react';
 import { Modal, Box, Typography, Button, Divider, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import axios from 'axios';
 
 const style = {
   position: "absolute",
@@ -15,12 +17,29 @@ const style = {
 };
 
 const WishlistModal = ({ open, onClose }) => {
-  // Mock wishlist items
-  const wishlistItems = [
-    { id: 1, name: "Wireless Earbuds", type: "Stereo", color: "Black", price: 49.99 },
-    { id: 2, name: "Smart Watch", type: "Electronics", color: "Silver", price: 129.99 },
-    { id: 3, name: "Portable Speaker", type: "Stereo", color: "Blue", price: 39.99 },
-  ];
+  const [wishlistItems, setWishlistItems] = useState([]);
+
+  useEffect(() => {
+    fetchWishlistItems();
+  }, []);
+
+  const fetchWishlistItems = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/wishlist');
+      setWishlistItems(response.data.data.wishlist);
+    } catch (error) {
+      console.error('Error fetching wishlist:', error);
+    }
+  };
+
+  const handleRemoveFromWishlist = async (productId) => {
+    try {
+      await axios.delete(`http://localhost:3000/wishlist/${productId}`);
+      fetchWishlistItems();
+    } catch (error) {
+      console.error('Error removing from wishlist:', error);
+    }
+  };
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -31,36 +50,48 @@ const WishlistModal = ({ open, onClose }) => {
         <Divider />
         {wishlistItems.map((item) => (
           <Box
-            key={item.id}
+            key={item._id}
             sx={{
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
               mt: 2,
+              p: 2,
+              bgcolor: 'grey.50',
+              borderRadius: 1
             }}
           >
-            <Box>
-              <Typography>{item.name}</Typography>
-              <Typography variant="body2" color="text.secondary">
-                Type: {item.type}, Color: {item.color}
-              </Typography>
-              <Typography>${item.price.toFixed(2)}</Typography>
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <img 
+                src={`http://localhost:3000/uploads/${item.productImage}`}
+                alt={item.productName}
+                style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 4 }}
+              />
+              <Box>
+                <Typography variant="subtitle1">{item.productName}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Category: {item.productCategory}
+                </Typography>
+                <Typography variant="h6" color="primary">
+                  ${item.productPrice}
+                </Typography>
+              </Box>
             </Box>
-            <Box>
-              <IconButton>
-                <DeleteIcon />
-              </IconButton>
-            </Box>
+            <IconButton 
+              onClick={() => handleRemoveFromWishlist(item._id)}
+              color="error"
+            >
+              <DeleteIcon />
+            </IconButton>
           </Box>
         ))}
         <Button
           variant="contained"
-          color="secondary"
           fullWidth
           sx={{ mt: 3 }}
-          onClick={() => alert("Go to Wishlist Page")}
+          onClick={onClose}
         >
-          View All
+          Close
         </Button>
       </Box>
     </Modal>

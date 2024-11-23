@@ -1,224 +1,151 @@
-import React from "react";
+// FilteredProductPage.jsx
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   Container,
-  Card,
-  CardMedia,
-  CardContent,
-  Typography,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  IconButton,
   Box,
-  Chip,
-  Rating,
-  Divider,
-} from "@mui/material";
-import Grid from "@mui/material/Grid2";
-import { styled } from "@mui/material/styles";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import CloseIcon from "@mui/icons-material/Close";
-import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import { useState, useEffect } from "react";
-import axios from "axios";
+  Typography,
+  Breadcrumbs,
+  Link,
+  Grid,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Checkbox,
+  Slider,
+  FormGroup,
+  FormControlLabel,
+  IconButton,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import axios from 'axios';
+import FeaturedProducts from './Components/4-Products/FeaturedProducts';
 
-// Your existing styled components
-const StyledCard = styled(Card)(({ theme }) => ({
-  height: "100%",
-  display: "flex",
-  flexDirection: "column",
-  position: "relative",
-  transition: "transform 0.3s ease-in-out",
-  "&:hover": {
-    transform: "translateY(-10px)",
-    boxShadow: theme.shadows[10],
-  },
-}));
-
-const ProductImage = styled(CardMedia)({
-  height: 300,
-  position: "relative",
-  overflow: "hidden",
-  "&:hover": {
-    "& .product-actions": {
-      transform: "translateY(0)",
-    },
-  },
-});
-
-const ProductActions = styled(Box)({
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  right: 0,
-  padding: "20px",
-  background: "linear-gradient(to top, rgba(0,0,0,0.7), transparent)",
-  transform: "translateY(100%)",
-  transition: "transform 0.3s ease-in-out",
-  display: "flex",
-  justifyContent: "center",
-  gap: "10px",
-});
-
-const FeaturedProducts = ({ name }) => {
+const FilteredProductPage = () => {
+  const { category } = useParams();
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  
+  const [filters, setFilters] = useState({
+    priceRange: [0, 1000],
+    sizes: [],
+    colors: [],
+    inStock: false
+  });
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [categories, setCategories] = useState([]);
-
-  const CategoryModal = ({ product, open, onClose }) => {
-    if (!product) return null;
-    return (
-      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-        <DialogTitle sx={{ m: 0, p: 2 }}>
-          <IconButton onClick={onClose} sx={{ position: "absolute", right: 8, top: 8 }}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <CardMedia
-                component="img"
-                src={`http://localhost:3000/uploads/${product.productImage}`}
-                alt={product.productTitle}
-                style={{ width: "100%", height: "auto", borderRadius: "8px" }}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography variant="h4" gutterBottom>
-                {product.productName}
-              </Typography>
-              <Typography variant="body1" paragraph>
-                {product.productDescription}
-              </Typography>
-              <Typography variant="body2">
-                Color: {product.productCategory}
-              </Typography>
-              <Typography variant="body2">
-                Size: {product.productCategorySize}
-              </Typography>
-              <Divider sx={{ my: 2 }} />
-            </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions sx={{ p: 3 }}>
-          <Button variant="outlined" startIcon={<FavoriteIcon />}>
-            Add to Wishlist
-          </Button>
-          <Button variant="contained" startIcon={<ShoppingBagIcon />}>
-            Add to Cart
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
-  };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/Products");
-        const productsData = response.data.data.products;
-        setProducts(productsData);
-        const uniqueCategories = [...new Set(productsData.map(product => 
-          product.productCategory))];
-        setCategories(uniqueCategories);
-      } catch (error) {
-        console.error("Failed to fetch products:", error);
-      }
-    };
     fetchProducts();
-  }, []);
+  }, [category, filters]);
 
-  const filteredProducts = selectedCategory === 'all' 
-    ? products 
-    : products.filter(product => product.productCategory === selectedCategory);
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/Products/${category}`, {
+        params: {
+          minPrice: filters.priceRange[0],
+          maxPrice: filters.priceRange[1],
+          sizes: filters.sizes.join(','),
+          colors: filters.colors.join(','),
+          inStock: filters.inStock
+        }
+      });
+      setProducts(response.data.data.products);
+    } catch (error) {
+      console.error('Error fetching filtered products:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const CategoryFilter = () => (
-    <Box sx={{ mb: 4, display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
-      <Button 
-        variant={selectedCategory === 'all' ? 'contained' : 'outlined'}
-        onClick={() => setSelectedCategory('all')}
-        sx={{ m: 1 }}
-      >
-        All
-      </Button>
-      {categories.map(category => (
-        <Button
-          key={category}
-          variant={selectedCategory === category ? 'contained' : 'outlined'}
-          onClick={() => setSelectedCategory(category)}
-          sx={{ m: 1 }}
-        >
-          {category}
-        </Button>
-      ))}
+  const FilterSidebar = () => (
+    <Box sx={{ width: isMobile ? 250 : 280, p: 3 }}>
+      <Typography variant="h6" gutterBottom>Filters</Typography>
+      
+      <Box sx={{ my: 3 }}>
+        <Typography gutterBottom>Price Range</Typography>
+        <Slider
+          value={filters.priceRange}
+          onChange={(e, newValue) => setFilters({ ...filters, priceRange: newValue })}
+          valueLabelDisplay="auto"
+          min={0}
+          max={1000}
+        />
+      </Box>
+
+      <FormGroup>
+        <Typography gutterBottom>Availability</Typography>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={filters.inStock}
+              onChange={(e) => setFilters({ ...filters, inStock: e.target.checked })}
+            />
+          }
+          label="In Stock"
+        />
+      </FormGroup>
     </Box>
   );
 
   return (
-    <Box sx={{ py: 8, backgroundColor: "#fff" }}>
-      <Container maxWidth="xl">
-        <Typography variant="h3" align="center" sx={{ mb: 2, fontWeight: 600, color: "#1a1a1a" }}>
-          {name}
-        </Typography>
-        <Typography variant="h6" align="center" sx={{ mb: 6, color: "text.secondary", maxWidth: "800px", mx: "auto" }}>
-          Discover our handpicked selection of premium lace fabrics and wedding materials
-        </Typography>
+    <Container maxWidth="xl">
+      <Box sx={{ py: 4 }}>
+        <Breadcrumbs sx={{ mb: 3 }}>
+          <Link color="inherit" onClick={() => navigate('/')}>
+            Home
+          </Link>
+          <Typography color="text.primary">
+            {category.charAt(0).toUpperCase() + category.slice(1)}
+          </Typography>
+        </Breadcrumbs>
 
-        <CategoryFilter />
-
-        <Grid container spacing={4}>
-          {filteredProducts.map((product) => (
-            <Grid item key={product._id} xs={12} sm={6} md={3}>
-              <StyledCard onClick={() => setSelectedProduct(product)}>
-                <ProductImage
-                  component="img"
-                  image={`http://localhost:3000/uploads/${product.productImage}`}
-                  title={product.productTitle}
-                />
-                  <ProductActions className="product-actions">
-                    <IconButton sx={{ color: "white", backgroundColor: "rgba(255,255,255,0.2)", "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" } }}>
-                      <FavoriteIcon />
-                    </IconButton>
-                    <IconButton sx={{ color: "white", backgroundColor: "rgba(255,255,255,0.2)", "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" } }}>
-                      <ShoppingCartIcon />
-                    </IconButton>
-                  </ProductActions>
-                {/* </ProductImage> */}
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography gutterBottom variant="h6">
-                    {product.productName}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    {product.productCategory}
-                  </Typography>
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <LocalShippingIcon sx={{ fontSize: 16, color: "success.main", mr: 0.5 }} />
-                      <Typography variant="caption" color="success.main">
-                        Free Shipping
-                      </Typography>
-                    </Box>
-                  </Box>
-                </CardContent>
-              </StyledCard>
+        <Grid container spacing={3}>
+          {!isMobile && (
+            <Grid item xs={12} md={3}>
+              <FilterSidebar />
             </Grid>
-          ))}
-        </Grid>
-      </Container>
+          )}
 
-      <CategoryModal
-        product={selectedProduct}
-        open={Boolean(selectedProduct)}
-        onClose={() => setSelectedProduct(null)}
-      />
-    </Box>
+          <Grid item xs={12} md={9}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+              <Typography variant="h4">
+                {category.charAt(0).toUpperCase() + category.slice(1)} Collection
+              </Typography>
+              
+              {isMobile && (
+                <IconButton onClick={() => setDrawerOpen(true)}>
+                  <FilterListIcon />
+                </IconButton>
+              )}
+            </Box>
+
+            <FeaturedProducts 
+              name={`${category.charAt(0).toUpperCase() + category.slice(1)} Collection`}
+              initialCategory={category}
+              products={products}
+              loading={loading}
+            />
+          </Grid>
+        </Grid>
+
+        {isMobile && (
+          <Drawer
+            anchor="right"
+            open={drawerOpen}
+            onClose={() => setDrawerOpen(false)}
+          >
+            <FilterSidebar />
+          </Drawer>
+        )}
+      </Box>
+    </Container>
   );
 };
 
-export default FeaturedProducts;
+export default FilteredProductPage;

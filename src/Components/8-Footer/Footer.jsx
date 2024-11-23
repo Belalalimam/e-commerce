@@ -20,7 +20,7 @@ const Footer = () => {
             <Typography variant="h6" gutterBottom>
               Quick Links
             </Typography>
-            <Link href="#" color="inherit" variant="body2">
+            <Link href="/" color="inherit" variant="body2">
               Home
             </Link>
             <br />

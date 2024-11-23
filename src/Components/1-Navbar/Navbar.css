@@ -1,193 +1,215 @@
+/* Navbar.css */
 .header {
-    background: #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.top-bar {
+  background: #f8f9fa;
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
+}
+
+.top-bar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.location select {
+  border: none;
+  background: transparent;
+  color: #0066cc;
+  font-weight: 500;
+}
+
+.top-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.top-links a {
+  color: #666;
+  text-decoration: none;
+}
+
+.main-header {
+  padding: 1.5rem 0;
+}
+
+.main-header .container {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 2rem;
+  align-items: center;
+}
+
+.logo {
+  text-decoration: none;
+  color: #000000;
+  font-size: 1.5rem;
+}
+
+.search-section {
+  display: flex;
+  max-width: 800px;
+  width: 100%;
+  height: 45px;
+  border: 2px solid #000000;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.category-select {
+  width: 150px;
+  border-right: 1px solid #ddd;
+}
+
+.category-select select {
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 0 1rem;
+  background: #f8f9fa;
+}
+
+.search-input {
+  flex: 1;
+  display: flex;
+}
+
+.search-input input {
+  flex: 1;
+  border: none;
+  padding: 0 1rem;
+  font-size: 1rem;
+}
+
+.search-btn {
+  width: 60px;
+  background: #000000;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.user-actions {
+  display: flex;
+  gap: 2rem;
+}
+
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #333;
+}
+
+.categories-nav {
+  border-top: 1px solid #eee;
+  padding: 0.75rem 0;
+}
+
+.categories-nav ul {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.categories-nav a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.mobile-menu {
+  display: none;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
   .container {
-    max-width: 1400px;
-    margin: 0 auto;
     padding: 0 1rem;
   }
-  
-  /* Top Bar Styles */
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-menu {
+    display: block;
+  }
+
   .top-bar {
-    background: #f8f9fa;
-    padding: 0.5rem 0;
-    font-size: 0.875rem;
+    display: none;
   }
-  
-  .top-bar .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .location {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .location select {
-    border: none;
-    background: transparent;
-    color: #0066cc;
-    font-weight: 500;
-  }
-  
-  .top-links {
-    display: flex;
-    gap: 1.5rem;
-  }
-  
-  .top-links a {
-    color: #666;
-    text-decoration: none;
-  }
-  
-  /* Main Header Styles */
-  .main-header {
-    padding: 1.5rem 0;
-  }
-  
+
   .main-header .container {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 2rem;
-    align-items: center;
+    grid-template-columns: auto auto auto;
+    gap: 1rem;
   }
-  
-  .logo {
-    text-decoration: none;
-    color: #000000;
-    font-size: 1.5rem;
-  }
-  
+
   .search-section {
-    display: flex;
-    max-width: 800px;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    order: 2;
+  }
+
+  .categories-nav {
+    display: none;
+  }
+
+  .categories-nav.mobile-menu-open {
+    display: block;
+    position: absolute;
     width: 100%;
-    height: 45px;
+    background: white;
+    z-index: 1000;
+  }
+
+  .categories-nav ul {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .categories-nav li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-section {
+    height: auto;
+    flex-direction: column;
+    border: none;
+  }
+
+  .search-input {
     border: 2px solid #000000;
     border-radius: 8px;
-    overflow: hidden;
+    height: 45px;
   }
-  
-  .category-select {
-    width: 150px;
-    border-right: 1px solid #ddd;
-  }
-  
-  .category-select select {
-    width: 100%;
-    height: 100%;
-    border: none;
-    padding: 0 1rem;
-    background: #f8f9fa;
-  }
-  
-  .search-input {
-    flex: 1;
-    display: flex;
-  }
-  
-  .search-input input {
-    flex: 1;
-    border: none;
-    padding: 0 1rem;
-    font-size: 1rem;
-  }
-  
-  .search-btn {
-    width: 60px;
-    background: #000000;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
+
   .user-actions {
-    display: flex;
-    gap: 2rem;
+    gap: 1rem;
   }
-  
-  .action-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: #333;
-    position: relative;
-  }
-  
-  .action-item svg {
-    font-size: 1.25rem;
-    margin-bottom: 0.25rem;
-  }
-  
-  .action-item span {
-    font-size: 0.875rem;
-  }
-  
-  .cart-badge {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background: #ff3344;
-    color: white;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-  }
-  
-  /* Categories Nav Styles */
-  .categories-nav {
-    border-top: 1px solid #eee;
-    padding: 0.75rem 0;
-  }
-  
-  .categories-nav ul {
-    display: flex;
-    gap: 2rem;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .categories-nav a {
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-    transition: color 0.2s;
-  }
-  
-  .categories-nav a:hover {
-    color: #ff3344;
-  }
-  
-  @media (max-width: 1024px) {
-    .top-bar {
-      display: none;
-    }
-  
-    .main-header .container {
-      grid-template-columns: auto 1fr;
-    }
-  
-    .user-actions {
-      display: none;
-    }
-  
-    .categories-nav {
-      overflow-x: auto;
-    }
-  
-    .categories-nav ul {
-      width: max-content;
-      padding: 0 1rem;
-    }
-  }
+}

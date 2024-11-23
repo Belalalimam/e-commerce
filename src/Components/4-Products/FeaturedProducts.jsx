@@ -32,6 +32,7 @@ import "react-toastify/dist/ReactToastify.css";
 // Your existing styled components
 const StyledCard = styled(Card)(({ theme }) => ({
   height: "100%",
+  width: "300px",
   display: "flex",
   flexDirection: "column",
   position: "relative",
@@ -67,10 +68,11 @@ const ProductActions = styled(Box)({
   gap: "10px",
 });
 
-const FeaturedProducts = ({ name, typey, category }) => {
+const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [categories, setCategories] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const [favorites, setFavorites] = useState([]);
@@ -153,12 +155,12 @@ const FeaturedProducts = ({ name, typey, category }) => {
   const handleCardClick = (product) => {
     navigate(`/product/${product._id}`);
   };
-  
+
 
   const CategoryModal = ({ product, open, onClose }) => {
     if (!product) return null;
     return (
-      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth onClick={() => handleCardClick(product)}>
+      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth >
         <DialogTitle sx={{ m: 0, p: 2 }}>
           <IconButton
             onClick={onClose}
@@ -167,14 +169,14 @@ const FeaturedProducts = ({ name, typey, category }) => {
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent onClick={() => handleCardClick(product)}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
               <CardMedia
                 component="img"
                 src={`http://localhost:3000/uploads/${product.productImage}`}
                 alt={product.productTitle}
-                style={{ width: "100%", height: "auto", borderRadius: "8px" }}
+                style={{ width: "100%", height: "75%", borderRadius: "8px" }}
               />
             </Grid>
             <Grid item xs={12} md={6}>

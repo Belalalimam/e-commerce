@@ -1,15 +1,14 @@
+// Navbar.jsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaUser, FaSearch, FaMapMarkerAlt, FaHeart, FaShoppingCart } from 'react-icons/fa';
+import { FaUser, FaSearch, FaMapMarkerAlt, FaHeart, FaShoppingCart, FaBars } from 'react-icons/fa';
 import { IconButton, Badge } from "@mui/material";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import './Navbar.css';
 
-
-import './Navbar.css'
-
-const Header = ({ onCartClick,onWishlistClick  }) => {
+const Header = ({ onCartClick, onWishlistClick }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const categories = [
     'All Categories',
@@ -20,12 +19,10 @@ const Header = ({ onCartClick,onWishlistClick  }) => {
     'Grocery',
     'Sports',
     'Toys',
-    'addProduct'
   ];
 
   return (
     <header className="header">
-      {/* Top Bar */}
       <div className="top-bar">
         <div className="container">
           <div className="location">
@@ -45,15 +42,20 @@ const Header = ({ onCartClick,onWishlistClick  }) => {
         </div>
       </div>
 
-      {/* Main Header */}
       <div className="main-header">
         <div className="container">
+          <div className="mobile-menu">
+            <IconButton className="menu-icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+              <FaBars />
+            </IconButton>
+          </div>
+
           <Link to="/" className="logo">
             <h1>YourStore</h1>
           </Link>
 
           <div className="search-section">
-            <div className="category-select">
+            <div className="category-select desktop-only">
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
@@ -79,41 +81,40 @@ const Header = ({ onCartClick,onWishlistClick  }) => {
           </div>
 
           <div className="user-actions">
-            <Link to="/wishlist" className="action-item">
+            <Link to="/" className="action-item">
               <IconButton onClick={onWishlistClick}>
                 <Badge badgeContent={3} color="primary">
                   <FaHeart />
                 </Badge>
               </IconButton>
-                <span>Wishlist</span>
+              <span className="desktop-only">Wishlist</span>
             </Link>
-            <Link to="/cart" className="action-item">
+            <Link to="/" className="action-item">
               <IconButton onClick={onCartClick}>
                 <Badge badgeContent={3} color="primary">
                   <FaShoppingCart />
                 </Badge>
               </IconButton>
-                <span>Cart</span>
+              <span className="desktop-only">Cart</span>
             </Link>
-            <Link to="/account" className="action-item">
-            <IconButton onClick={onCartClick}>
+            <Link to="/" className="action-item">
+              <IconButton>
                 <Badge badgeContent={3} color="primary">
                   <FaUser />
                 </Badge>
               </IconButton>
-                <span>account</span>
+              <span className="desktop-only">Account</span>
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Categories Nav */}
-      <nav className="categories-nav">
+      <nav className={`categories-nav ${mobileMenuOpen ? 'mobile-menu-open' : ''}`}>
         <div className="container">
           <ul>
             {categories.map((category) => (
               <li key={category}>
-                <Link to={`/${category.toLowerCase()}`}>{category}</Link>
+                <Link to={`/category/${category.toLowerCase()}`}>{category}</Link>
               </li>
             ))}
           </ul>
@@ -124,4 +125,3 @@ const Header = ({ onCartClick,onWishlistClick  }) => {
 };
 
 export default Header;
-
