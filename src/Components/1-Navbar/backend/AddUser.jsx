@@ -1,149 +1,147 @@
-import React, { useEffect } from "react";
-import usersApi from "../../../api/users";
 import axios from "axios";
+import React from "react";
+import "./AddUser.css";
 
 export default function AddUser() {
   const [data, setData] = React.useState({
-    email: "",
-    password: "",
-    role:"",
-    name: "",
-    age:""
+    productName: "",
+    productTitle: "",
+    productImage: "",
+    productCategory: "",
+    productCategorySize: "",
+    productColor: "",
+    productDescription: "",
   });
 
-  const handleSubmit =  async (e) => {
-    e.preventDefault()
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      Object.keys(data).forEach(key => {
+        formData.append(key, data[key]);
+      });
 
-        const res =  await axios.post("http://localhost:3000/api/users/addUser", data);
-        console.log(res.data);
-        alert("User added successfully");
-        
+      const res = await axios.post(
+        "http://localhost:3000/Products/addProduct",
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
         }
-
+      );
       
-
-
-
-        
-
+      if (res.data) {
+        alert("Product added successfully!");
+        setData({
+          productName: "",
+          productTitle: "",
+          productImage: "",
+          productCategory: "",
+          productCategorySize: "",
+          productColor: "",
+          productDescription: "",
+        });
+      }
+    } catch (error) {
+      alert("Error adding product: " + error.message);
+    }
+  };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <div>
-        <h1>Adduser</h1>
-        <form action="" onSubmit={handleSubmit}>
-          <div class="mb-3">
-            <label for="exampleFormControlInput1" class="form-label">
-              Email address
-            </label>
-            <input
-              value={data.email}
-              onChange={(e) => setData({ ...data, email: e.target.value })}
-              type="text"
-              className="form-control"
-              id="exampleFormControlInput1"
-              placeholder="name@example.com"
-            />
-          </div>
-          <div class="mb-3">
-            <label for="exampleFormControlInput2" class="form-label">
-              password
-            </label>
-            <input
-              value={data.password}
-              onChange={(e) => setData({ ...data, password: e.target.value })}
-              type="password"
-              className="form-control"
-              id="exampleFormControlInput2"
-              placeholder="password"
-            />
-          </div>
-          <div class="mb-3">
-            <label for="exampleFormControlInput3" class="form-label">
-              password
-            </label>
-            <input
-              value={data.role}
-              onChange={(e) => setData({ ...data, role: e.target.value })}
-              type="text"
-              className="form-control"
-              id="exampleFormControlInput3"
-              placeholder="role"
-            />
-          </div>
-          <div class="mb-3">
-            <label for="exampleFormControlInput4" class="form-label">
-              name
-            </label>
-            <input
-              value={data.name}
-              onChange={(e) => setData({ ...data, name: e.target.value })}
-              type="text"
-              className="form-control"
-              id="exampleFormControlInput4"
-              placeholder="name"
-            />
-          </div>
-          <div class="mb-3">
-            <label for="exampleFormControlInput5" class="form-label">
-              age
-            </label>
-            <input
-              value={data.age}
-              onChange={(e) => setData({ ...data, age: e.target.value })}
-              type="number"
-              className="form-control"
-              id="exampleFormControlInput5"
-              placeholder="age"
-            />
-          </div>
-          {/* <div class="mb-3">
-            <label for="exampleFormControlInput3" class="form-label">
-              name
-            </label>
-            <input
-              value={data.name}
-              onChange={(e) => setData({ ...data, name: e.target.value })}
-              type="text"
-              className="form-control"
-              id="exampleFormControlInput3"
-              placeholder="name"
-            />
-          </div>
-          <div class="mb-3">
-            <label for="exampleFormControlInput4" class="form-label">
-              age
-            </label>
-            <input
-              value={data.age}
-              onChange={(e) => setData({ ...data, age: e.target.value })}
-              type="text"
-              className="form-control"
-              id="exampleFormControlInput4"
-              placeholder="age"
-            />
-          </div> */}
-          <button className="btn btn-primary" type="submit">
-            Submit
-          </button>
-          
-        </form>
-      </div>
+    <div className="add-product-container">
+      <h2 className="form-title">Add New Product</h2>
+      <form onSubmit={handleSubmit} className="product-form">
+        <div className="form-group">
+          <label>Product Name</label>
+          <input 
+            type="text"
+            className="form-control"
+            placeholder="Enter product name"
+            onChange={(e) => setData({ ...data, productName: e.target.value })}
+            value={data.productName}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Product Title</label>
+          <input 
+            type="text"
+            className="form-control"
+            placeholder="Enter product title"
+            onChange={(e) => setData({ ...data, productTitle: e.target.value })}
+            value={data.productTitle}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Category</label>
+          <select 
+            className="form-control"
+            onChange={(e) => setData({ ...data, productCategory: e.target.value })}
+            value={data.productCategory}
+          >
+            <option value="">Select Category</option>
+            <option value="lace">lace</option>
+            <option value="fabric">fabric</option>
+            <option value="etylo">etylo</option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>Size</label>
+          <select 
+            className="form-control"
+            onChange={(e) => setData({ ...data, productCategorySize: e.target.value })}
+            value={data.productCategorySize}
+          >
+            <option value="">Select Size</option>
+            <option value="xs">xs</option>
+            <option value="s">s</option>
+            <option value="m">m</option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>Color</label>
+          <select 
+            className="form-control"
+            onChange={(e) => setData({ ...data, productColor: e.target.value })}
+            value={data.productColor}
+          >
+            <option value="">Select Color</option>
+            <option value="Black">Black</option>
+            <option value="Red">Red</option>
+            <option value="Blue">Blue</option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>Description</label>
+          <textarea 
+            className="form-control"
+            rows="4"
+            placeholder="Product description"
+            onChange={(e) => setData({ ...data, productDescription: e.target.value })}
+            value={data.productDescription}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Product Image</label>
+          <input 
+            type="file"
+            className="form-control"
+            accept="image/*"
+            onChange={(e) => setData({ ...data, productImage: e.target.files[0] })}
+            
+          />
+        </div>
+
+        <button type="submit" className="submit-btn">
+          Add Product
+        </button>
+      </form>
     </div>
   );
 }
-
-
-// import React from 'react'
-
-// export default function AddUser() {
-//   return (
-//     <div>AddUser</div>
-//   )
-// }

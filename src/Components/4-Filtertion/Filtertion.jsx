@@ -5,7 +5,7 @@ import './Filteration.css';
 const FilterSection = ({ onFilterChange }) => {
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState({
-    colors: [],
+    colors: [], 
     categories: [],
     sizes: []
   });

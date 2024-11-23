@@ -2,16 +2,25 @@
 @import 'swiper/css/navigation';
 
 
-*{
+.color{
+  color: #021024;
+  color: #052659;
+  color: #5483B3;
+  color: #7DA0CA;
+  color: #C1E8FF;
+}
+
+* {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  
+
 }
-.border{
+
+.border {
   border: 2px solid red !important;
 }
 
-body{
+body {
   /* height: 6666px; */
 }

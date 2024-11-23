@@ -20,6 +20,7 @@ const Header = ({ onCartClick,onWishlistClick  }) => {
     'Grocery',
     'Sports',
     'Toys',
+    'addProduct'
   ];
 
   return (
@@ -112,7 +113,7 @@ const Header = ({ onCartClick,onWishlistClick  }) => {
           <ul>
             {categories.map((category) => (
               <li key={category}>
-                <Link to={`/category/${category.toLowerCase()}`}>{category}</Link>
+                <Link to={`/${category.toLowerCase()}`}>{category}</Link>
               </li>
             ))}
           </ul>
