@@ -5,7 +5,7 @@ import { FaUser, FaSearch, FaMapMarkerAlt, FaHeart, FaShoppingCart, FaBars } fro
 import { IconButton, Badge } from "@mui/material";
 import './Navbar.css';
 
-const Header = ({ onCartClick, onWishlistClick }) => {
+const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -19,6 +19,7 @@ const Header = ({ onCartClick, onWishlistClick }) => {
     'Grocery',
     'Sports',
     'Toys',
+    'addUser'
   ];
 
   return (
@@ -83,7 +84,7 @@ const Header = ({ onCartClick, onWishlistClick }) => {
           <div className="user-actions">
             <Link to="/" className="action-item">
               <IconButton onClick={onWishlistClick}>
-                <Badge badgeContent={3} color="primary">
+                <Badge badgeContent={wishlistItems} color="primary">
                   <FaHeart />
                 </Badge>
               </IconButton>
@@ -114,7 +115,7 @@ const Header = ({ onCartClick, onWishlistClick }) => {
           <ul>
             {categories.map((category) => (
               <li key={category}>
-                <Link to={`/category/${category.toLowerCase()}`}>{category}</Link>
+                <Link to={`/${category.toLowerCase()}`}>{category}</Link>
               </li>
             ))}
           </ul>

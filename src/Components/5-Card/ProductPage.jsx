@@ -161,10 +161,10 @@ const CategoryPage = () => {
       {product && (
         <>
           <Breadcrumbs sx={{ mb: 3 }}>
-            <Link href="/" underline="hover">
+            <Link onClick={() => navigate('/')} underline="hover">
               Home
             </Link>
-            <Link href={product.productCategory} underline="hover">
+            <Link onClick={() => navigate(`/products/${product.productCategory}`)} underline="hover">
               {product.productCategory}
             </Link>
             <Typography color="text.primary">{product.productName}</Typography>

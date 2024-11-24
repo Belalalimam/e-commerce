@@ -14,7 +14,9 @@ import CartModal from "./Components/1-Navbar/CartModal";
 import WishlistModal from "./Components/1-Navbar/WishlistModal";
 import ProductPage from "./Components/5-Card/ProductPage";
 import AddUser from "./Components/1-Navbar/backend/AddUser";
-import Test3 from "./test3";
+import FilteredProductPage from "./allProductFiltered";
+import AuthPages from "./authpages";
+import Test from './test'
 
 function App() {
   const theme = createTheme({
@@ -72,9 +74,12 @@ function App() {
 
             <Route path="/addProduct" element={<AddUser />} />
             <Route path="/product/:productId" element={<ProductPage />} />
-            <Route path="/test3" element={<Test3 />} />
-            <Route path="/category/:category" element={<Test3 />} />
+            {/* <Route path="/test3" element={<Test3 />} /> */}
+            <Route path="/products/:category" element={<FilteredProductPage />} />
             <Route path="/" element={<FeaturedProducts name="Featured Products" />} />
+            <Route path="/addUser" element={<AuthPages />} />
+            <Route path="/test" element={<Test />} />
+
           </Routes>
 
           <Footer />

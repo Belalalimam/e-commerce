@@ -19,9 +19,7 @@ const style = {
 const WishlistModal = ({ open, onClose }) => {
   const [wishlistItems, setWishlistItems] = useState([]);
 
-  useEffect(() => {
-    fetchWishlistItems();
-  }, []);
+
 
   const fetchWishlistItems = async () => {
     try {
@@ -31,10 +29,12 @@ const WishlistModal = ({ open, onClose }) => {
       console.error('Error fetching wishlist:', error);
     }
   };
-
+  useEffect(() => {
+    fetchWishlistItems();
+  }, []);
   const handleRemoveFromWishlist = async (productId) => {
     try {
-      await axios.delete(`http://localhost:3000/wishlist/${productId}`);
+      await axios.delete(`http://localhost:3000/products/${productId}`);
       fetchWishlistItems();
     } catch (error) {
       console.error('Error removing from wishlist:', error);
