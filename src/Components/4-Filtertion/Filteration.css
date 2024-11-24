@@ -122,6 +122,10 @@
     overflow-y: auto;
     box-shadow: 2px 0 8px rgba(0,0,0,0.1);
   }
+
+  .filterContainer{
+    display: block;
+  }
 }
 
 @media (max-width: 992px) {

@@ -49,7 +49,6 @@ function App() {
       <FeaturedProducts name={"Recently visite"} category={"fabric"} />
       <FilterationProduct />
       <FeaturedProducts name={"Featured Products"} category={"all"} />
-      <Footer />
     </>
   );
 

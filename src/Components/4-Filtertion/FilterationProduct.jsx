@@ -27,6 +27,7 @@ import "./Filteration.css";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   height: "100%",
+  width: "300px",
   display: "flex",
   flexDirection: "column",
   position: "relative",
@@ -62,6 +63,68 @@ const ProductActions = styled(Box)({
   gap: "10px",
 });
 
+const addToCart = (product) => {
+  const existingItem = cartItems.find((item) => item.id === product.id);
+  if (existingItem) {
+    const updatedCartItems = cartItems.map((item) =>
+      item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+    );
+    setCartItems(updatedCartItems);
+  } else {
+    setCartItems([...cartItems, { ...product, quantity: 1 }]);
+  }
+};
+
+const removeFromCart = (product) => {
+  const updatedCartItems = cartItems.filter((item) => item.id !== product.id);
+  setCartItems(updatedCartItems);
+};
+
+const addToFavorites = (product) => {
+  const existingFavorite = favorites.find(
+    (favorite) => favorite.id === product.id
+  );
+  if (!existingFavorite) {
+    setFavorites([...favorites, product]);
+  }
+};
+
+const removeFromFavorites = (product) => {
+  const updatedFavorites = favorites.filter(
+    (favorite) => favorite.id !== product.id
+  );
+  setFavorites(updatedFavorites);
+};
+
+const handleProductClick = (product) => {
+  setSelectedProduct(product);
+};
+
+const handleCloseModal = () => {
+  setSelectedProduct(null);
+};
+
+const handleAddToCart = (e, product) => {
+  e.stopPropagation(); // Prevent opening modal when clicking cart button
+  addToCart(product);
+  toast.success("Product added to cart!");
+};
+
+const handleRemoveFromCart = (product) => {
+  removeFromCart(product);
+  toast.success("Product removed from cart!");
+};
+
+const handleAddToFavorites = (e, product) => {
+  e.stopPropagation(); // Prevent opening modal when clicking favorite button
+  addToFavorites(product);
+  toast.success("Product added to favorites!");
+};
+
+const handleCardClick = (product) => {
+  navigate(`/product/${product._id}`);
+};
+
 const CategoryModal = ({ product, open, onClose }) => {
   if (!product) return null;
 
@@ -75,7 +138,7 @@ const CategoryModal = ({ product, open, onClose }) => {
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent onClick={() => handleCardClick(product)}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
             <CardMedia
@@ -107,10 +170,18 @@ const CategoryModal = ({ product, open, onClose }) => {
         </Grid>
       </DialogContent>
       <DialogActions sx={{ p: 3 }}>
-        <Button variant="outlined" startIcon={<FavoriteIcon />}>
+        <Button
+          variant="contained"
+          startIcon={<ShoppingBagIcon />}
+          onClick={(e) => handleAddToCart(e, product)}
+        >
           Add to Wishlist
         </Button>
-        <Button variant="contained" startIcon={<ShoppingBagIcon />}>
+        <Button
+          variant="outlined"
+          startIcon={<FavoriteIcon />}
+          onClick={(e) => handleAddToFavorites(e, product)}
+        >
           Add to Cart
         </Button>
       </DialogActions>
@@ -127,6 +198,8 @@ const FeaturedProducts = ({ name }) => {
     categories: [],
     sizes: [],
   });
+  const [cartItems, setCartItems] = useState([]);
+  const [favorites, setFavorites] = useState([]);
 
   const colors = [
     { id: 1, name: "Black", hex: "#000000" },
@@ -186,34 +259,28 @@ const FeaturedProducts = ({ name }) => {
 
   return (
     <Box sx={{ py: 8, backgroundColor: "#fff" }}>
-      <Container maxWidth="xl">
+      <Container maxWidth="xl" className="flex filterContainer">
         <Typography
           variant="h3"
-          className="border"
+          className=""
           align="center"
           sx={{ mb: 2, fontWeight: 600, color: "#1a1a1a" }}
         >
           {name}
         </Typography>
 
-
         <div
-              className="filter-toggle"
-              onClick={() => setShowMobileFilters(!showMobileFilters)}
-            >
-              <FaFilter />
-              <span>Show Filters</span>
-            </div>
+          className="filter-toggle"
+          onClick={() => setShowMobileFilters(!showMobileFilters)}
+        >
+          <FaFilter />
+          <span>Show Filters</span>
+        </div>
 
         <div className="main-container">
-          
-
           <aside
             className={`filter-sidebar ${showMobileFilters ? "show" : ""}`}
           >
-
-            
-
             <div className="filter-group">
               <Typography variant="subtitle2" gutterBottom>
                 Colors
@@ -301,25 +368,36 @@ const FeaturedProducts = ({ name }) => {
                   title={product.productTitle}
                 />
                 <ProductActions className="product-actions">
-                  <IconButton
-                    sx={{
-                      color: "white",
-                      backgroundColor: "rgba(255,255,255,0.2)",
-                      "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
-                    }}
-                  >
-                    <FavoriteIcon />
-                  </IconButton>
-                  <IconButton
-                    sx={{
-                      color: "white",
-                      backgroundColor: "rgba(255,255,255,0.2)",
-                      "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
-                    }}
-                  >
-                    <ShoppingCartIcon />
-                  </IconButton>
-                </ProductActions>
+                    <IconButton
+                      onClick={(e) => handleAddToFavorites(e, product)}
+                      sx={{
+                        color: favorites.some(
+                          (item) => item._id === product._id
+                        )
+                          ? "red"
+                          : "white",
+                        backgroundColor: "rgba(255,255,255,0.2)",
+                        "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
+                      }}
+                    >
+                      <FavoriteIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={(e) => handleAddToCart(e, product)}
+                      sx={{
+                        color: cartItems.some(
+                          (item) => item._id === product._id
+                        )
+                          ? "#4CAF50"
+                          : "white",
+                        backgroundColor: "rgba(255,255,255,0.2)",
+                        "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
+                      }}
+                    >
+                      <ShoppingCartIcon />
+                    </IconButton>
+                  </ProductActions>
+
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Typography gutterBottom variant="h6">
                     {product.productName}

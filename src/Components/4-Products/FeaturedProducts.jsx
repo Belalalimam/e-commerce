@@ -72,7 +72,6 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [categories, setCategories] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const [favorites, setFavorites] = useState([]);
@@ -149,9 +148,7 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
     addToFavorites(product);
     toast.success("Product added to favorites!");
   };
-
-
-
+  
   const handleCardClick = (product) => {
     navigate(`/product/${product._id}`);
   };
