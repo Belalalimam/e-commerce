@@ -34,7 +34,7 @@ const AuthPage = () => {
   const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     setLoading(true);
     setError(null);
    
@@ -44,12 +44,13 @@ const AuthPage = () => {
           email: formData.email,
           password: formData.password
         });
-        localStorage.setItem('userToken', result.token);
-        navigate('/dashboard');
+        localStorage.setItem('userToken', result.data.user.token);
+        console.log(result.data.user.token);
+        navigate('/');
       } else {
         const result = await authService.register(formData);
-        localStorage.setItem('userToken', result.token);
-        navigate('/dashboard');
+        localStorage.setItem('userToken', result.data.user.token);
+        navigate('/');
       }
     } catch (err) {
       setError(err.response?.data?.message || `${activeTab === 0 ? 'Login' : 'Registration'} failed`);

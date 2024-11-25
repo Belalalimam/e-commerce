@@ -18,6 +18,7 @@ import AuthPages from "./authpages";
 import Test from './test'
 import Dashboard from "./dashboard";
 import ProfialModal from './Components/1-Navbar/ProfialModal'
+import NavContainer from "./Components/1-Navbar/navContainer";
 
 
 
@@ -67,8 +68,9 @@ function App() {
     <>
       <BrowserRouter>
         <ThemeProvider theme={theme}>
+          <NavContainer />
 
-          <Navbar
+          {/* <Navbar
             onCartClick={handleCartClick}
             onWishlistClick={handleWishlistClick}
             onProfialClick={handleProfialClick}
@@ -77,7 +79,7 @@ function App() {
           <WishlistModal
             open={isWishlistOpen}
             onClose={() => setWishlistOpen(false)}
-          />
+          /> */}
           {/* <ProfialModal
             open={isProfialOpen}
             onClose={() => setProfialOpen(false)}
@@ -85,6 +87,7 @@ function App() {
 
           <Routes>
             <Route path="/" element={homepage} />
+            <Route path="/home" element={homepage} />
             <Route path="/logout" element={homepage} />
 
             <Route path="/addProduct" element={<AddUser />} />
@@ -92,7 +95,7 @@ function App() {
             {/* <Route path="/test3" element={<Test3 />} /> */}
             <Route path="/products/:category" element={<FilteredProductPage />} />
             <Route path="/" element={<FeaturedProducts name="Featured Products" />} />
-            <Route path="/addUser" element={<AuthPages />} />
+            <Route path="/login" element={<AuthPages />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/test" element={<Test />} />
 

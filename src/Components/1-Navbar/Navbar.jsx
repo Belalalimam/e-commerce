@@ -1,8 +1,8 @@
 // Navbar.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUser, FaSearch, FaMapMarkerAlt, FaHeart, FaShoppingCart, FaBars } from 'react-icons/fa';
-import { IconButton, Badge, Box, Tooltip, Avatar, Menu, MenuItem, Typography    } from "@mui/material";
+import { IconButton, Badge, Box, Tooltip, Avatar, Menu, MenuItem, Typography } from "@mui/material";
 import './Navbar.css';
 
 const Header = ({ onCartClick, onWishlistClick, wishlistItems, onProfialClick }) => {
@@ -24,7 +24,9 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems, onProfialClick })
     'Toys',
     'addUser'
   ];
-  const settings = ['Account', 'Dashboard', 'Logout'];
+  const [Login, setLogin] = useState('');
+  const settings = useMemo(() => ['Account', 'Dashboard', Login], [Login]);
+
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -32,7 +34,34 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems, onProfialClick })
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+  const handleMenuItemClick = (setting) => {
+    if (setting.toLowerCase() === 'logout') {
+      localStorage.removeItem('userToken');
+      setLogin('login');
+      navigate('/home');
+    } else if (setting.toLowerCase() === 'login') {
+      navigate('/home');
+    } else {
+      navigate(`/home`);
+    }
+    handleCloseUserMenu();
+  };
 
+  useEffect(() => {
+    const checkAuthStatus = () => {
+      const userToken = localStorage.getItem('userToken');
+      setLogin(userToken && userToken.length > 1 ? 'logout' : 'login');
+    };
+
+    checkAuthStatus();
+
+    // Add event listener for storage changes
+    window.addEventListener('storage', checkAuthStatus);
+
+    return () => {
+      window.removeEventListener('storage', checkAuthStatus);
+    };
+  }, []);
 
 
   return (
@@ -113,13 +142,13 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems, onProfialClick })
               <span className="desktop-only">Cart</span>
             </Link>
 
-            <Link  className="action-item">
-            <IconButton onClick={onProfialClick}>
+            <Link className="action-item">
+              {/* <IconButton onClick={onProfialClick}>
             <Badge color="primary">
               <FaUser />
                 </Badge>
-            </IconButton>
-              {/* <Box sx={{ flexGrow: 0 }}>
+            </IconButton> */}
+              <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                     <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
@@ -143,13 +172,18 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems, onProfialClick })
                 >
                   {settings.map((setting) => (
                     <Link to={setting} className="action-item" key={setting}>
-                      <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                      <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                    </MenuItem>
+                      <MenuItem
+                        key={setting}
+                        onClick={() => handleMenuItemClick(setting)}
+                      >
+                        <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                      </MenuItem>
                     </Link>
                   ))}
                 </Menu>
-              </Box> */}
+              </Box>
+
+
               <span className="desktop-only">Accont</span>
 
             </Link>
