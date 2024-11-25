@@ -1,162 +1,100 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Box,
-  Container,
-  Paper,
-  Typography,
-  TextField,
-  Button,
-  IconButton,
-  InputAdornment,
-  Divider,
-  useTheme,
-  Alert,
-  CircularProgress
+  Box, Container, Paper, Typography, TextField, Button,
+  IconButton, InputAdornment, Alert, CircularProgress, Tabs, Tab
 } from '@mui/material';
-import { Visibility, VisibilityOff, Google, Facebook, Email, Person, Lock } from '@mui/icons-material';
+import { Visibility, VisibilityOff, Email, Person, Lock } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 
 const authService = {
-  login: async (credentials) => {
-    const response = await axios.post('http://localhost:4000/api/users/login', credentials);
-    return response.data;
-  },
   register: async (userData) => {
     const response = await axios.post('http://localhost:4000/api/users/addUser', userData);
-    console.log("🚀 ~ register: ~ response:", response)
+    return response.data.data;
+  },
+  login: async (credentials) => {
+    const response = await axios.post('http://localhost:4000/api/users/login', credentials);
     return response.data;
   }
 };
 
-const AuthPages = () => {
-  const theme = useTheme();
+const AuthPage = () => {
   const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
-
+  const [activeTab, setActiveTab] = useState(0);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    age: '',
     password: '',
-    confirmPassword: ''
   });
-
-  const formStyles = {
-    wrapper: {
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-      py: 8
-    },
-    paper: {
-      width: '100%',
-      maxWidth: 450,
-      mx: 'auto',
-      p: 4,
-      borderRadius: 2,
-      boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-      background: '#fff',
-      position: 'relative',
-      overflow: 'hidden'
-    },
-    title: {
-      color: theme.palette.primary.main,
-      mb: 4,
-      fontWeight: 700,
-      textAlign: 'center'
-    },
-    input: {
-      mb: 2,
-      '& .MuiOutlinedInput-root': {
-        '&:hover fieldset': {
-          borderColor: theme.palette.primary.main,
-        },
-      },
-    },
-    button: {
-      py: 1.5,
-      mt: 2,
-      mb: 2,
-      backgroundColor: theme.palette.primary.main,
-      color: '#fff',
-      '&:hover': {
-        backgroundColor: theme.palette.primary.dark,
-      },
-    },
-    socialButton: {
-      width: '48%',
-      py: 1,
-      color: '#fff',
-    }
-  };
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-    setError(null);
-  };
-
-  const validateForm = () => {
-    if (!isLogin && formData.password !== formData.confirmPassword) {
-      setError("Passwords don't match");
-      return false;
-    }
-    return true;
-  };
+  
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
-    
     setLoading(true);
     setError(null);
-    
+   
     try {
-      if (isLogin) {
+      if (activeTab === 0) {
         const result = await authService.login({
           email: formData.email,
           password: formData.password
         });
-        setSuccess('Login successful!');
         localStorage.setItem('userToken', result.token);
         navigate('/dashboard');
       } else {
-        const result = await authService.register({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password
-        });
-        setSuccess('Registration successful!');
+        const result = await authService.register(formData);
         localStorage.setItem('userToken', result.token);
-        navigate('/test');
+        navigate('/dashboard');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Authentication failed');
+      setError(err.response?.data?.message || `${activeTab === 0 ? 'Login' : 'Registration'} failed`);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleChange = (e) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+    setError(null);
+  };
+
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+    setFormData({
+      name: '',
+      email: '',
+      age: '',
+      password: '',
+    });
+    setError(null);
+  };
+
   return (
-    <Box sx={formStyles.wrapper}>
+    <Box sx={styles.wrapper}>
       <Container maxWidth="sm">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Paper sx={formStyles.paper}>
-            <Typography variant="h4" sx={formStyles.title}>
-              {isLogin ? 'Welcome Back' : 'Create Account'}
-            </Typography>
+          <Paper sx={styles.paper}>
+            <Tabs
+              value={activeTab}
+              onChange={handleTabChange}
+              centered
+              sx={{ mb: 3 }}
+            >
+              <Tab label="Login" />
+              <Tab label="Register" />
+            </Tabs>
 
             {error && (
               <Alert severity="error" sx={{ mb: 2 }}>
@@ -164,31 +102,46 @@ const AuthPages = () => {
               </Alert>
             )}
 
-            {success && (
-              <Alert severity="success" sx={{ mb: 2 }}>
-                {success}
-              </Alert>
-            )}
-
             <form onSubmit={handleSubmit}>
-              {!isLogin && (
-                <TextField
-                  fullWidth
-                  name="name"
-                  label="Full Name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  variant="outlined"
-                  sx={formStyles.input}
-                  required
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Person />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
+              {activeTab === 1 && (
+                <>
+                  <TextField
+                    fullWidth
+                    name="name"
+                    label="Full Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    variant="outlined"
+                    sx={styles.input}
+                    required
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Person />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+
+                  <TextField
+                    fullWidth
+                    name="age"
+                    label="Age"
+                    type="number"
+                    value={formData.age}
+                    onChange={handleChange}
+                    variant="outlined"
+                    sx={styles.input}
+                    required
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Person />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </>
               )}
 
               <TextField
@@ -199,7 +152,7 @@ const AuthPages = () => {
                 value={formData.email}
                 onChange={handleChange}
                 variant="outlined"
-                sx={formStyles.input}
+                sx={styles.input}
                 required
                 InputProps={{
                   startAdornment: (
@@ -218,7 +171,7 @@ const AuthPages = () => {
                 value={formData.password}
                 onChange={handleChange}
                 variant="outlined"
-                sx={formStyles.input}
+                sx={styles.input}
                 required
                 InputProps={{
                   startAdornment: (
@@ -228,10 +181,7 @@ const AuthPages = () => {
                   ),
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                      >
+                      <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
                         {showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
                     </InputAdornment>
@@ -239,94 +189,15 @@ const AuthPages = () => {
                 }}
               />
 
-              {!isLogin && (
-                <TextField
-                  fullWidth
-                  name="confirmPassword"
-                  label="Confirm Password"
-                  type={showPassword ? 'text' : 'password'}
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  variant="outlined"
-                  sx={formStyles.input}
-                  required
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Lock />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              )}
-
               <Button
                 fullWidth
                 variant="contained"
                 type="submit"
-                sx={formStyles.button}
+                sx={styles.button}
                 disabled={loading}
               >
-                {loading ? (
-                  <CircularProgress size={24} color="inherit" />
-                ) : (
-                  isLogin ? 'Login' : 'Sign Up'
-                )}
+                {loading ? <CircularProgress size={24} color="inherit" /> : (activeTab === 0 ? 'Login' : 'Sign Up')}
               </Button>
-
-              <Divider sx={{ my: 2 }}>OR</Divider>
-
-              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Button
-                  variant="contained"
-                  startIcon={<Google />}
-                  sx={{
-                    ...formStyles.socialButton,
-                    backgroundColor: '#DB4437',
-                    '&:hover': { backgroundColor: '#C53929' },
-                  }}
-                >
-                  Google
-                </Button>
-                <Button
-                  variant="contained"
-                  startIcon={<Facebook />}
-                  sx={{
-                    ...formStyles.socialButton,
-                    backgroundColor: '#4267B2',
-                    '&:hover': { backgroundColor: '#365899' },
-                  }}
-                >
-                  Facebook
-                </Button>
-              </Box>
-
-              <Typography sx={{ textAlign: 'center', mt: 2, color: 'text.secondary' }}>
-                {isLogin ? "Don't have an account? " : 'Already have an account? '}
-                <Box
-                  component="span"
-                  onClick={() => {
-                    setIsLogin(!isLogin);
-                    setError(null);
-                    setFormData({
-                      name: '',
-                      email: '',
-                      password: '',
-                      confirmPassword: ''
-                    });
-                  }}
-                  sx={{
-                    color: 'primary.main',
-                    cursor: 'pointer',
-                    fontWeight: 600,
-                    '&:hover': {
-                      textDecoration: 'underline',
-                    },
-                  }}
-                >
-                  {isLogin ? 'Sign Up' : 'Login'}
-                </Box>
-              </Typography>
             </form>
           </Paper>
         </motion.div>
@@ -335,4 +206,46 @@ const AuthPages = () => {
   );
 };
 
-export default AuthPages;
+const styles = {
+  wrapper: {
+    minHeight: '100vh',
+    display: 'flex',
+    alignItems: 'center',
+    background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+    py: 8
+  },
+  paper: {
+    width: '100%',
+    maxWidth: 450,
+    mx: 'auto',
+    p: 4,
+    borderRadius: 2,
+    boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+    background: '#fff',
+  },
+  title: {
+    color: 'primary.main',
+    mb: 4,
+    fontWeight: 700,
+    textAlign: 'center'
+  },
+  input: {
+    mb: 2,
+    '& .MuiOutlinedInput-root': {
+      '&:hover fieldset': {
+        borderColor: 'primary.main',
+      },
+    },
+  },
+  button: {
+    py: 1.5,
+    mt: 2,
+    backgroundColor: 'primary.main',
+    color: '#fff',
+    '&:hover': {
+      backgroundColor: 'primary.dark',
+    },
+  }
+};
+
+export default AuthPage;

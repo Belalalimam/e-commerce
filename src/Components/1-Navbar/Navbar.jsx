@@ -2,13 +2,16 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUser, FaSearch, FaMapMarkerAlt, FaHeart, FaShoppingCart, FaBars } from 'react-icons/fa';
-import { IconButton, Badge } from "@mui/material";
+import { IconButton, Badge, Box, Tooltip, Avatar, Menu, MenuItem, Typography    } from "@mui/material";
 import './Navbar.css';
 
-const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
+const Header = ({ onCartClick, onWishlistClick, wishlistItems, onProfialClick }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+
 
   const categories = [
     'All Categories',
@@ -21,6 +24,16 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
     'Toys',
     'addUser'
   ];
+  const settings = ['Account', 'Dashboard', 'Logout'];
+
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+
 
   return (
     <header className="header">
@@ -90,6 +103,7 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
               </IconButton>
               <span className="desktop-only">Wishlist</span>
             </Link>
+
             <Link to="/" className="action-item">
               <IconButton onClick={onCartClick}>
                 <Badge badgeContent={3} color="primary">
@@ -98,13 +112,46 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
               </IconButton>
               <span className="desktop-only">Cart</span>
             </Link>
-            <Link to="/" className="action-item">
-              <IconButton>
-                <Badge badgeContent={3} color="primary">
-                  <FaUser />
+
+            <Link  className="action-item">
+            <IconButton onClick={onProfialClick}>
+            <Badge color="primary">
+              <FaUser />
                 </Badge>
-              </IconButton>
-              <span className="desktop-only">Account</span>
+            </IconButton>
+              {/* <Box sx={{ flexGrow: 0 }}>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: '45px' }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  {settings.map((setting) => (
+                    <Link to={setting} className="action-item" key={setting}>
+                      <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                      <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                    </MenuItem>
+                    </Link>
+                  ))}
+                </Menu>
+              </Box> */}
+              <span className="desktop-only">Accont</span>
+
             </Link>
           </div>
         </div>
@@ -124,5 +171,4 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
     </header>
   );
 };
-
 export default Header;
