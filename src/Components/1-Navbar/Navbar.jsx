@@ -1,11 +1,13 @@
-// Navbar.jsx
 import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUser, FaSearch, FaMapMarkerAlt, FaHeart, FaShoppingCart, FaBars } from 'react-icons/fa';
 import { IconButton, Badge, Box, Tooltip, Avatar, Menu, MenuItem, Typography } from "@mui/material";
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import './Navbar.css';
 
-const Header = ({ onCartClick, onWishlistClick, wishlistItems, onProfialClick }) => {
+
+const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -24,8 +26,30 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems, onProfialClick })
     'Toys',
     'addUser'
   ];
-  const [Login, setLogin] = useState('');
-  const settings = useMemo(() => ['Account', 'Dashboard', Login], [Login]);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const settings = useMemo(() =>
+    user ? ['Profile', 'Dashboard', 'Logout'] : ['Login', 'Register'],
+    [user]
+  );
+
+  const handleMenuItemClick = (setting) => {
+    switch (setting.toLowerCase()) {
+      case 'logout':
+        logout();
+        navigate('/');
+        break;
+      case 'login':
+        navigate('/login');
+        break;
+      case 'register':
+        navigate('/addUser');
+        break;
+      default:
+        navigate(`/${setting.toLowerCase()}`);
+    }
+    handleCloseUserMenu();
+  };
 
 
   const handleOpenUserMenu = (event) => {
@@ -34,34 +58,8 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems, onProfialClick })
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  const handleMenuItemClick = (setting) => {
-    if (setting.toLowerCase() === 'logout') {
-      localStorage.removeItem('userToken');
-      setLogin('login');
-      navigate('/home');
-    } else if (setting.toLowerCase() === 'login') {
-      navigate('/home');
-    } else {
-      navigate(`/home`);
-    }
-    handleCloseUserMenu();
-  };
 
-  useEffect(() => {
-    const checkAuthStatus = () => {
-      const userToken = localStorage.getItem('userToken');
-      setLogin(userToken && userToken.length > 1 ? 'logout' : 'login');
-    };
 
-    checkAuthStatus();
-
-    // Add event listener for storage changes
-    window.addEventListener('storage', checkAuthStatus);
-
-    return () => {
-      window.removeEventListener('storage', checkAuthStatus);
-    };
-  }, []);
 
 
   return (
@@ -149,9 +147,16 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems, onProfialClick })
                 </Badge>
             </IconButton> */}
               <Box sx={{ flexGrow: 0 }}>
-                <Tooltip title="Open settings">
+                <Tooltip title={user ? 'Account Settings' : 'Login'}>
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                    {user ? (
+                      <Avatar
+                        alt={user.name}
+                        src={user.avatar || '/default-avatar.png'}
+                      />
+                    ) : (
+                      <FaUser />
+                    )}
                   </IconButton>
                 </Tooltip>
                 <Menu

@@ -19,6 +19,7 @@ import Test from './test'
 import Dashboard from "./dashboard";
 import ProfialModal from './Components/1-Navbar/ProfialModal'
 import NavContainer from "./Components/1-Navbar/navContainer";
+import {AuthProvider} from './context/AuthContext'
 
 
 
@@ -67,44 +68,30 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <ThemeProvider theme={theme}>
-          <NavContainer />
+        <AuthProvider >
+          <ThemeProvider theme={theme}>
+            <NavContainer />
+            <Routes>
+              <Route path="/" element={homepage} />
+              <Route path="/home" element={homepage} />
+              <Route path="/logout" element={homepage} />
 
-          {/* <Navbar
-            onCartClick={handleCartClick}
-            onWishlistClick={handleWishlistClick}
-            onProfialClick={handleProfialClick}
-          />
-          <CartModal open={isCartOpen} onClose={() => setCartOpen(false)} />
-          <WishlistModal
-            open={isWishlistOpen}
-            onClose={() => setWishlistOpen(false)}
-          /> */}
-          {/* <ProfialModal
-            open={isProfialOpen}
-            onClose={() => setProfialOpen(false)}
-          /> */}
+              <Route path="/addProduct" element={<AddUser />} />
+              <Route path="/product/:productId" element={<ProductPage />} />
+              {/* <Route path="/test3" element={<Test3 />} /> */}
+              <Route path="/products/:category" element={<FilteredProductPage />} />
+              <Route path="/" element={<FeaturedProducts name="Featured Products" />} />
+              <Route path="/login" element={<AuthPages />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/test" element={<Test />} />
 
-          <Routes>
-            <Route path="/" element={homepage} />
-            <Route path="/home" element={homepage} />
-            <Route path="/logout" element={homepage} />
+            </Routes>
 
-            <Route path="/addProduct" element={<AddUser />} />
-            <Route path="/product/:productId" element={<ProductPage />} />
-            {/* <Route path="/test3" element={<Test3 />} /> */}
-            <Route path="/products/:category" element={<FilteredProductPage />} />
-            <Route path="/" element={<FeaturedProducts name="Featured Products" />} />
-            <Route path="/login" element={<AuthPages />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/test" element={<Test />} />
+            <Footer />
 
-          </Routes>
 
-          <Footer />
-
-         
-        </ThemeProvider>
+          </ThemeProvider>
+        </AuthProvider >
       </BrowserRouter>
     </>
   );

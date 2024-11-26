@@ -222,6 +222,7 @@ export default function Test() {
     const fetchUsers = async () => {
       const response = await axios.get('http://localhost:4000/api/users');
       setData(response.data.data.users);
+      console.log(response.data.data.users);
     };
 
     fetchUsers();

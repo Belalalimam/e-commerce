@@ -143,7 +143,7 @@ const CategoryModal = ({ product, open, onClose }) => {
           <Grid item xs={12} md={6}>
             <CardMedia
               component="img"
-              src={`http://localhost:3000/uploads/${product.productImage}`}
+              src={`http://localhost:4000/uploads/${product.productImage}`}
               alt={product.productTitle}
               style={{ width: "100%", height: "auto", borderRadius: "8px" }}
             />
@@ -216,7 +216,7 @@ const FeaturedProducts = ({ name }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/Products");
+        const response = await axios.get("http://localhost:4000/Products");
         setProducts(response.data.data.products);
       } catch (error) {
         console.error("Failed to fetch products:", error);
@@ -364,7 +364,7 @@ const FeaturedProducts = ({ name }) => {
               <StyledCard onClick={() => setSelectedProduct(product)}>
                 <ProductImage
                   component="img"
-                  image={`http://localhost:3000/uploads/${product.productImage}`}
+                  image={`http://localhost:4000/uploads/${product.productImage}`}
                   title={product.productTitle}
                 />
                 <ProductActions className="product-actions">
