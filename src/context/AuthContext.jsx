@@ -1,20 +1,23 @@
 import { createContext, useContext, useState } from 'react';
+import axios from 'axios';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  
+
   const login = async (credentials) => {
-    // API call to login
-    const response = await loginAPI(credentials);
-    setUser(response.user);
-    localStorage.setItem('userToken', response.token);
+    const response = await axios.post('https://myserverbackend.up.railway.app/api/users/login', credentials);
+    setUser(response.data.user);
+    console.log("🚀 ~ login ~ ", response.data.data.user)
+    localStorage.setItem('token', response.data.data.user.token);
+    localStorage.setItem('_id', response.data.data.user._id);
+    return response.data;
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('userToken');
+    localStorage.removeItem('token');
   };
 
   return (

@@ -76,6 +76,8 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
   const [cartItems, setCartItems] = useState([]);
   const [favorites, setFavorites] = useState([]);
 
+  const getId = localStorage.getItem('_id')
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -143,11 +145,45 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
     toast.success("Product removed from cart!");
   };
 
-  const handleAddToFavorites = (e, product) => {
-    e.stopPropagation(); // Prevent opening modal when clicking favorite button
-    addToFavorites(product);
-    toast.success("Product added to favorites!");
-  };
+  const handleAddToFavorites = async (e, product) => {
+    e.stopPropagation();
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+        toast.error("Please login first");
+        return;
+    }
+
+    try {
+        const response = await axios.post(
+            `https://myserverbackend.up.railway.app/api/users/like/${getId}/${product._id}`,
+            {},
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        );
+
+        // Toggle favorite status locally
+        const isFavorite = favorites.some(fav => fav._id === product._id);
+        
+        if (!isFavorite) {
+            setFavorites(prev => [...prev, product]);
+            toast.success("Added to favorites!");
+        } else {
+            setFavorites(prev => prev.filter(fav => fav._id !== product._id));
+            toast.success("Removed from favorites!");
+        }
+
+    } catch (error) {
+        console.log('Error:', error.response?.data || error.message);
+        toast.error("Failed to update favorites");
+    }
+};
+
+
+
   
   const handleCardClick = (product) => {
     navigate(`/product/${product._id}`);
@@ -193,6 +229,7 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
             </Grid>
           </Grid>
         </DialogContent>
+        
         <DialogActions sx={{ p: 3 }}>
           <Button
             variant="outlined"
@@ -243,10 +280,11 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
         <Grid container spacing={4}>
           {filteredProducts.map((product) => (
             <Grid item key={product._id} xs={12} sm={6} md={3}>
-              <StyledCard onClick={() => setSelectedProduct(product)} >
+              <StyledCard onClick={() => setSelectedProduct(product)}>
                 <ProductImage
                   image={`https://myserverbackend.up.railway.app/uploads/${product.productImage}`}
                   title={product.productTitle}
+                  id='bell'
                 >
                   <ProductActions className="product-actions">
                     <IconButton
@@ -322,3 +360,7 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
   );
 };
 export default FeaturedProducts;
+
+
+
+

@@ -12,7 +12,7 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
+  const [cartCount, setCartCount] = useState(0);
 
 
   const categories = [
@@ -32,6 +32,19 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
     user ? ['Profile', 'Dashboard', 'Logout'] : ['Login', 'Register'],
     [user]
   );
+
+  const fetchCartCount = async () => {
+    try {
+      const response = await axios.get('https://myserverbackend.up.railway.app/api/cart', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      setCartCount(response.data.data.cart?.items.length || 0);
+    } catch (error) {
+      console.log('Error fetching cart:', error);
+    }
+  };
 
   const handleMenuItemClick = (setting) => {
     switch (setting.toLowerCase()) {
@@ -59,6 +72,13 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
     setAnchorElUser(null);
   };
 
+  useEffect(() => {
+    fetchCartCount();
+  }, []);
+
+  const handleCartClick = () => {
+    navigate('/cart');
+  };
 
 
 
@@ -132,8 +152,8 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
             </Link>
 
             <Link to="/" className="action-item">
-              <IconButton onClick={onCartClick}>
-                <Badge badgeContent={3} color="primary">
+              <IconButton color="inherit" onClick={handleCartClick}>
+                <Badge badgeContent={cartCount} color="secondary">
                   <FaShoppingCart />
                 </Badge>
               </IconButton>

@@ -19,22 +19,30 @@ const style = {
 const WishlistModal = ({ open, onClose }) => {
   const [wishlistItems, setWishlistItems] = useState([]);
 
-
+  const getId = localStorage.getItem('_id')
 
   const fetchWishlistItems = async () => {
     try {
-      const response = await axios.get('https://myserverbackend.up.railway.app//wishlist');
-      setWishlistItems(response.data.data.wishlist);
+        const token = localStorage.getItem('token');
+        const response = await axios.get(
+            `https://myserverbackend.up.railway.app/api/users/getuser/${getId}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        );
+        setWishlistItems(response.data.data.user.likedProducts);
     } catch (error) {
-      console.error('Error fetching wishlist:', error);
+        console.error('Error fetching wishlist:', error);
     }
-  };
+};
   useEffect(() => {
     fetchWishlistItems();
   }, []);
   const handleRemoveFromWishlist = async (productId) => {
     try {
-      await axios.delete(`https://myserverbackend.up.railway.app//products/${productId}`);
+      await axios.delete(`https://myserverbackend.up.railway.app/products/${productId}`);
       fetchWishlistItems();
     } catch (error) {
       console.error('Error removing from wishlist:', error);
@@ -62,8 +70,8 @@ const WishlistModal = ({ open, onClose }) => {
             }}
           >
             <Box sx={{ display: 'flex', gap: 2 }}>
-              <img 
-                src={`https://myserverbackend.up.railway.app//uploads/${item.productImage}`}
+              <img
+                src={`https://myserverbackend.up.railway.app/uploads/${item.productImage}`}
                 alt={item.productName}
                 style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 4 }}
               />
@@ -77,7 +85,7 @@ const WishlistModal = ({ open, onClose }) => {
                 </Typography>
               </Box>
             </Box>
-            <IconButton 
+            <IconButton
               onClick={() => handleRemoveFromWishlist(item._id)}
               color="error"
             >

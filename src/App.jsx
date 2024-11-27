@@ -1,4 +1,4 @@
-import Navbar from "./Components/1-Navbar/Navbar";
+// import Navbar from "./Components/1-Navbar/Navbar";
 import Swiper from "./Components/2-HomePage/SwiperC";
 import Categories from "./Components/3-Category/Categories";
 import FilterationProduct from "./Components/4-Filtertion/FilterationProduct";
@@ -10,16 +10,21 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Footer from "./Components/8-Footer/Footer";
 import { useState } from "react";
 import CartModal from "./Components/1-Navbar/CartModal";
-import WishlistModal from "./Components/1-Navbar/WishlistModal";
+// import WishlistModal from "./Components/1-Navbar/WishlistModal";
 import ProductPage from "./Components/5-Card/ProductPage";
 import AddUser from "./Components/1-Navbar/backend/AddUser";
 import FilteredProductPage from "./allProductFiltered";
-import AuthPages from "./authpages";
+// import AuthPages from "./authpages";
 import Test from './test'
 import Dashboard from "./dashboard";
-import ProfialModal from './Components/1-Navbar/ProfialModal'
+// import ProfialModal from './Components/1-Navbar/ProfialModal'
 import NavContainer from "./Components/1-Navbar/navContainer";
-import {AuthProvider} from './context/AuthContext'
+import { AuthProvider } from './context/AuthContext'
+import Login from './Components/Auth/Login/Login';
+import Register from './Components/Auth/Registe/register';
+import ProtectedRoute from './Components/Auth/protectedRoute';
+import Products from './pages/Products';
+import { LikeProvider } from './context/LikeContext';
 
 
 
@@ -36,20 +41,16 @@ function App() {
       },
     },
   });
-
   const [isCartOpen, setCartOpen] = useState(false);
   const [isWishlistOpen, setWishlistOpen] = useState(false);
   const [isProfialOpen, setProfialOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
   const handleCartClick = () => {
     setCartOpen(!isCartOpen);
   };
-
   const handleWishlistClick = () => {
     setWishlistOpen(!isWishlistOpen);
   };
-
   const handleProfialClick = () => {
     setProfialOpen(!isProfialOpen);
   };
@@ -74,14 +75,34 @@ function App() {
             <Routes>
               <Route path="/" element={homepage} />
               <Route path="/home" element={homepage} />
-              <Route path="/logout" element={homepage} />
+              <Route path="/cart" element={<CartModal />} />
 
               <Route path="/addProduct" element={<AddUser />} />
               <Route path="/product/:productId" element={<ProductPage />} />
               {/* <Route path="/test3" element={<Test3 />} /> */}
               <Route path="/products/:category" element={<FilteredProductPage />} />
               <Route path="/" element={<FeaturedProducts name="Featured Products" />} />
-              <Route path="/login" element={<AuthPages />} />
+
+
+
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+
+
+
+
+
+              <Route path="/products" element={<Products />} />
+
+
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/test" element={<Test />} />
 
