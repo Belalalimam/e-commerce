@@ -10,11 +10,11 @@ import axios from 'axios';
 
 const authService = {
   register: async (userData) => {
-    const response = await axios.post('http://localhost:4000/api/users/addUser', userData);
+    const response = await axios.post('https://myserverbackend.up.railway.app/api/users/addUser', userData);
     return response.data.data;
   },
   login: async (credentials) => {
-    const response = await axios.post('http://localhost:4000/api/users/login', credentials);
+    const response = await axios.post('https://myserverbackend.up.railway.app/api/users/login', credentials);
     return response.data;
   }
 };

@@ -31,7 +31,7 @@ import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import { ToastContainer, toast } from "react-toastify";
 
 
-const API_BASE_URL = "http://localhost:4000";
+const API_BASE_URL = "https://myserverbackend.up.railway.app";
 
 const CategoryPage = () => {
   const { productId } = useParams();

@@ -64,7 +64,7 @@ const AuthModal = ({ open, onClose }) => {
 
         try {
             const endpoint = tab === 0 ? '/login' : '/signup';
-            const response = await axios.post(`http://localhost:4000/${endpoint}`, formData);
+            const response = await axios.post(`https://myserverbackend.up.railway.app//${endpoint}`, formData);
 
             if (response.data.token) {
                 localStorage.setItem('userToken', response.data.token);

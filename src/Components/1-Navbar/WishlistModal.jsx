@@ -23,7 +23,7 @@ const WishlistModal = ({ open, onClose }) => {
 
   const fetchWishlistItems = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/wishlist');
+      const response = await axios.get('https://myserverbackend.up.railway.app//wishlist');
       setWishlistItems(response.data.data.wishlist);
     } catch (error) {
       console.error('Error fetching wishlist:', error);
@@ -34,7 +34,7 @@ const WishlistModal = ({ open, onClose }) => {
   }, []);
   const handleRemoveFromWishlist = async (productId) => {
     try {
-      await axios.delete(`http://localhost:4000/products/${productId}`);
+      await axios.delete(`https://myserverbackend.up.railway.app//products/${productId}`);
       fetchWishlistItems();
     } catch (error) {
       console.error('Error removing from wishlist:', error);
@@ -63,7 +63,7 @@ const WishlistModal = ({ open, onClose }) => {
           >
             <Box sx={{ display: 'flex', gap: 2 }}>
               <img 
-                src={`http://localhost:4000/uploads/${item.productImage}`}
+                src={`https://myserverbackend.up.railway.app//uploads/${item.productImage}`}
                 alt={item.productName}
                 style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 4 }}
               />

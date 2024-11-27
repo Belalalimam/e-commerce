@@ -135,7 +135,7 @@ const FilteredProductPage = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`http://localhost:4000/api/products`, {
+        const response = await axios.get(`https://myserverbackend.up.railway.app/api/products`, {
           params: {
             category,
             minPrice: filters.priceRange[0],

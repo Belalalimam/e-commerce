@@ -220,7 +220,7 @@ export default function Test() {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const response = await axios.get('http://localhost:4000/api/users');
+      const response = await axios.get('https://myserverbackend.up.railway.app/api/users');
       setData(response.data.data.users);
       console.log(response.data.data.users);
     };

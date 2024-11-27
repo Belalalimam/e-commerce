@@ -79,7 +79,7 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/Products");
+        const response = await axios.get("https://myserverbackend.up.railway.app/Products");
         const productsData = response.data.data.products;
         setProducts(productsData);
         const uniqueCategories = [
@@ -171,7 +171,7 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
             <Grid item xs={12} md={6}>
               <CardMedia
                 component="img"
-                src={`http://localhost:4000/uploads/${product.productImage}`}
+                src={`https://myserverbackend.up.railway.app/uploads/${product.productImage}`}
                 alt={product.productTitle}
                 style={{ width: "100%", height: "75%", borderRadius: "8px" }}
               />
@@ -245,7 +245,7 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
             <Grid item key={product._id} xs={12} sm={6} md={3}>
               <StyledCard onClick={() => setSelectedProduct(product)} >
                 <ProductImage
-                  image={`http://localhost:4000/uploads/${product.productImage}`}
+                  image={`https://myserverbackend.up.railway.app/uploads/${product.productImage}`}
                   title={product.productTitle}
                 >
                   <ProductActions className="product-actions">
