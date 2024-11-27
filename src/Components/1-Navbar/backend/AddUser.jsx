@@ -22,7 +22,7 @@ export default function AddUser() {
       });
 
       const res = await axios.post(
-        "http://localhost:3000/Products/addProduct",
+        "https://myserverbackend.up.railway.app/products/addProduct",
         formData,
         {
           headers: {
