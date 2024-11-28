@@ -33,6 +33,7 @@ const WishlistModal = ({ open, onClose }) => {
             }
         );
         setWishlistItems(response.data.data.user.likedProducts);
+        console.log(response.data.data.user.likedProducts);
     } catch (error) {
         console.error('Error fetching wishlist:', error);
     }

@@ -139,13 +139,13 @@ const CategoryPage = () => {
 
   const handleRemoveFromCart = (product) => {
     removeFromCart(product);
-    toast.success("Product removed from cart!");
+    toast.success('Product removed from cart!');
   };
 
   const handleAddToFavorites = (e, product) => {
     e.stopPropagation(); // Prevent opening modal when clicking favorite button
     addToFavorites(product);
-    toast.success("Product added to favorites!");
+    toast.success('Product added to favorites!');
   };
 
 
@@ -153,11 +153,26 @@ const CategoryPage = () => {
   const handleCardClick = (product) => {
     navigate(`/product/${product._id}`);
   };
-  
+
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
-      <ToastContainer />
+
+
+      <ToastContainer
+        position="top-left"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        transition:Bounce
+      />
+
       {product && (
         <>
           <Breadcrumbs sx={{ mb: 3 }}>

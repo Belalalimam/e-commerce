@@ -76,8 +76,6 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
   const [cartItems, setCartItems] = useState([]);
   const [favorites, setFavorites] = useState([]);
 
-  const getId = localStorage.getItem('_id')
-
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -95,101 +93,192 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
     fetchProducts();
   }, []);
 
-  const addToCart = (product) => {
-    const existingItem = cartItems.find((item) => item.id === product.id);
-    if (existingItem) {
-      const updatedCartItems = cartItems.map((item) =>
-        item.id === product.id
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      );
-      setCartItems(updatedCartItems);
-    } else {
-      setCartItems([...cartItems, { ...product, quantity: 1 }]);
-    }
-  };
-
-  const removeFromCart = (product) => {
-    const updatedCartItems = cartItems.filter((item) => item.id !== product.id);
-    setCartItems(updatedCartItems);
-  };
-
-  const addToFavorites = (product) => {
-    const existingFavorite = favorites.find((favorite) => favorite.id === product.id);
-    if (!existingFavorite) {
-      setFavorites([...favorites, product]);
-    }
-  };
-
-  const removeFromFavorites = (product) => {
-    const updatedFavorites = favorites.filter((favorite) => favorite.id !== product.id);
-    setFavorites(updatedFavorites);
-  };
-
-  const handleProductClick = (product) => {
-    setSelectedProduct(product);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedProduct(null);
-  };
-
   const handleAddToCart = (e, product) => {
-    e.stopPropagation(); // Prevent opening modal when clicking cart button
-    addToCart(product);
-    toast.success("Product added to cart!");
+    // e.stopPropagation(); // Prevent opening modal when clicking cart button
+    // addToCart(product);
+    // toast.success("Product added to cart!");
   };
 
-  const handleRemoveFromCart = (product) => {
-    removeFromCart(product);
-    toast.success("Product removed from cart!");
-  };
+  // const handleAddToFavorites = async (e, product) => {
+  //   e.stopPropagation();
+  //   const token = localStorage.getItem('token');
 
-  const handleAddToFavorites = async (e, product) => {
-    e.stopPropagation();
-    const token = localStorage.getItem('token');
-    
-    if (!token) {
-        toast.error("Please login first");
-        return;
-    }
+  //   if (!token) {
+  //     toast.error("Please login first");
+  //     return;
+  //   }
 
-    try {
-        const response = await axios.post(
-            `https://myserverbackend.up.railway.app/api/users/like/${getId}/${product._id}`,
-            {},
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }
-        );
+  //   try {
+  //     const response = await axios.post(
+  //       `https://myserverbackend.up.railway.app/api/users/like/${getId}/${product._id}`,
+  //       {},
+  //       {
+  //         headers: {
+  //           'Authorization': `Bearer ${token}`
+  //         }
+  //       }
+  //     );
+      
+  //     console.log("Server response:", response.data);
 
-        // Toggle favorite status locally
-        const isFavorite = favorites.some(fav => fav._id === product._id);
-        
-        if (!isFavorite) {
-            setFavorites(prev => [...prev, product]);
-            toast.success("Added to favorites!");
-        } else {
-            setFavorites(prev => prev.filter(fav => fav._id !== product._id));
-            toast.success("Removed from favorites!");
-        }
+  //     // Toggle favorite status locally
+  //     const isFavorite = favorites.some(fav => fav._id === product._id);
 
-    } catch (error) {
-        console.log('Error:', error.response?.data || error.message);
-        toast.error("Failed to update favorites");
-    }
+  //     if (!isFavorite) {
+  //       setFavorites(prev => [...prev, product]);
+  //       toast.success('🦄 Wow so easy!', {
+  //         position: "top-left",
+  //         autoClose: 5000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //         theme: "colored",
+  //         transition: Bounce,
+  //       });
+  //     } else {
+  //       setFavorites(prev => prev.filter(fav => fav._id !== product._id));
+  //       toast.success('Removed from favorites!', {
+  //         position: "top-left",
+  //         autoClose: 5000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //         theme: "colored",
+  //         transition: Bounce,
+  //       });
+  //     }
+
+  //   } catch (error) {
+  //     console.log('Error:', error.response?.data || error.message);
+  //     toast.error("Failed to update favorites");
+  //   }
+  // };
+
+
+//   const handleAddToFavorites = async (e, product) => {
+//     e.stopPropagation();
+//     const token = localStorage.getItem('token');
+//     const userId = localStorage.getItem('_id');
+
+//     if (!token) {
+//         toast.error("Please login first");
+//         return;
+//     }
+
+//     try {
+//         const response = await axios.post(
+//             `https://myserverbackend.up.railway.app/api/users/like/${userId}/${product._id}`,
+//             {},
+//             {
+//                 headers: {
+//                     'Authorization': `Bearer ${token}`,
+//                     'Content-Type': 'application/json'
+//                 }
+//             }
+//         );
+//         console.log("🚀 ~ handleAddToFavorites ~ response:", response)
+
+//         // Toggle favorite status locally
+//         const isFavorite = favorites.some(fav => fav._id === product._id);
+
+//         if (!isFavorite) {
+//             setFavorites(prev => [...prev, product]);
+//             toast.success('🦄 Product added to favorites!', {
+//                 position: "top-left",
+//                 autoClose: 3000,
+//                 hideProgressBar: false,
+//                 closeOnClick: true,
+//                 pauseOnHover: true,
+//                 draggable: true,
+//                 theme: "colored",
+//                 transition: Bounce,
+//             });
+//         } else {
+//             setFavorites(prev => prev.filter(fav => fav._id !== product._id));
+//             toast.success('Removed from favorites!', {
+//                 position: "top-left",
+//                 autoClose: 3000,
+//                 hideProgressBar: false,
+//                 closeOnClick: true,
+//                 pauseOnHover: true,
+//                 draggable: true,
+//                 theme: "colored",
+//                 transition: Bounce,
+//             });
+//         }
+
+//     } catch (error) {
+//         console.log('Error:', error.response?.data || error.message);
+//         toast.error("Failed to update favorites");
+//     }
+// };
+
+const handleAddToFavorites = async (e, product) => {
+  e.stopPropagation();
+  const token = localStorage.getItem('token');
+  const userId = localStorage.getItem('_id');
+
+  if (!token) {
+      toast.error("Please login first");
+      return;
+  }
+
+  try {
+      // First, get the current user data to check if product is already liked
+      const checkUser = await axios.get(
+          `https://myserverbackend.up.railway.app/api/users/getUser/${userId}`,
+          {
+              headers: {
+                  'Authorization': `Bearer ${token}`
+              }
+          }
+      );
+
+      // Then make the like/unlike request
+      const response = await axios.post(
+          `https://myserverbackend.up.railway.app/api/users/like/${userId}/${product._id}`,
+          {},
+          {
+              headers: {
+                  'Authorization': `Bearer ${token}`
+              }
+          }
+      );
+      console.log("🚀 ~ handleAddToFavorites ~ response:", response)
+
+      // Update UI based on server response
+      if (response.data.success) {
+          setFavorites(response.data.data.likedProducts);
+          toast.success('Updated favorites successfully!', {
+              position: "top-left",
+              autoClose: 3000,
+              theme: "colored",
+              transition: Bounce,
+          });
+      }
+
+  } catch (error) {
+      toast.error("Failed to update favorites");
+      console.log('Error:', error.response?.data || error.message);
+  }
 };
 
 
 
-  
+
+
+
+
+
+
+
   const handleCardClick = (product) => {
     navigate(`/product/${product._id}`);
   };
-
-
   const CategoryModal = ({ product, open, onClose }) => {
     if (!product) return null;
     return (
@@ -229,7 +318,7 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
             </Grid>
           </Grid>
         </DialogContent>
-        
+
         <DialogActions sx={{ p: 3 }}>
           <Button
             variant="outlined"
@@ -255,9 +344,27 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
       ? products
       : products.filter((product) => product.productCategory === category);
 
+
+
   return (
     <Box sx={{ py: 8, backgroundColor: "#fff" }}>
-      <ToastContainer />
+
+
+      <ToastContainer
+        position="top-left"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        transition:Bounce
+      />
+
+
       <Container maxWidth="xl">
         <Typography
           variant="h3"
@@ -356,7 +463,7 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
         open={Boolean(selectedProduct)}
         onClose={() => setSelectedProduct(null)}
       />
-    </Box>
+    </Box >
   );
 };
 export default FeaturedProducts;
@@ -364,3 +471,45 @@ export default FeaturedProducts;
 
 
 
+
+// const addToFavorites = (product) => {
+//   const existingFavorite = favorites.find((favorite) => favorite.id === product.id);
+//   if (!existingFavorite) {
+//     setFavorites([...favorites, product]);
+//   }
+// };
+// const addToCart = (product) => {
+//     // const existingItem = cartItems.find((item) => item.id === product.id);
+//     // if (existingItem) {
+//     //   const updatedCartItems = cartItems.map((item) =>
+//     //     item.id === product.id
+//     //       ? { ...item, quantity: item.quantity + 1 }
+//     //       : item
+//     //   );
+//     //   setCartItems(updatedCartItems);
+//     // } else {
+//     //   setCartItems([...cartItems, { ...product, quantity: 1 }]);
+//     // }
+//   };
+
+//   const removeFromCart = (product) => {
+//     const updatedCartItems = cartItems.filter((item) => item.id !== product.id);
+//     setCartItems(updatedCartItems);
+//   };
+// const removeFromFavorites = (product) => {
+//   const updatedFavorites = favorites.filter((favorite) => favorite.id !== product.id);
+//   setFavorites(updatedFavorites);
+// };
+
+// const handleProductClick = (product) => {
+//   setSelectedProduct(product);
+// };
+
+// const handleCloseModal = () => {
+//   setSelectedProduct(null);
+// };
+
+// const handleRemoveFromCart = (product) => {
+//   removeFromCart(product);
+//   toast.success("Product removed from cart!");
+// };

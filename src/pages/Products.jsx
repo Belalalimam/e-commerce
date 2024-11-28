@@ -1,15 +1,16 @@
 import React from 'react';
 import { Grid, Container } from '@mui/material';
 import ProductCard from './ProductCard';
+import axios from 'axios';
 
 const Products = () => {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = React.useState([]);
 
   // Fetch products from your API
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchProducts = async () => {
-      const response = await axios.get('https://myserverbackend.up.railway.app/api/products');
-      setProducts(response.data);
+      const response = await axios.get('https://myserverbackend.up.railway.app/products');
+      setProducts(response.data.data.products);
     };
     fetchProducts();
   }, []);

@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Paper, Typography, Box, Link } from '@mui/material';
+import { TextField, Button, Paper, Typography, Box } from '@mui/material';
 import { useAuth } from '../../../context/AuthContext';
+import { Link } from 'react-router-dom'
 
 const Register = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    // confirmPassword: ''
   });
   const [errors, setErrors] = useState({});
   const { register } = useAuth();
@@ -19,9 +20,9 @@ const Register = () => {
     if (!formData.name) newErrors.name = 'Name is required';
     if (!formData.email) newErrors.email = 'Email is required';
     if (!formData.password) newErrors.password = 'Password is required';
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
+    // if (formData.password !== formData.confirmPassword) {
+    //   newErrors.confirmPassword = 'Passwords do not match';
+    // }
     return newErrors;
   };
 
@@ -93,7 +94,7 @@ const Register = () => {
             error={!!errors.password}
             helperText={errors.password}
           />
-          <TextField
+          {/* <TextField
             fullWidth
             label="Confirm Password"
             name="confirmPassword"
@@ -103,7 +104,7 @@ const Register = () => {
             onChange={handleChange}
             error={!!errors.confirmPassword}
             helperText={errors.confirmPassword}
-          />
+          /> */}
           <Button
             type="submit"
             fullWidth
@@ -119,7 +120,7 @@ const Register = () => {
           )}
           <Typography align="center">
             Already have an account?{' '}
-            <Link href="/login" underline="hover">
+            <Link to={"/login"} >
               Sign In
             </Link>
           </Typography>

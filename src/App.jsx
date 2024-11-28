@@ -23,8 +23,7 @@ import { AuthProvider } from './context/AuthContext'
 import Login from './Components/Auth/Login/Login';
 import Register from './Components/Auth/Registe/register';
 import ProtectedRoute from './Components/Auth/protectedRoute';
-import Products from './pages/Products';
-import { LikeProvider } from './context/LikeContext';
+// import  Test3 from "./test3";
 
 
 
@@ -79,33 +78,15 @@ function App() {
 
               <Route path="/addProduct" element={<AddUser />} />
               <Route path="/product/:productId" element={<ProductPage />} />
-              {/* <Route path="/test3" element={<Test3 />} /> */}
               <Route path="/products/:category" element={<FilteredProductPage />} />
               <Route path="/" element={<FeaturedProducts name="Featured Products" />} />
 
-
-
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>}/>
 
 
-
-
-
-              <Route path="/products" element={<Products />} />
-
-
-              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/test" element={<Test />} />
-
             </Routes>
 
             <Footer />

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Paper, Typography, Box, Link } from '@mui/material';
+import { TextField, Button, Paper, Typography, Box } from '@mui/material';
 import { useAuth } from '../../../context/AuthContext';
-import axios from 'axios';
+import { Link } from 'react-router-dom'
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -81,7 +81,7 @@ const Login = () => {
           )}
           <Typography align="center">
             Don't have an account?{' '}
-            <Link href="/register" underline="hover">
+            <Link to={"/register"}>
               Sign Up
             </Link>
           </Typography>
