@@ -77,8 +77,9 @@ function App() {
               <Route path="/cart" element={<CartModal />} />
 
               <Route path="/addProduct" element={<AddUser />} />
-              <Route path="/product/:productId" element={<ProductPage />} />
+              <Route path="/getProduct/:productId" element={<ProductPage />} />
               <Route path="/products/:category" element={<FilteredProductPage />} />
+              
               <Route path="/" element={<FeaturedProducts name="Featured Products" />} />
 
               <Route path="/login" element={<Login />} />

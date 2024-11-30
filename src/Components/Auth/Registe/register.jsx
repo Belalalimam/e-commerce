@@ -39,7 +39,7 @@ const Register = () => {
     if (Object.keys(validationErrors).length === 0) {
       try {
         await register(formData);
-        navigate('/');
+        navigate('/login');
       } catch (error) {
         setErrors({ submit: error.message });
       }

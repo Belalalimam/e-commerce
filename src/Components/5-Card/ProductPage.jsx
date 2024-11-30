@@ -36,13 +36,14 @@ const API_BASE_URL = "https://myserverbackend.up.railway.app";
 const CategoryPage = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
-  const [product, setProduct] = useState(null);
+  const [product, setProduct] = useState({});
   const [similarProducts, setSimilarProducts] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [favorites, setFavorites] = useState([]);
+
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -52,27 +53,29 @@ const CategoryPage = () => {
           axios.get(`${API_BASE_URL}/Products`),
         ]);
 
-        const currentProduct = productResponse.data.data.product;
-        setProduct(currentProduct);
+        // Store the response data directly
+        setProduct(productResponse.data);
 
-        const similar = allProductsResponse.data.data.products
+        // Filter similar products from the correct data path
+        const similar = allProductsResponse.data
           .filter(
             (p) =>
-              p.productCategory === currentProduct.productCategory &&
+              p.productCategory === productResponse.data.productCategory &&
               p._id !== productId
           )
           .slice(0, 6);
         setSimilarProducts(similar);
       } catch (error) {
         setError(error.message);
-        console.error("Error fetching product data:", error);
       } finally {
         setLoading(false);
       }
     };
 
+
     fetchProductData();
   }, [productId]);
+
 
   if (loading) {
     return (
@@ -179,7 +182,7 @@ const CategoryPage = () => {
             <Link onClick={() => navigate('/')} underline="hover">
               Home
             </Link>
-            <Link onClick={() => navigate(`/products/${product.productCategory}`)} underline="hover">
+            <Link onClick={() => navigate(`/${product.productCategory}`)} underline="hover">
               {product.productCategory}
             </Link>
             <Typography color="text.primary">{product.productName}</Typography>
@@ -190,7 +193,7 @@ const CategoryPage = () => {
               <Paper elevation={0}>
                 <Box
                   component="img"
-                  src={`${API_BASE_URL}/uploads/${product.productImage}`}
+                  src={"https://res.cloudinary.com/dqgv2opxi/image/upload/v1732903373/dcst8vyre6t5462j5wvu.png"}
                   alt={product.productName}
                   sx={{
                     width: "100%",

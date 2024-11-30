@@ -80,7 +80,7 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
     const fetchProducts = async () => {
       try {
         const response = await axios.get("https://myserverbackend.up.railway.app/Products");
-        const productsData = response.data.data.products;
+        const productsData = response.data;
         setProducts(productsData);
         const uniqueCategories = [
           ...new Set(productsData.map((product) => product.productCategory)),
@@ -92,6 +92,8 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
     };
     fetchProducts();
   }, []);
+        
+        
 
   const handleAddToCart = (e, product) => {
     // e.stopPropagation(); // Prevent opening modal when clicking cart button
@@ -220,7 +222,6 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
 const handleAddToFavorites = async (e, product) => {
   e.stopPropagation();
   const token = localStorage.getItem('token');
-  const userId = localStorage.getItem('_id');
 
   if (!token) {
       toast.error("Please login first");
@@ -228,19 +229,8 @@ const handleAddToFavorites = async (e, product) => {
   }
 
   try {
-      // First, get the current user data to check if product is already liked
-      const checkUser = await axios.get(
-          `https://myserverbackend.up.railway.app/api/users/getUser/${userId}`,
-          {
-              headers: {
-                  'Authorization': `Bearer ${token}`
-              }
-          }
-      );
-
-      // Then make the like/unlike request
-      const response = await axios.post(
-          `https://myserverbackend.up.railway.app/api/users/like/${userId}/${product._id}`,
+      const response = await axios.put(
+          `https://myserverbackend.up.railway.app/products/like/${product._id}`,
           {},
           {
               headers: {
@@ -267,18 +257,11 @@ const handleAddToFavorites = async (e, product) => {
   }
 };
 
-
-
-
-
-
-
-
-
-
   const handleCardClick = (product) => {
-    navigate(`/product/${product._id}`);
+    // console.log("🚀 ~ handleCardClick ~ product:", product._id)
+    navigate(`/getProduct/${product._id}`);
   };
+  
   const CategoryModal = ({ product, open, onClose }) => {
     if (!product) return null;
     return (

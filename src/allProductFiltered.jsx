@@ -146,6 +146,7 @@ const FilteredProductPage = () => {
             sortBy: filters.sortBy
           }
         });
+        console.log("🚀 ~ fetchProducts ~ response:", response)
         setProducts(response.data.data.products);
       } catch (error) {
         console.error('Error fetching products:', error);

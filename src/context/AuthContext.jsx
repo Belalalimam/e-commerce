@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
     
     if (token && userId) {
       // Fetch user data using the stored token
-      axios.get(`https://myserverbackend.up.railway.app/api/users/getUser/${userId}`, {
+      axios.get(`https://myserverbackend.up.railway.app/api/auth/getUser/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -24,25 +24,24 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (credentials) => {
-    const response = await axios.post('https://myserverbackend.up.railway.app/api/users/login', credentials);
-    setUser(response.data.data.user);
-    console.log("🚀 ~ login ~ ", response.data.data.user)
-    localStorage.setItem('token', response.data.data.user.token);
-    localStorage.setItem('_id', response.data.data.user._id);
-    return response.data.data.user;
-  };
+    const response = await axios.post('https://myserverbackend.up.railway.app/api/auth/login', credentials);
+    setUser(response.data);
+    console.log("🚀 ~ login ~ ", response.data.token)
+    localStorage.setItem('token', response.data.token);
+    localStorage.setItem('_id', response.data._id);
+    return response.data;
+  };  
 
   const register = async (userData) => {
-    const response = await axios.post('https://myserverbackend.up.railway.app/api/users/addUser', userData);
-    setUser(response.data.data.newUser);
-    localStorage.setItem('token', response.data.data.newUser.token);
-    localStorage.setItem('_id', response.data.data.newUser._id);
-    console.log("🚀 ~ login ~ ", response.data.data.newUser)
-    return response.data.data.newUser;
+    const response = await axios.post('https://myserverbackend.up.railway.app/api/auth/register', userData);
+    setUser(response.data);
+    console.log(response.data);
+    // localStorage.setItem('_id', response.data.data.user._id);
+    return response.data;
   };
 
   const logout = () => {
-    setUser(null);
+    setUser(null);  
     localStorage.removeItem('token');
     localStorage.removeItem('_id');
   };
