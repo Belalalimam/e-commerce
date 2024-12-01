@@ -143,7 +143,7 @@ const CategoryModal = ({ product, open, onClose }) => {
           <Grid item xs={12} md={6}>
             <CardMedia
               component="img"
-              src={`https://myserverbackend.up.railway.app/uploads/${product.productImage}`}
+              src={product.productImage.url}
               alt={product.productTitle}
               style={{ width: "100%", height: "auto", borderRadius: "8px" }}
             />
@@ -364,7 +364,7 @@ const FeaturedProducts = ({ name }) => {
               <StyledCard onClick={() => setSelectedProduct(product)}>
                 <ProductImage
                   component="img"
-                  image={`https://myserverbackend.up.railway.app/uploads/${product.productImage}`}
+                  image={product.productImage.url}
                   title={product.productTitle}
                 />
                 <ProductActions className="product-actions">

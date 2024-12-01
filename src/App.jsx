@@ -10,7 +10,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Footer from "./Components/8-Footer/Footer";
 import { useState } from "react";
 import CartModal from "./Components/1-Navbar/CartModal";
-// import WishlistModal from "./Components/1-Navbar/WishlistModal";
+import WishlistModal from "./Components/1-Navbar/WishlistModal";
 import ProductPage from "./Components/5-Card/ProductPage";
 import AddUser from "./Components/1-Navbar/backend/AddUser";
 import FilteredProductPage from "./allProductFiltered";
@@ -74,7 +74,7 @@ function App() {
             <Routes>
               <Route path="/" element={homepage} />
               <Route path="/home" element={homepage} />
-              <Route path="/cart" element={<CartModal />} />
+              <Route path="/WishlistModal" element={<WishlistModal />} />
 
               <Route path="/addProduct" element={<AddUser />} />
               <Route path="/getProduct/:productId" element={<ProductPage />} />

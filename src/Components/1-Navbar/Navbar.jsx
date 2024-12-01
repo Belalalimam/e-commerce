@@ -142,7 +142,7 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
           </div>
 
           <div className="user-actions">
-            <Link to="/" className="action-item">
+            <Link to="/WishlistModal" className="action-item">
               <IconButton onClick={onWishlistClick}>
                 <Badge badgeContent={wishlistItems} color="primary">
                   <FaHeart />

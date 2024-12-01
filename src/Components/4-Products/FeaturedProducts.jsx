@@ -279,7 +279,7 @@ const handleAddToFavorites = async (e, product) => {
             <Grid item xs={12} md={6}>
               <CardMedia
                 component="img"
-                src={`https://myserverbackend.up.railway.app/uploads/${product.productImage}`}
+                src={product.productImage.url}
                 alt={product.productTitle}
                 style={{ width: "100%", height: "75%", borderRadius: "8px" }}
               />
@@ -372,7 +372,7 @@ const handleAddToFavorites = async (e, product) => {
             <Grid item key={product._id} xs={12} sm={6} md={3}>
               <StyledCard onClick={() => setSelectedProduct(product)}>
                 <ProductImage
-                  image={`https://myserverbackend.up.railway.app/uploads/${product.productImage}`}
+                  image={product.productImage.url}
                   title={product.productTitle}
                   id='bell'
                 >
