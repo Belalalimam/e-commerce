@@ -4,7 +4,11 @@ import { FaUser, FaSearch, FaMapMarkerAlt, FaHeart, FaShoppingCart, FaBars } fro
 import { IconButton, Badge, Box, Tooltip, Avatar, Menu, MenuItem, Typography } from "@mui/material";
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import './Navbar.css';
+import { useSelector, useDispatch } from "react-redux";
+import axios from 'axios';
+  import { logoutUser } from "../../redux/apiCalls/authApiCalls";
 
 
 const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
@@ -13,6 +17,8 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [cartCount, setCartCount] = useState(0);
+const dispatch = useDispatch();
+
 
 
   const categories = [
@@ -26,43 +32,13 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
     'Toys',
     'addUser'
   ];
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  const settings = useMemo(() =>
-    user ? ['Profile', 'Dashboard', 'Logout'] : ['Login', 'Register'],
-    [user]
-  );
+  
 
-  const fetchCartCount = async () => {
-    try {
-      const response = await axios.get('https://myserverbackend.up.railway.app/api/cart', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      setCartCount(response.data.data.cart?.items.length || 0);
-    } catch (error) {
-      console.log('Error fetching cart:', error);
-    }
-  };
 
-  const handleMenuItemClick = (setting) => {
-    switch (setting.toLowerCase()) {
-      case 'logout':
-        logout();
-        navigate('/');
-        break;
-      case 'login':
-        navigate('/login');
-        break;
-      case 'register':
-        navigate('/addUser');
-        break;
-      default:
-        navigate(`/${setting.toLowerCase()}`);
-    }
-    handleCloseUserMenu();
-  };
+
+
+
+  console.log("🚀 ~ handleMenuItemClick ~ setting:", user)
 
 
   const handleOpenUserMenu = (event) => {
@@ -72,9 +48,9 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
     setAnchorElUser(null);
   };
 
-  useEffect(() => {
-    fetchCartCount();
-  }, []);
+  // useEffect(() => {
+  //   fetchCartCount();
+  // }, []);
 
   const handleCartClick = () => {
     navigate('/cart');
@@ -167,6 +143,7 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
                 </Badge>
             </IconButton> */}
               <Box sx={{ flexGrow: 0 }}>
+                <ToastContainer />
                 <Tooltip title={user ? 'Account Settings' : 'Login'}>
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                     {user ? (
@@ -196,15 +173,24 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
                   onClose={handleCloseUserMenu}
                 >
                   {settings.map((setting) => (
-                    <Link to={setting} className="action-item" key={setting}>
-                      <MenuItem
-                        key={setting}
-                        onClick={() => handleMenuItemClick(setting)}
-                      >
-                        <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                      </MenuItem>
-                    </Link>
+                    <MenuItem
+                      key={setting}
+                      onClick={handleCloseUserMenu}
+                    >
+                      {/* <Link
+                        to={
+                          setting.toLowerCase() === 'profile'
+                            ? `/profile/${user._id}`
+                            : `/${setting.toLowerCase()}`
+                        }
+                        style={{ textDecoration: 'none', color: 'inherit' }}
+                      > */}
+                        <Typography textAlign="center">{setting}</Typography>
+                      {/* </Link> */}
+                    </MenuItem>
                   ))}
+
+
                 </Menu>
               </Box>
 

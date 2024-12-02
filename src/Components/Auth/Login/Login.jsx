@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Paper, Typography, Box } from '@mui/material';
-import { useAuth } from '../../../context/AuthContext';
 import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux';
 import { loginUser } from '../../../redux/apiCalls/authApiCalls'

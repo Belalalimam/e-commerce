@@ -16,7 +16,7 @@ import AddUser from "./Components/1-Navbar/backend/AddUser";
 import FilteredProductPage from "./allProductFiltered";
 // import AuthPages from "./authpages";
 import Test from './test'
-import Dashboard from "./dashboard";
+import Profial from "./Profial";
 // import ProfialModal from './Components/1-Navbar/ProfialModal'
 import NavContainer from "./Components/1-Navbar/navContainer";
 import { AuthProvider } from './context/AuthContext'
@@ -79,12 +79,14 @@ function App() {
               <Route path="/addProduct" element={<AddUser />} />
               <Route path="/getProduct/:productId" element={<ProductPage />} />
               <Route path="/products/:category" element={<FilteredProductPage />} />
+
               
               <Route path="/" element={<FeaturedProducts name="Featured Products" />} />
 
+              <Route path="/profile/:id" element={<Profial/>} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>}/>
+              {/* <Route path="/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>}/> */}
 
 
               <Route path="/test" element={<Test />} />
