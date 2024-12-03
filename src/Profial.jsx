@@ -1,178 +1,3 @@
-// import React, { useState, useEffect } from 'react';
-// import {
-//   Box,
-//   Container,
-//   Grid,
-//   Paper,
-//   Typography,
-//   Card,
-//   CardContent,
-//   IconButton,
-//   Avatar,
-//   List,
-//   ListItem,
-//   ListItemText,
-//   ListItemAvatar,
-//   Divider,
-//   CircularProgress,
-//   Badge,
-//   useTheme
-// } from '@mui/material';
-// import {
-//   TrendingUp,
-//   People,
-//   AttachMoney,
-//   Notifications,
-//   ShoppingCart,
-//   Person,
-//   Timeline,
-//   MoreVert
-// } from '@mui/icons-material';
-// import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-// import axios from 'axios';
-
-// const Dashboard = () => {
-//   const theme = useTheme();
-//   const [userData, setUserData] = useState(null);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const fetchDashboardData = async () => {
-//       try {
-//         const response = await axios.get('http://localhost:4000/api/dashboard', {
-//           headers: { Authorization: `Bearer ${localStorage.getItem('userToken')}` }
-//         });
-//         setUserData(response.data);
-//       } catch (error) {
-//         console.error('Error fetching dashboard data:', error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchDashboardData();
-//   }, []);
-
-//   const statsCards = [
-//     { title: 'Total Users', value: '2,345', icon: <People />, color: '#3f51b5' },
-//     { title: 'Revenue', value: '$23,456', icon: <AttachMoney />, color: '#2196f3' },
-//     { title: 'Orders', value: '456', icon: <ShoppingCart />, color: '#4caf50' },
-//     { title: 'Growth', value: '+15%', icon: <TrendingUp />, color: '#f44336' }
-//   ];
-
-//   const recentActivities = [
-//     { id: 1, user: 'John Doe', action: 'placed an order', time: '5 minutes ago' },
-//     { id: 2, user: 'Jane Smith', action: 'updated profile', time: '10 minutes ago' },
-//     { id: 3, user: 'Mike Johnson', action: 'registered', time: '15 minutes ago' }
-//   ];
-
-//   const chartData = [
-//     { name: 'Jan', value: 400 },
-//     { name: 'Feb', value: 300 },
-//     { name: 'Mar', value: 600 },
-//     { name: 'Apr', value: 800 },
-//     { name: 'May', value: 500 },
-//     { name: 'Jun', value: 900 }
-//   ];
-
-//   if (loading) {
-//     return (
-//       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-//         <CircularProgress />
-//       </Box>
-//     );
-//   }
-
-//   return (
-//     <Box sx={{ backgroundColor: '#f5f5f5', minHeight: '100vh', py: 3 }}>
-//       <Container maxWidth="xl">
-//         <Grid container spacing={3}>
-//           {/* Stats Cards */}
-//           {statsCards.map((card, index) => (
-//             <Grid item xs={12} sm={6} md={3} key={index}>
-//               <Card sx={{ height: '100%' }}>
-//                 <CardContent>
-//                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-//                     <Avatar sx={{ backgroundColor: card.color }}>{card.icon}</Avatar>
-//                     <IconButton size="small">
-//                       <MoreVert />
-//                     </IconButton>
-//                   </Box>
-//                   <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
-//                     {card.value}
-//                   </Typography>
-//                   <Typography variant="subtitle2" color="textSecondary">
-//                     {card.title}
-//                   </Typography>
-//                 </CardContent>
-//               </Card>
-//             </Grid>
-//           ))}
-
-//           {/* Chart */}
-//           <Grid item xs={12} md={8}>
-//             <Paper sx={{ p: 3, height: '400px' }}>
-//               <Typography variant="h6" gutterBottom>
-//                 Revenue Overview
-//               </Typography>
-//               <ResponsiveContainer width="100%" height="90%">
-//                 <LineChart data={chartData}>
-//                   <CartesianGrid strokeDasharray="3 3" />
-//                   <XAxis dataKey="name" />
-//                   <YAxis />
-//                   <Tooltip />
-//                   <Line type="monotone" dataKey="value" stroke={theme.palette.primary.main} />
-//                 </LineChart>
-//               </ResponsiveContainer>
-//             </Paper>
-//           </Grid>
-
-//           {/* Recent Activities */}
-//           <Grid item xs={12} md={4}>
-//             <Paper sx={{ p: 3, height: '400px' }}>
-//               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-//                 <Typography variant="h6">Recent Activities</Typography>
-//                 <Badge badgeContent={3} color="primary">
-//                   <Notifications />
-//                 </Badge>
-//               </Box>
-//               <List>
-//                 {recentActivities.map((activity) => (
-//                   <React.Fragment key={activity.id}>
-//                     <ListItem>
-//                       <ListItemAvatar>
-//                         <Avatar>
-//                           <Person />
-//                         </Avatar>
-//                       </ListItemAvatar>
-//                       <ListItemText
-//                         primary={activity.user}
-//                         secondary={
-//                           <>
-//                             <Typography component="span" variant="body2">
-//                               {activity.action}
-//                             </Typography>
-//                             {` — ${activity.time}`}
-//                           </>
-//                         }
-//                       />
-//                     </ListItem>
-//                     <Divider variant="inset" component="li" />
-//                   </React.Fragment>
-//                 ))}
-//               </List>
-//             </Paper>
-//           </Grid>
-//         </Grid>
-//       </Container>
-//     </Box>
-//   );
-// };
-
-// export default Dashboard;
-
-
-
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -200,29 +25,24 @@ import {
   Timeline
 } from '@mui/icons-material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import axios from 'axios';
+import { useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from "react-redux";
+import { getUserProfile } from './redux/apiCalls/profileApiCalls'
 
 const UserDashboard = () => {
   const theme = useTheme();
-  const [userData, setUserData] = useState(null);
+  const { id } = useParams();
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const { profile } = useSelector((state) => state.profile);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get('http://localhost:4000/user', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('userToken')}` }
-        });
-        setUserData(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        setLoading(false);
-      }
-    };
+    setLoading(false);
+    dispatch(getUserProfile(id))
+  }, [id]);
 
-    fetchUserData();
-  }, []);
+
+
 
   const userStats = [
     { title: 'My Orders', value: '12', icon: <ShoppingBag />, color: '#FF6B6B' },
@@ -289,7 +109,7 @@ const UserDashboard = () => {
           fontWeight: 'bold',
           textAlign: 'center'
         }}>
-          Welcome back, {userData?.name || 'User'}
+          Welcome back, {profile?.name || 'User'}
         </Typography>
 
         <Grid container spacing={3}>

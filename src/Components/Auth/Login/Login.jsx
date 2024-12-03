@@ -5,12 +5,7 @@ import { useDispatch } from 'react-redux';
 import { loginUser } from '../../../redux/apiCalls/authApiCalls'
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-  // const [errors, setErrors] = useState({});
-
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
@@ -23,7 +18,6 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(loginUser(formData));
-
   };
 
   return (
@@ -48,8 +42,6 @@ const Login = () => {
             margin="normal"
             value={formData.email}
             onChange={handleChange}
-            // error={!!errors.email}
-            // helperText={errors.email}
           />
           <TextField
             fullWidth
@@ -59,8 +51,6 @@ const Login = () => {
             margin="normal"
             value={formData.password}
             onChange={handleChange}
-            // error={!!errors.password}
-            // helperText={errors.password}
           />
           <Button
             type="submit"
@@ -70,13 +60,8 @@ const Login = () => {
           >
             Sign In
           </Button>
-          {/* {errors.submit && (
-            <Typography color="error" align="center">
-              {errors.submit}
-            </Typography>
-          )} */}
           <Typography align="center">
-            Don't have an account?{' '}
+            Don't have an account?
             <Link to={"/register"}>
               Sign Up
             </Link>

@@ -2,13 +2,13 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUser, FaSearch, FaMapMarkerAlt, FaHeart, FaShoppingCart, FaBars } from 'react-icons/fa';
 import { IconButton, Badge, Box, Tooltip, Avatar, Menu, MenuItem, Typography } from "@mui/material";
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import './Navbar.css';
 import { useSelector, useDispatch } from "react-redux";
 import axios from 'axios';
-  import { logoutUser } from "../../redux/apiCalls/authApiCalls";
+import { logoutUser } from "../../redux/apiCalls/authApiCalls";
 
 
 const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
@@ -17,7 +17,6 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [cartCount, setCartCount] = useState(0);
-const dispatch = useDispatch();
 
 
 
@@ -32,13 +31,40 @@ const dispatch = useDispatch();
     'Toys',
     'addUser'
   ];
-  
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
 
+  const settings = useMemo(() => 
+    user ? ['Profile', 'Logout'] : ['Login', 'Register'], 
+    [user]
+  );
 
+  const handleMenuItemClick = (setting) => {
+    switch (setting.toLowerCase()) {
+      case 'profile':
+        if (user?._id) {
+          navigate(`/profile/${user._id}`);
+        }
+        break;
 
+      case 'logout':
+        dispatch(logoutUser());
+        navigate('/Home');
+        break;
 
-  console.log("🚀 ~ handleMenuItemClick ~ setting:", user)
+      case 'login':
+        navigate('/login');
+        break;
+
+      case 'register':
+        navigate('/register');
+        break;
+    }
+    handleCloseUserMenu();
+  };
+
 
 
   const handleOpenUserMenu = (event) => {
@@ -48,9 +74,6 @@ const dispatch = useDispatch();
     setAnchorElUser(null);
   };
 
-  // useEffect(() => {
-  //   fetchCartCount();
-  // }, []);
 
   const handleCartClick = () => {
     navigate('/cart');
@@ -118,7 +141,7 @@ const dispatch = useDispatch();
           </div>
 
           <div className="user-actions">
-            <Link to="/" className="action-item">
+            <Link to="#" className="action-item">
               <IconButton onClick={onWishlistClick}>
                 <Badge badgeContent={wishlistItems} color="primary">
                   <FaHeart />
@@ -143,7 +166,7 @@ const dispatch = useDispatch();
                 </Badge>
             </IconButton> */}
               <Box sx={{ flexGrow: 0 }}>
-                <ToastContainer />
+                
                 <Tooltip title={user ? 'Account Settings' : 'Login'}>
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                     {user ? (
@@ -173,29 +196,33 @@ const dispatch = useDispatch();
                   onClose={handleCloseUserMenu}
                 >
                   {settings.map((setting) => (
-                    <MenuItem
-                      key={setting}
-                      onClick={handleCloseUserMenu}
-                    >
-                      {/* <Link
+                    <MenuItem key={setting}>
+                      <Link
                         to={
                           setting.toLowerCase() === 'profile'
                             ? `/profile/${user._id}`
                             : `/${setting.toLowerCase()}`
                         }
                         style={{ textDecoration: 'none', color: 'inherit' }}
-                      > */}
+                        onClick={() => {
+                          if (setting.toLowerCase() === 'logout') {
+                            dispatch(logoutUser());
+                          }
+                          handleCloseUserMenu();
+                        }}
+                      >
                         <Typography textAlign="center">{setting}</Typography>
-                      {/* </Link> */}
+                      </Link>
                     </MenuItem>
                   ))}
+
 
 
                 </Menu>
               </Box>
 
 
-              <span className="desktop-only">Accont</span>
+              <span className="desktop-only">{user?.name || 'Account'}</span>
 
             </Link>
           </div>

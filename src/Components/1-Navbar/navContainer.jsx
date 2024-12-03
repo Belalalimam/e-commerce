@@ -27,11 +27,11 @@ export default function navContainer() {
             onWishlistClick={handleWishlistClick}
             onProfialClick={handleProfialClick}
           />
-          {/* <CartModal open={isCartOpen} onClose={() => setCartOpen(false)} />
+          {/* <CartModal open={isCartOpen} onClose={() => setCartOpen(false)} /> */}
           <WishlistModal
             open={isWishlistOpen}
             onClose={() => setWishlistOpen(false)}
-          /> */}
+          />
       
     </div>
   )

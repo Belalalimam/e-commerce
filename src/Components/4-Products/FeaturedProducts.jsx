@@ -28,6 +28,10 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from 'react-redux';
+import { putLikeForProduct } from '../../redux/apiCalls/likeApiCalls';
+import { useParams } from 'react-router-dom';
+
 
 // Your existing styled components
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -69,6 +73,8 @@ const ProductActions = styled(Box)({
 });
 
 const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) => {
+  const dispatch = useDispatch();
+  const { id } = useParams();
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -221,40 +227,41 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
 
 const handleAddToFavorites = async (e, product) => {
   e.stopPropagation();
-  const token = localStorage.getItem('token');
+  dispatch(putLikeForProduct(id))
+  // const token = localStorage.getItem('token');
 
-  if (!token) {
-      toast.error("Please login first");
-      return;
-  }
+  // if (!token) {
+  //     toast.error("Please login first");
+  //     return;
+  // }
 
-  try {
-      const response = await axios.put(
-          `https://myserverbackend.up.railway.app/products/like/${product._id}`,
-          {},
-          {
-              headers: {
-                  'Authorization': `Bearer ${token}`
-              }
-          }
-      );
-      console.log("🚀 ~ handleAddToFavorites ~ response:", response)
+  // try {
+  //     const response = await axios.put(
+  //         `https://myserverbackend.up.railway.app/products/like/${product._id}`,
+  //         {},
+  //         {
+  //             headers: {
+  //                 'Authorization': `Bearer ${token}`
+  //             }
+  //         }
+  //     );
+  //     console.log("🚀 ~ handleAddToFavorites ~ response:", response)
 
-      // Update UI based on server response
-      if (response.data.success) {
-          setFavorites(response.data.data.likedProducts);
-          toast.success('Updated favorites successfully!', {
-              position: "top-left",
-              autoClose: 3000,
-              theme: "colored",
-              transition: Bounce,
-          });
-      }
+  //     // Update UI based on server response
+  //     if (response.data.success) {
+  //         setFavorites(response.data.data.likedProducts);
+  //         toast.success('Updated favorites successfully!', {
+  //             position: "top-left",
+  //             autoClose: 3000,
+  //             theme: "colored",
+  //             transition: Bounce,
+  //         });
+  //     }
 
-  } catch (error) {
-      toast.error("Failed to update favorites");
-      console.log('Error:', error.response?.data || error.message);
-  }
+  // } catch (error) {
+  //     toast.error("Failed to update favorites");
+  //     console.log('Error:', error.response?.data || error.message);
+  // }
 };
 
   const handleCardClick = (product) => {

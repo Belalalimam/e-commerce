@@ -1,30 +1,19 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Paper, Typography, Box } from '@mui/material';
-import { useAuth } from '../../../context/AuthContext';
-import { Link } from 'react-router-dom'
+import { useAuth } from '../../../AuthContext';
+import { Link, useNavigate } from 'react-router-dom'
+import swal from "sweetalert";
+import { useSelector, useDispatch } from "react-redux";
+import { registerUser } from '../../../redux/apiCalls/authApiCalls';
+
+
 
 const Register = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    // confirmPassword: ''
-  });
+  const [formData, setFormData] = useState({ name: '', email: '', password: '', });
   const [errors, setErrors] = useState({});
-  const { register } = useAuth();
+  const { registerMessage } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.name) newErrors.name = 'Name is required';
-    if (!formData.email) newErrors.email = 'Email is required';
-    if (!formData.password) newErrors.password = 'Password is required';
-    // if (formData.password !== formData.confirmPassword) {
-    //   newErrors.confirmPassword = 'Passwords do not match';
-    // }
-    return newErrors;
-  };
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({
@@ -35,18 +24,21 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length === 0) {
-      try {
-        await register(formData);
-        navigate('/login');
-      } catch (error) {
-        setErrors({ submit: error.message });
-      }
-    } else {
-      setErrors(validationErrors);
-    }
+    dispatch(registerUser(formData));
+
   };
+
+  if (registerMessage) {
+    swal({
+      title: "Success",
+      text: registerMessage,
+      icon: "success",
+    }).then(isOk => {
+      if (isOk) {
+        navigate('/login');
+      }
+    })
+  }
 
   return (
     <Box
@@ -69,8 +61,6 @@ const Register = () => {
             margin="normal"
             value={formData.name}
             onChange={handleChange}
-            error={!!errors.name}
-            helperText={errors.name}
           />
           <TextField
             fullWidth
@@ -80,8 +70,6 @@ const Register = () => {
             margin="normal"
             value={formData.email}
             onChange={handleChange}
-            error={!!errors.email}
-            helperText={errors.email}
           />
           <TextField
             fullWidth
@@ -91,20 +79,8 @@ const Register = () => {
             margin="normal"
             value={formData.password}
             onChange={handleChange}
-            error={!!errors.password}
-            helperText={errors.password}
+
           />
-          {/* <TextField
-            fullWidth
-            label="Confirm Password"
-            name="confirmPassword"
-            type="password"
-            margin="normal"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            error={!!errors.confirmPassword}
-            helperText={errors.confirmPassword}
-          /> */}
           <Button
             type="submit"
             fullWidth

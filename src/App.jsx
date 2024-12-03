@@ -1,33 +1,26 @@
-// import Navbar from "./Components/1-Navbar/Navbar";
-import Swiper from "./Components/2-HomePage/SwiperC";
-import Categories from "./Components/3-Category/Categories";
+// Libraries imported 
+import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+// Components imported
 import FilterationProduct from "./Components/4-Filtertion/FilterationProduct";
 import FeaturedProducts from "./Components/4-Products/FeaturedProducts";
-// import HeaderNav from "./Components/1-Navbar/HeaderNav";
-import "./App.css";
-import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Footer from "./Components/8-Footer/Footer";
-import { useState } from "react";
-import CartModal from "./Components/1-Navbar/CartModal";
-// import WishlistModal from "./Components/1-Navbar/WishlistModal";
-import ProductPage from "./Components/5-Card/ProductPage";
-import AddUser from "./Components/1-Navbar/backend/AddUser";
-import FilteredProductPage from "./allProductFiltered";
-// import AuthPages from "./authpages";
-import Test from './test'
-import Profial from "./Profial";
-// import ProfialModal from './Components/1-Navbar/ProfialModal'
 import NavContainer from "./Components/1-Navbar/navContainer";
-import { AuthProvider } from './context/AuthContext'
-import Login from './Components/Auth/Login/Login';
+import Categories from "./Components/3-Category/Categories";
+import AddUser from "./Components/1-Navbar/backend/AddUser";
 import Register from './Components/Auth/Registe/register';
-import ProtectedRoute from './Components/Auth/protectedRoute';
-// import  Test3 from "./test3";
-
-
+import ProductPage from "./Components/5-Card/ProductPage";
+import CartModal from "./Components/1-Navbar/CartModal";
+import FilteredProductPage from "./allProductFiltered";
+import Swiper from "./Components/2-HomePage/SwiperC";
+import Footer from "./Components/8-Footer/Footer";
+import Login from './Components/Auth/Login/Login';
+import Profial from "./Profial";
+import Test from './test'
+import "./App.css"
 
 function App() {
+  const { user } = useSelector((state) => state.auth);
   const theme = createTheme({
     palette: {
       primary: {
@@ -40,19 +33,6 @@ function App() {
       },
     },
   });
-  const [isCartOpen, setCartOpen] = useState(false);
-  const [isWishlistOpen, setWishlistOpen] = useState(false);
-  const [isProfialOpen, setProfialOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const handleCartClick = () => {
-    setCartOpen(!isCartOpen);
-  };
-  const handleWishlistClick = () => {
-    setWishlistOpen(!isWishlistOpen);
-  };
-  const handleProfialClick = () => {
-    setProfialOpen(!isProfialOpen);
-  };
 
   const homepage = (
     <>
@@ -64,40 +44,37 @@ function App() {
       <FeaturedProducts name={"Featured Products"} category={"all"} />
     </>
   );
-
+  
   return (
     <>
-      <BrowserRouter>
-        <AuthProvider >
-          <ThemeProvider theme={theme}>
-            <NavContainer />
-            <Routes>
-              <Route path="/" element={homepage} />
-              <Route path="/home" element={homepage} />
-              <Route path="/cart" element={<CartModal />} />
+        <ThemeProvider theme={theme}>
+          <NavContainer />
 
-              <Route path="/addProduct" element={<AddUser />} />
-              <Route path="/getProduct/:productId" element={<ProductPage />} />
-              <Route path="/products/:category" element={<FilteredProductPage />} />
+          <Routes>
+            <Route path="/" element={homepage} />
+            <Route path="/Home" element={homepage} />
 
-              
-              <Route path="/" element={<FeaturedProducts name="Featured Products" />} />
+            <Route path="/cart" element={<CartModal />} />
 
-              <Route path="/profile/:id" element={<Profial/>} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              {/* <Route path="/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>}/> */}
+            <Route path="/addProduct" element={<AddUser />} />
+            <Route path="/getProduct/:productId" element={<ProductPage />} />
+            <Route path="/products/:category" element={<FilteredProductPage />} />
 
 
-              <Route path="/test" element={<Test />} />
-            </Routes>
+            <Route path="/" element={<FeaturedProducts name="Featured Products" />} />
 
-            <Footer />
+            <Route path="/profile/:id" element={<Profial />} />
+            <Route path="/login" element={!user ? <Login /> : <Navigate to="/profile/:id" />} />
+            <Route path="/register" element={!user ? <Register /> : <Navigate to="/profile/:id" />} />
 
 
-          </ThemeProvider>
-        </AuthProvider >
-      </BrowserRouter>
+            <Route path="/test" element={<Test />} />
+          </Routes>
+
+          <Footer />
+
+
+        </ThemeProvider>
     </>
   );
 }
