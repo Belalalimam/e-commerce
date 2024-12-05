@@ -24,14 +24,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useDispatch } from 'react-redux';
 import { putLikeForProduct } from '../../redux/apiCalls/likeApiCalls';
 import { useParams } from 'react-router-dom';
-
+import { useSelector, useDispatch } from "react-redux";
+import { fetchProduct } from "../../redux/apiCalls/productApiCalls";
 
 // Your existing styled components
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -76,199 +75,32 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
   const dispatch = useDispatch();
   const { id } = useParams();
   const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [categories, setCategories] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const [favorites, setFavorites] = useState([]);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get("https://myserverbackend.up.railway.app/Products");
-        const productsData = response.data;
-        setProducts(productsData);
-        const uniqueCategories = [
-          ...new Set(productsData.map((product) => product.productCategory)),
-        ];
-        setCategories(uniqueCategories);
-      } catch (error) {
-        console.error("Failed to fetch products:", error);
-      }
-    };
-    fetchProducts();
-  }, []);
-        
-        
+
+  const  products  = useSelector(state => state.product.product);
+
+
+useEffect(() => {
+  dispatch(fetchProduct());
+
+  console.log("🚀products:", products)
+}, []);
 
   const handleAddToCart = (e, product) => {
-    // e.stopPropagation(); // Prevent opening modal when clicking cart button
-    // addToCart(product);
-    // toast.success("Product added to cart!");
   };
 
-  // const handleAddToFavorites = async (e, product) => {
-  //   e.stopPropagation();
-  //   const token = localStorage.getItem('token');
-
-  //   if (!token) {
-  //     toast.error("Please login first");
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await axios.post(
-  //       `https://myserverbackend.up.railway.app/api/users/like/${getId}/${product._id}`,
-  //       {},
-  //       {
-  //         headers: {
-  //           'Authorization': `Bearer ${token}`
-  //         }
-  //       }
-  //     );
-      
-  //     console.log("Server response:", response.data);
-
-  //     // Toggle favorite status locally
-  //     const isFavorite = favorites.some(fav => fav._id === product._id);
-
-  //     if (!isFavorite) {
-  //       setFavorites(prev => [...prev, product]);
-  //       toast.success('🦄 Wow so easy!', {
-  //         position: "top-left",
-  //         autoClose: 5000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //         theme: "colored",
-  //         transition: Bounce,
-  //       });
-  //     } else {
-  //       setFavorites(prev => prev.filter(fav => fav._id !== product._id));
-  //       toast.success('Removed from favorites!', {
-  //         position: "top-left",
-  //         autoClose: 5000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //         theme: "colored",
-  //         transition: Bounce,
-  //       });
-  //     }
-
-  //   } catch (error) {
-  //     console.log('Error:', error.response?.data || error.message);
-  //     toast.error("Failed to update favorites");
-  //   }
-  // };
-
-
-//   const handleAddToFavorites = async (e, product) => {
-//     e.stopPropagation();
-//     const token = localStorage.getItem('token');
-//     const userId = localStorage.getItem('_id');
-
-//     if (!token) {
-//         toast.error("Please login first");
-//         return;
-//     }
-
-//     try {
-//         const response = await axios.post(
-//             `https://myserverbackend.up.railway.app/api/users/like/${userId}/${product._id}`,
-//             {},
-//             {
-//                 headers: {
-//                     'Authorization': `Bearer ${token}`,
-//                     'Content-Type': 'application/json'
-//                 }
-//             }
-//         );
-//         console.log("🚀 ~ handleAddToFavorites ~ response:", response)
-
-//         // Toggle favorite status locally
-//         const isFavorite = favorites.some(fav => fav._id === product._id);
-
-//         if (!isFavorite) {
-//             setFavorites(prev => [...prev, product]);
-//             toast.success('🦄 Product added to favorites!', {
-//                 position: "top-left",
-//                 autoClose: 3000,
-//                 hideProgressBar: false,
-//                 closeOnClick: true,
-//                 pauseOnHover: true,
-//                 draggable: true,
-//                 theme: "colored",
-//                 transition: Bounce,
-//             });
-//         } else {
-//             setFavorites(prev => prev.filter(fav => fav._id !== product._id));
-//             toast.success('Removed from favorites!', {
-//                 position: "top-left",
-//                 autoClose: 3000,
-//                 hideProgressBar: false,
-//                 closeOnClick: true,
-//                 pauseOnHover: true,
-//                 draggable: true,
-//                 theme: "colored",
-//                 transition: Bounce,
-//             });
-//         }
-
-//     } catch (error) {
-//         console.log('Error:', error.response?.data || error.message);
-//         toast.error("Failed to update favorites");
-//     }
-// };
-
-const handleAddToFavorites = async (e, product) => {
-  e.stopPropagation();
-  dispatch(putLikeForProduct(id))
-  // const token = localStorage.getItem('token');
-
-  // if (!token) {
-  //     toast.error("Please login first");
-  //     return;
-  // }
-
-  // try {
-  //     const response = await axios.put(
-  //         `https://myserverbackend.up.railway.app/products/like/${product._id}`,
-  //         {},
-  //         {
-  //             headers: {
-  //                 'Authorization': `Bearer ${token}`
-  //             }
-  //         }
-  //     );
-  //     console.log("🚀 ~ handleAddToFavorites ~ response:", response)
-
-  //     // Update UI based on server response
-  //     if (response.data.success) {
-  //         setFavorites(response.data.data.likedProducts);
-  //         toast.success('Updated favorites successfully!', {
-  //             position: "top-left",
-  //             autoClose: 3000,
-  //             theme: "colored",
-  //             transition: Bounce,
-  //         });
-  //     }
-
-  // } catch (error) {
-  //     toast.error("Failed to update favorites");
-  //     console.log('Error:', error.response?.data || error.message);
-  // }
-};
+  const handleAddToFavorites = async (e, product) => {
+    e.stopPropagation();
+    dispatch(putLikeForProduct(id))
+  };
 
   const handleCardClick = (product) => {
-    // console.log("🚀 ~ handleCardClick ~ product:", product._id)
     navigate(`/getProduct/${product._id}`);
   };
-  
+
   const CategoryModal = ({ product, open, onClose }) => {
     if (!product) return null;
     return (
@@ -329,13 +161,6 @@ const handleAddToFavorites = async (e, product) => {
     );
   };
 
-  const filteredProducts =
-    category === "all"
-      ? products
-      : products.filter((product) => product.productCategory === category);
-
-
-
   return (
     <Box sx={{ py: 8, backgroundColor: "#fff" }}>
 
@@ -353,8 +178,6 @@ const handleAddToFavorites = async (e, product) => {
         theme="colored"
         transition:Bounce
       />
-
-
       <Container maxWidth="xl">
         <Typography
           variant="h3"
@@ -371,15 +194,13 @@ const handleAddToFavorites = async (e, product) => {
           Discover our handpicked selection of premium lace fabrics and wedding
           materials
         </Typography>
-
         {/* <CategoryFilter /> */}
-
         <Grid container spacing={4}>
-          {filteredProducts.map((product) => (
+          {products.map((product) => (
             <Grid item key={product._id} xs={12} sm={6} md={3}>
               <StyledCard onClick={() => setSelectedProduct(product)}>
                 <ProductImage
-                  image={`https://myserverbackend.up.railway.app/uploads/${product.productImage}`}
+                  image={product.productImage.url}
                   title={product.productTitle}
                   id='bell'
                 >
