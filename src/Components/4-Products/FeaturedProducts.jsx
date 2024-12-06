@@ -24,6 +24,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { useState, useEffect } from "react";
+import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -76,20 +77,20 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
   const { id } = useParams();
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [categories, setCategories] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const [favorites, setFavorites] = useState([]);
 
+  useEffect(() => {
+    dispatch(fetchProduct());
+  }, [dispatch]);
 
-  const  products  = useSelector(state => state.product.product);
+  const Products = useSelector((state) => state.product.product);
 
 
-useEffect(() => {
-  dispatch(fetchProduct());
-
-  console.log("🚀products:", products)
-}, []);
 
   const handleAddToCart = (e, product) => {
+
   };
 
   const handleAddToFavorites = async (e, product) => {
@@ -161,6 +162,7 @@ useEffect(() => {
     );
   };
 
+
   return (
     <Box sx={{ py: 8, backgroundColor: "#fff" }}>
 
@@ -176,8 +178,10 @@ useEffect(() => {
         draggable
         pauseOnHover
         theme="colored"
-        transition:Bounce
+        transition="Bounce"
       />
+
+
       <Container maxWidth="xl">
         <Typography
           variant="h3"
@@ -194,78 +198,81 @@ useEffect(() => {
           Discover our handpicked selection of premium lace fabrics and wedding
           materials
         </Typography>
+
         {/* <CategoryFilter /> */}
+
         <Grid container spacing={4}>
-          {products.map((product) => (
-            <Grid item key={product._id} xs={12} sm={6} md={3}>
-              <StyledCard onClick={() => setSelectedProduct(product)}>
-                <ProductImage
-                  image={product.productImage.url}
-                  title={product.productTitle}
-                  id='bell'
-                >
-                  <ProductActions className="product-actions">
-                    <IconButton
-                      onClick={(e) => handleAddToFavorites(e, product)}
+          {
+            Products.map((product) => (
+              <Grid item key={product._id} xs={12} sm={6} md={3}>
+                <StyledCard onClick={() => setSelectedProduct(product)}>
+                  <ProductImage
+                    image={product.productImage.url}
+                    title={product.productTitle}
+                    id='bell'
+                  >
+                    <ProductActions className="product-actions">
+                      <IconButton
+                        onClick={(e) => handleAddToFavorites(e, product)}
+                        sx={{
+                          color: favorites.some(
+                            (item) => item._id === product._id
+                          )
+                            ? "red"
+                            : "white",
+                          backgroundColor: "rgba(255,255,255,0.2)",
+                          "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
+                        }}
+                      >
+                        <FavoriteIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={(e) => handleAddToCart(e, product)}
+                        sx={{
+                          color: cartItems.some(
+                            (item) => item._id === product._id
+                          )
+                            ? "#4CAF50"
+                            : "white",
+                          backgroundColor: "rgba(255,255,255,0.2)",
+                          "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
+                        }}
+                      >
+                        <ShoppingCartIcon />
+                      </IconButton>
+                    </ProductActions>
+                  </ProductImage>
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Typography gutterBottom variant="h6">
+                      {product.productName}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 2 }}
+                    >
+                      {product.productCategory}
+                    </Typography>
+                    <Box
                       sx={{
-                        color: favorites.some(
-                          (item) => item._id === product._id
-                        )
-                          ? "red"
-                          : "white",
-                        backgroundColor: "rgba(255,255,255,0.2)",
-                        "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
                       }}
                     >
-                      <FavoriteIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={(e) => handleAddToCart(e, product)}
-                      sx={{
-                        color: cartItems.some(
-                          (item) => item._id === product._id
-                        )
-                          ? "#4CAF50"
-                          : "white",
-                        backgroundColor: "rgba(255,255,255,0.2)",
-                        "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
-                      }}
-                    >
-                      <ShoppingCartIcon />
-                    </IconButton>
-                  </ProductActions>
-                </ProductImage>
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography gutterBottom variant="h6">
-                    {product.productName}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 2 }}
-                  >
-                    {product.productCategory}
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <LocalShippingIcon
-                        sx={{ fontSize: 16, color: "success.main", mr: 0.5 }}
-                      />
-                      <Typography variant="caption" color="success.main">
-                        Free Shipping
-                      </Typography>
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <LocalShippingIcon
+                          sx={{ fontSize: 16, color: "success.main", mr: 0.5 }}
+                        />
+                        <Typography variant="caption" color="success.main">
+                          Free Shipping
+                        </Typography>
+                      </Box>
                     </Box>
-                  </Box>
-                </CardContent>
-              </StyledCard>
-            </Grid>
-          ))}
+                  </CardContent>
+                </StyledCard>
+              </Grid>
+            ))}
         </Grid>
       </Container>
 
@@ -276,8 +283,7 @@ useEffect(() => {
       />
     </Box >
   );
-};
-export default FeaturedProducts;
+}; export default FeaturedProducts;
 
 
 

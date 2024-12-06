@@ -16,7 +16,7 @@ export function fetchProduct(pageNumber) {
 
 // Get Posts Count
 export function getProductsCount() {
-  return async (dispatch) => {
+  return async (dispatch) => { 
     try {
       const { data } = await request.get(`/products/count`);
       dispatch(productActions.setProductCount(data));

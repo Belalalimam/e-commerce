@@ -23,6 +23,9 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import CloseIcon from "@mui/icons-material/Close";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProduct, getProductsCount } from "../../redux/apiCalls/productApiCalls";
+import Pagination from '@mui/material/Pagination';
 import "./Filteration.css";
 
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -63,63 +66,6 @@ const ProductActions = styled(Box)({
   gap: "10px",
 });
 
-const addToCart = (product) => {
-  const existingItem = cartItems.find((item) => item.id === product.id);
-  if (existingItem) {
-    const updatedCartItems = cartItems.map((item) =>
-      item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-    );
-    setCartItems(updatedCartItems);
-  } else {
-    setCartItems([...cartItems, { ...product, quantity: 1 }]);
-  }
-};
-
-const removeFromCart = (product) => {
-  const updatedCartItems = cartItems.filter((item) => item.id !== product.id);
-  setCartItems(updatedCartItems);
-};
-
-const addToFavorites = (product) => {
-  const existingFavorite = favorites.find(
-    (favorite) => favorite.id === product.id
-  );
-  if (!existingFavorite) {
-    setFavorites([...favorites, product]);
-  }
-};
-
-const removeFromFavorites = (product) => {
-  const updatedFavorites = favorites.filter(
-    (favorite) => favorite.id !== product.id
-  );
-  setFavorites(updatedFavorites);
-};
-
-const handleProductClick = (product) => {
-  setSelectedProduct(product);
-};
-
-const handleCloseModal = () => {
-  setSelectedProduct(null);
-};
-
-const handleAddToCart = (e, product) => {
-  e.stopPropagation(); // Prevent opening modal when clicking cart button
-  addToCart(product);
-  toast.success("Product added to cart!");
-};
-
-const handleRemoveFromCart = (product) => {
-  removeFromCart(product);
-  toast.success("Product removed from cart!");
-};
-
-const handleAddToFavorites = (e, product) => {
-  e.stopPropagation(); // Prevent opening modal when clicking favorite button
-  addToFavorites(product);
-  toast.success("Product added to favorites!");
-};
 
 const handleCardClick = (product) => {
   navigate(`/product/${product._id}`);
@@ -169,7 +115,7 @@ const CategoryModal = ({ product, open, onClose }) => {
           </Grid>
         </Grid>
       </DialogContent>
-      <DialogActions sx={{ p: 3 }}>
+      {/* <DialogActions sx={{ p: 3 }}>
         <Button
           variant="contained"
           startIcon={<ShoppingBagIcon />}
@@ -184,22 +130,30 @@ const CategoryModal = ({ product, open, onClose }) => {
         >
           Add to Cart
         </Button>
-      </DialogActions>
+      </DialogActions> */}
     </Dialog>
   );
 };
 
 const FeaturedProducts = ({ name }) => {
-  const [products, setProducts] = useState([]);
+  const dispatch = useDispatch();
+  const PRODUCT_PER_PAGE = 3;
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [currentPage, setCurrentPage] = useState(PRODUCT_PER_PAGE)
   const [filters, setFilters] = useState({
     colors: [],
     categories: [],
     sizes: [],
   });
-  const [cartItems, setCartItems] = useState([]);
-  const [favorites, setFavorites] = useState([]);
+
+
+  const products = useSelector((state) => state.product.product);
+  const productsCount = useSelector((state) => state.product.product);
+  console.log("🚀 ~ FeaturedProducts ~ productsCount:", productsCount)
+
+
+  // const pages = Math.ceil( products.length / PRODUCT_PER_PAGE)
 
   const colors = [
     { id: 1, name: "Black", hex: "#000000" },
@@ -210,23 +164,24 @@ const FeaturedProducts = ({ name }) => {
   ];
 
   const categories = ["lace", "fabric", "etylo"];
-
   const sizes = ["xs", "s", "m"];
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get("https://myserverbackend.up.railway.app/Products");
-        setProducts(response.data.data.products);
-      } catch (error) {
-        console.error("Failed to fetch products:", error);
-      }
-    };
-    fetchProducts();
-  }, []);
+    dispatch(fetchProduct(currentPage));
+  }, [currentPage])
+
+  useEffect(() => {
+    dispatch(getProductsCount());
+  }, [])
 
   const getFilteredProducts = () => {
-    return products.filter((product) => {
+
+    if (!Array.isArray(products)) {
+      console.log('Products is not an array:', products);
+      return [products];
+    }
+
+    return products?.filter((product) => {
       const colorMatch =
         filters.colors.length === 0 ||
         filters.colors.includes(product.productColor);
@@ -289,9 +244,8 @@ const FeaturedProducts = ({ name }) => {
                 {colors.map((color) => (
                   <div
                     key={color.id}
-                    className={`color-option ${
-                      filters.colors.includes(color.name) ? "selected" : ""
-                    }`}
+                    className={`color-option ${filters.colors.includes(color.name) ? "selected" : ""
+                      }`}
                     onClick={() => handleFilterChange("colors", color.name)}
                   >
                     <span
@@ -336,9 +290,8 @@ const FeaturedProducts = ({ name }) => {
                 {sizes.map((size) => (
                   <button
                     key={size}
-                    className={`size-btn ${
-                      filters.sizes.includes(size) ? "selected" : ""
-                    }`}
+                    className={`size-btn ${filters.sizes.includes(size) ? "selected" : ""
+                      }`}
                     onClick={() => handleFilterChange("sizes", size)}
                   >
                     {size}
@@ -364,10 +317,10 @@ const FeaturedProducts = ({ name }) => {
               <StyledCard onClick={() => setSelectedProduct(product)}>
                 <ProductImage
                   component="img"
-                  image={`https://myserverbackend.up.railway.app/uploads/${product.productImage}`}
+                  image={product.productImage}
                   title={product.productTitle}
                 />
-                <ProductActions className="product-actions">
+                {/* <ProductActions className="product-actions">
                     <IconButton
                       onClick={(e) => handleAddToFavorites(e, product)}
                       sx={{
@@ -396,7 +349,7 @@ const FeaturedProducts = ({ name }) => {
                     >
                       <ShoppingCartIcon />
                     </IconButton>
-                  </ProductActions>
+                  </ProductActions> */}
 
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Typography gutterBottom variant="h6">
@@ -431,12 +384,18 @@ const FeaturedProducts = ({ name }) => {
           ))}
         </Grid>
 
+
         <CategoryModal
           product={selectedProduct}
           open={Boolean(selectedProduct)}
           onClose={() => setSelectedProduct(null)}
         />
       </Container>
+
+      <div className="flex justify-center"> 
+        <Pagination count={PRODUCT_PER_PAGE} currentPage={currentPage} setCurrentPage={setCurrentPage} color="primary" />
+      </div>
+
     </Box>
   );
 };
