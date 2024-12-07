@@ -28,6 +28,10 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { putLikeForProduct } from '../../redux/apiCalls/likeApiCalls';
+import { useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from "react-redux";
+import { fetchProduct } from "../../redux/apiCalls/productApiCalls";
 
 // Your existing styled components
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -69,199 +73,35 @@ const ProductActions = styled(Box)({
 });
 
 const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) => {
+  const dispatch = useDispatch();
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [categories, setCategories] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get("https://myserverbackend.up.railway.app/Products");
-        const productsData = response.data;
-        setProducts(productsData);
-        const uniqueCategories = [
-          ...new Set(productsData.map((product) => product.productCategory)),
-        ];
-        setCategories(uniqueCategories);
-      } catch (error) {
-        console.error("Failed to fetch products:", error);
-      }
-    };
-    fetchProducts();
-  }, []);
-        
-        
+    dispatch(fetchProduct());
+  }, [dispatch]);
+
+  const Products = useSelector((state) => state.product.product);
+
+
 
   const handleAddToCart = (e, product) => {
-    // e.stopPropagation(); // Prevent opening modal when clicking cart button
-    // addToCart(product);
-    // toast.success("Product added to cart!");
+
   };
 
-  // const handleAddToFavorites = async (e, product) => {
-  //   e.stopPropagation();
-  //   const token = localStorage.getItem('token');
-
-  //   if (!token) {
-  //     toast.error("Please login first");
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await axios.post(
-  //       `https://myserverbackend.up.railway.app/api/users/like/${getId}/${product._id}`,
-  //       {},
-  //       {
-  //         headers: {
-  //           'Authorization': `Bearer ${token}`
-  //         }
-  //       }
-  //     );
-      
-  //     console.log("Server response:", response.data);
-
-  //     // Toggle favorite status locally
-  //     const isFavorite = favorites.some(fav => fav._id === product._id);
-
-  //     if (!isFavorite) {
-  //       setFavorites(prev => [...prev, product]);
-  //       toast.success('🦄 Wow so easy!', {
-  //         position: "top-left",
-  //         autoClose: 5000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //         theme: "colored",
-  //         transition: Bounce,
-  //       });
-  //     } else {
-  //       setFavorites(prev => prev.filter(fav => fav._id !== product._id));
-  //       toast.success('Removed from favorites!', {
-  //         position: "top-left",
-  //         autoClose: 5000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //         theme: "colored",
-  //         transition: Bounce,
-  //       });
-  //     }
-
-  //   } catch (error) {
-  //     console.log('Error:', error.response?.data || error.message);
-  //     toast.error("Failed to update favorites");
-  //   }
-  // };
-
-
-//   const handleAddToFavorites = async (e, product) => {
-//     e.stopPropagation();
-//     const token = localStorage.getItem('token');
-//     const userId = localStorage.getItem('_id');
-
-//     if (!token) {
-//         toast.error("Please login first");
-//         return;
-//     }
-
-//     try {
-//         const response = await axios.post(
-//             `https://myserverbackend.up.railway.app/api/users/like/${userId}/${product._id}`,
-//             {},
-//             {
-//                 headers: {
-//                     'Authorization': `Bearer ${token}`,
-//                     'Content-Type': 'application/json'
-//                 }
-//             }
-//         );
-//         console.log("🚀 ~ handleAddToFavorites ~ response:", response)
-
-//         // Toggle favorite status locally
-//         const isFavorite = favorites.some(fav => fav._id === product._id);
-
-//         if (!isFavorite) {
-//             setFavorites(prev => [...prev, product]);
-//             toast.success('🦄 Product added to favorites!', {
-//                 position: "top-left",
-//                 autoClose: 3000,
-//                 hideProgressBar: false,
-//                 closeOnClick: true,
-//                 pauseOnHover: true,
-//                 draggable: true,
-//                 theme: "colored",
-//                 transition: Bounce,
-//             });
-//         } else {
-//             setFavorites(prev => prev.filter(fav => fav._id !== product._id));
-//             toast.success('Removed from favorites!', {
-//                 position: "top-left",
-//                 autoClose: 3000,
-//                 hideProgressBar: false,
-//                 closeOnClick: true,
-//                 pauseOnHover: true,
-//                 draggable: true,
-//                 theme: "colored",
-//                 transition: Bounce,
-//             });
-//         }
-
-//     } catch (error) {
-//         console.log('Error:', error.response?.data || error.message);
-//         toast.error("Failed to update favorites");
-//     }
-// };
-
-const handleAddToFavorites = async (e, product) => {
-  e.stopPropagation();
-  const token = localStorage.getItem('token');
-
-  if (!token) {
-      toast.error("Please login first");
-      return;
-  }
-
-  try {
-      const response = await axios.put(
-          `https://myserverbackend.up.railway.app/products/like/${product._id}`,
-          {},
-          {
-              headers: {
-                  'Authorization': `Bearer ${token}`
-              }
-          }
-      );
-      console.log("🚀 ~ handleAddToFavorites ~ response:", response)
-
-      // Update UI based on server response
-      if (response.data.success) {
-          setFavorites(response.data.data.likedProducts);
-          toast.success('Updated favorites successfully!', {
-              position: "top-left",
-              autoClose: 3000,
-              theme: "colored",
-              transition: Bounce,
-          });
-      }
-
-  } catch (error) {
-      toast.error("Failed to update favorites");
-      console.log('Error:', error.response?.data || error.message);
-  }
-};
+  const handleAddToFavorites = async (e, product) => {
+    e.stopPropagation();
+    dispatch(putLikeForProduct(id))
+  };
 
   const handleCardClick = (product) => {
-    // console.log("🚀 ~ handleCardClick ~ product:", product._id)
     navigate(`/getProduct/${product._id}`);
   };
-  
+
   const CategoryModal = ({ product, open, onClose }) => {
     if (!product) return null;
     return (
@@ -322,12 +162,6 @@ const handleAddToFavorites = async (e, product) => {
     );
   };
 
-  const filteredProducts =
-    category === "all"
-      ? products
-      : products.filter((product) => product.productCategory === category);
-
-
 
   return (
     <Box sx={{ py: 8, backgroundColor: "#fff" }}>
@@ -344,7 +178,7 @@ const handleAddToFavorites = async (e, product) => {
         draggable
         pauseOnHover
         theme="colored"
-        transition:Bounce
+        transition="Bounce"
       />
 
 
@@ -368,6 +202,7 @@ const handleAddToFavorites = async (e, product) => {
         {/* <CategoryFilter /> */}
 
         <Grid container spacing={4}>
+<<<<<<< HEAD
           {filteredProducts.map((product) => (
             <Grid item key={product._id} xs={12} sm={6} md={3}>
               <StyledCard onClick={() => setSelectedProduct(product)}>
@@ -379,65 +214,79 @@ const handleAddToFavorites = async (e, product) => {
                   <ProductActions className="product-actions">
                     <IconButton
                       onClick={(e) => handleAddToFavorites(e, product)}
+=======
+          {
+            Products.map((product) => (
+              <Grid item key={product._id} xs={12} sm={6} md={3}>
+                <StyledCard onClick={() => setSelectedProduct(product)}>
+                  <ProductImage
+                    image={product.productImage.url}
+                    title={product.productTitle}
+                    id='bell'
+                  >
+                    <ProductActions className="product-actions">
+                      <IconButton
+                        onClick={(e) => handleAddToFavorites(e, product)}
+                        sx={{
+                          color: favorites.some(
+                            (item) => item._id === product._id
+                          )
+                            ? "red"
+                            : "white",
+                          backgroundColor: "rgba(255,255,255,0.2)",
+                          "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
+                        }}
+                      >
+                        <FavoriteIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={(e) => handleAddToCart(e, product)}
+                        sx={{
+                          color: cartItems.some(
+                            (item) => item._id === product._id
+                          )
+                            ? "#4CAF50"
+                            : "white",
+                          backgroundColor: "rgba(255,255,255,0.2)",
+                          "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
+                        }}
+                      >
+                        <ShoppingCartIcon />
+                      </IconButton>
+                    </ProductActions>
+                  </ProductImage>
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Typography gutterBottom variant="h6">
+                      {product.productName}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 2 }}
+                    >
+                      {product.productCategory}
+                    </Typography>
+                    <Box
+>>>>>>> 8d6b9566c8b71b617b0b42fe91f63314848c2c70
                       sx={{
-                        color: favorites.some(
-                          (item) => item._id === product._id
-                        )
-                          ? "red"
-                          : "white",
-                        backgroundColor: "rgba(255,255,255,0.2)",
-                        "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
                       }}
                     >
-                      <FavoriteIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={(e) => handleAddToCart(e, product)}
-                      sx={{
-                        color: cartItems.some(
-                          (item) => item._id === product._id
-                        )
-                          ? "#4CAF50"
-                          : "white",
-                        backgroundColor: "rgba(255,255,255,0.2)",
-                        "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
-                      }}
-                    >
-                      <ShoppingCartIcon />
-                    </IconButton>
-                  </ProductActions>
-                </ProductImage>
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography gutterBottom variant="h6">
-                    {product.productName}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 2 }}
-                  >
-                    {product.productCategory}
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <LocalShippingIcon
-                        sx={{ fontSize: 16, color: "success.main", mr: 0.5 }}
-                      />
-                      <Typography variant="caption" color="success.main">
-                        Free Shipping
-                      </Typography>
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <LocalShippingIcon
+                          sx={{ fontSize: 16, color: "success.main", mr: 0.5 }}
+                        />
+                        <Typography variant="caption" color="success.main">
+                          Free Shipping
+                        </Typography>
+                      </Box>
                     </Box>
-                  </Box>
-                </CardContent>
-              </StyledCard>
-            </Grid>
-          ))}
+                  </CardContent>
+                </StyledCard>
+              </Grid>
+            ))}
         </Grid>
       </Container>
 
@@ -448,8 +297,7 @@ const handleAddToFavorites = async (e, product) => {
       />
     </Box >
   );
-};
-export default FeaturedProducts;
+}; export default FeaturedProducts;
 
 
 

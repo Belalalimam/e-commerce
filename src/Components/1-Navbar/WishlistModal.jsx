@@ -1,6 +1,7 @@
 // WishlistModal.js
 import React, { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
+<<<<<<< HEAD
 import { styled } from "@mui/material/styles";
 import { ToastContainer, toast } from "react-toastify";
 import {
@@ -24,6 +25,11 @@ import "react-toastify/dist/ReactToastify.css";
 
 import axios from "axios";
 
+=======
+import { useSelector, useDispatch } from "react-redux";
+import { getUserProfileLike } from '../../redux/apiCalls/likeApiCalls'
+ 
+>>>>>>> 8d6b9566c8b71b617b0b42fe91f63314848c2c70
 const style = {
   position: "absolute",
   top: "50%",
@@ -75,6 +81,7 @@ const ProductActions = styled(Box)({
 });
 
 const WishlistModal = ({ open, onClose }) => {
+<<<<<<< HEAD
   const [wishlistItems, setWishlistItems] = useState([]);
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -112,14 +119,26 @@ const WishlistModal = ({ open, onClose }) => {
       fetchWishlistItems();
     } catch (error) {
       console.error("Error removing from wishlist:", error);
+=======
+  const { like } = useSelector(state => state.like);
+  const dispatch = useDispatch();
+  const id = localStorage.getItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo"))._id : null;
+  
+  useEffect(() => {
+    if(id) {
+      dispatch(getUserProfileLike(id))
+>>>>>>> 8d6b9566c8b71b617b0b42fe91f63314848c2c70
     }
-  };
+  }, [dispatch, id, open]) // Added open as dependency
+
+  const likeItems = Array.isArray(like) ? like : [];
 
   const handleAddToFavorites = async (e, product) => {
     e.stopPropagation();
     const token = localStorage.getItem('token');}
 
   return (
+<<<<<<< HEAD
     <>
       <Modal open={open} onClose={onClose}>
         <Box sx={style}>
@@ -207,6 +226,56 @@ const WishlistModal = ({ open, onClose }) => {
           variant="h6"
           align="center"
           sx={{ mb: 6, color: "text.secondary", maxWidth: "800px", mx: "auto" }}
+=======
+    <Modal open={open} onClose={onClose}>
+      <Box sx={style}>
+        <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
+          My Wishlist ({likeItems?.length})
+        </Typography>
+        <Divider />
+        {likeItems?.map((item) => (
+          <Box
+            key={item._id}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              mt: 2,
+              p: 2,
+              bgcolor: 'grey.50',
+              borderRadius: 1
+            }}
+          >
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <img
+                src={item.productImage.url}
+                alt={item.productName}
+                style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 4 }}
+              />
+              <Box>
+                <Typography variant="subtitle1">{item.productName}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Category: {item.productCategory}
+                </Typography>
+                <Typography variant="h6" color="primary">
+                  ${item.productPrice}
+                </Typography>
+              </Box>
+            </Box>
+            {/* <IconButton
+              onClick={() => handleRemoveFromWishlist(item._id)}
+              color="error"
+            >
+              <DeleteIcon />
+            </IconButton> */}
+          </Box>
+        ))}
+        <Button
+          variant="contained"
+          fullWidth
+          sx={{ mt: 3 }}
+          onClick={onClose}
+>>>>>>> 8d6b9566c8b71b617b0b42fe91f63314848c2c70
         >
           Discover our handpicked selection of premium lace fabrics and wedding
           materials

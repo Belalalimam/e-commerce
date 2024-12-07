@@ -2,9 +2,13 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUser, FaSearch, FaMapMarkerAlt, FaHeart, FaShoppingCart, FaBars } from 'react-icons/fa';
 import { IconButton, Badge, Box, Tooltip, Avatar, Menu, MenuItem, Typography } from "@mui/material";
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import './Navbar.css';
+import { useSelector, useDispatch } from "react-redux";
+import axios from 'axios';
+import { logoutUser } from "../../redux/apiCalls/authApiCalls";
 
 
 const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
@@ -13,6 +17,7 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [cartCount, setCartCount] = useState(0);
+
 
 
   const categories = [
@@ -26,43 +31,40 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
     'Toys',
     'addUser'
   ];
-  const { user, logout } = useAuth();
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const settings = useMemo(() =>
-    user ? ['Profile', 'Dashboard', 'Logout'] : ['Login', 'Register'],
+  const { user } = useSelector((state) => state.auth);
+
+  const settings = useMemo(() => 
+    user ? ['Profile', 'Logout'] : ['Login', 'Register'], 
     [user]
   );
 
-  const fetchCartCount = async () => {
-    try {
-      const response = await axios.get('https://myserverbackend.up.railway.app/api/cart', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
-      });
-      setCartCount(response.data.data.cart?.items.length || 0);
-    } catch (error) {
-      console.log('Error fetching cart:', error);
-    }
-  };
-
   const handleMenuItemClick = (setting) => {
     switch (setting.toLowerCase()) {
-      case 'logout':
-        logout();
-        navigate('/');
+      case 'profile':
+        if (user?._id) {
+          navigate(`/profile/${user._id}`);
+        }
         break;
+
+      case 'logout':
+        dispatch(logoutUser());
+        navigate('/Home');
+        break;
+
       case 'login':
         navigate('/login');
         break;
+
       case 'register':
-        navigate('/addUser');
+        navigate('/register');
         break;
-      default:
-        navigate(`/${setting.toLowerCase()}`);
     }
     handleCloseUserMenu();
   };
+
 
 
   const handleOpenUserMenu = (event) => {
@@ -72,9 +74,6 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
     setAnchorElUser(null);
   };
 
-  useEffect(() => {
-    fetchCartCount();
-  }, []);
 
   const handleCartClick = () => {
     navigate('/cart');
@@ -142,7 +141,11 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
           </div>
 
           <div className="user-actions">
+<<<<<<< HEAD
             <Link to="/WishlistModal" className="action-item">
+=======
+            <Link to="#" className="action-item">
+>>>>>>> 8d6b9566c8b71b617b0b42fe91f63314848c2c70
               <IconButton onClick={onWishlistClick}>
                 <Badge badgeContent={wishlistItems} color="primary">
                   <FaHeart />
@@ -167,6 +170,7 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
                 </Badge>
             </IconButton> */}
               <Box sx={{ flexGrow: 0 }}>
+                
                 <Tooltip title={user ? 'Account Settings' : 'Login'}>
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                     {user ? (
@@ -196,20 +200,33 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
                   onClose={handleCloseUserMenu}
                 >
                   {settings.map((setting) => (
-                    <Link to={setting} className="action-item" key={setting}>
-                      <MenuItem
-                        key={setting}
-                        onClick={() => handleMenuItemClick(setting)}
+                    <MenuItem key={setting}>
+                      <Link
+                        to={
+                          setting.toLowerCase() === 'profile'
+                            ? `/profile/${user._id}`
+                            : `/${setting.toLowerCase()}`
+                        }
+                        style={{ textDecoration: 'none', color: 'inherit' }}
+                        onClick={() => {
+                          if (setting.toLowerCase() === 'logout') {
+                            dispatch(logoutUser());
+                          }
+                          handleCloseUserMenu();
+                        }}
                       >
-                        <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                      </MenuItem>
-                    </Link>
+                        <Typography textAlign="center">{setting}</Typography>
+                      </Link>
+                    </MenuItem>
                   ))}
+
+
+
                 </Menu>
               </Box>
 
 
-              <span className="desktop-only">Accont</span>
+              <span className="desktop-only">{user?.name || 'Account'}</span>
 
             </Link>
           </div>

@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Paper, Typography, Box } from '@mui/material';
-import { useAuth } from '../../../context/AuthContext';
 import { Link } from 'react-router-dom'
+import { useDispatch } from 'react-redux';
+import { loginUser } from '../../../redux/apiCalls/authApiCalls'
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-  const [errors, setErrors] = useState({});
-  const { login } = useAuth();
-  const navigate = useNavigate();
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({
@@ -22,12 +17,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await login(formData);
-      navigate('/');
-    } catch (error) {
-      setErrors({ submit: error.message });
-    }
+    dispatch(loginUser(formData));
   };
 
   return (
@@ -52,8 +42,6 @@ const Login = () => {
             margin="normal"
             value={formData.email}
             onChange={handleChange}
-            error={!!errors.email}
-            helperText={errors.email}
           />
           <TextField
             fullWidth
@@ -63,8 +51,6 @@ const Login = () => {
             margin="normal"
             value={formData.password}
             onChange={handleChange}
-            error={!!errors.password}
-            helperText={errors.password}
           />
           <Button
             type="submit"
@@ -74,13 +60,8 @@ const Login = () => {
           >
             Sign In
           </Button>
-          {errors.submit && (
-            <Typography color="error" align="center">
-              {errors.submit}
-            </Typography>
-          )}
           <Typography align="center">
-            Don't have an account?{' '}
+            Don't have an account?
             <Link to={"/register"}>
               Sign Up
             </Link>

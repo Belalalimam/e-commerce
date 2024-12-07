@@ -29,6 +29,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import { ToastContainer, toast } from "react-toastify";
+import { useDispatch } from 'react-redux';
+import { putLikeForProduct } from '../../redux/apiCalls/likeApiCalls';
 
 
 const API_BASE_URL = "https://myserverbackend.up.railway.app";
@@ -44,6 +46,7 @@ const CategoryPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [favorites, setFavorites] = useState([]);
 
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -145,10 +148,11 @@ const CategoryPage = () => {
     toast.success('Product removed from cart!');
   };
 
-  const handleAddToFavorites = (e, product) => {
+  const handleAddToFavorites = (e) => {
     e.stopPropagation(); // Prevent opening modal when clicking favorite button
-    addToFavorites(product);
-    toast.success('Product added to favorites!');
+    if (product?._id) {
+      dispatch(putLikeForProduct(product._id));
+  }
   };
 
 
@@ -276,7 +280,7 @@ const CategoryPage = () => {
                 <Button
                   variant="outlined"
                   startIcon={<FavoriteIcon />}
-                  onClick={(e) => handleAddToFavorites(e, product)}
+                  onClick={handleAddToFavorites}
                   fullWidth
                 >
                   Add to Wishlist
