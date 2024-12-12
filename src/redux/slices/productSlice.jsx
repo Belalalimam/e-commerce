@@ -5,7 +5,10 @@ const productSlice = createSlice({
     initialState: {
         product: [],
         productsCount: null,
-        productsCate: []
+        productsCate: [],
+        productSingle: null,
+        isProductCreated: false,
+        loading: false,
     },
     reducers: {
         setProducts(state, action) {
@@ -17,6 +20,23 @@ const productSlice = createSlice({
         setProductCount(state, action) {
             state.product = action.payload
         },
+        setSingleProduct(state, action) {
+            state.productSingle = action.payload
+        },
+        setLoading(state) {
+            state.loading = true;
+        },
+        clearLoading(state) {
+            state.loading = false;
+        },
+        setIsProductCreated(state) {
+            state.isProductCreated = true;
+            state.loading = false;
+        },
+        clearIsProductCreated(state) {
+            state.isProductCreated = false;
+        },
+
 
     }
 })

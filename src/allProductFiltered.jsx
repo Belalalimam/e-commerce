@@ -22,7 +22,7 @@ import {
 } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import axios from 'axios';
-import FeaturedProducts from './Components/4-Products/FeaturedProducts';
+import FeaturedProducts from './Components/4-Products/CardProduct';
 
 const FilteredProductPage = () => {
   const { category } = useParams();

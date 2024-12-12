@@ -4,12 +4,11 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 // Components imported
 import FilterationProduct from "./Components/4-Filtertion/FilterationProduct";
-import FeaturedProducts from "./Components/4-Products/FeaturedProducts";
+import FeaturedProducts from "./Components/4-Products/CardProduct";
 import NavContainer from "./Components/1-Navbar/navContainer";
 import Categories from "./Components/3-Category/Categories";
-import AddUser from "./Components/1-Navbar/backend/AddUser";
 import Register from './Components/Auth/Registe/register';
-import ProductPage from "./Components/5-Card/ProductPage";
+import ProductPage from "./Components/4-Products/PageProduct";
 import CartModal from "./Components/1-Navbar/CartModal";
 import FilteredProductPage from "./allProductFiltered";
 import Swiper from "./Components/2-HomePage/SwiperC";
@@ -18,6 +17,7 @@ import Login from './Components/Auth/Login/Login';
 import Profial from "./Profial";
 import Test from './test'
 import "./App.css"
+import Dashboard from "./Dashboard";
 
 function App() {
   const { user } = useSelector((state) => state.auth);
@@ -56,7 +56,7 @@ function App() {
 
             <Route path="/cart" element={<CartModal />} />
 
-            <Route path="/addProduct" element={<AddUser />} />
+            {/* <Route path="/addProduct" element={<AddUser />} /> */}
             <Route path="/getProduct/:productId" element={<ProductPage />} />
             <Route path="/products/:category" element={<FilteredProductPage />} />
 
@@ -67,8 +67,10 @@ function App() {
             <Route path="/login" element={!user ? <Login /> : <Navigate to="/profile/:id" />} />
             <Route path="/register" element={!user ? <Register /> : <Navigate to="/profile/:id" />} />
 
+            <Route path="/admin/dashboard" element={<Dashboard />} />
 
             <Route path="/test" element={<Test />} />
+
           </Routes>
 
           <Footer />

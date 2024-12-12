@@ -1,17 +1,14 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUser, FaSearch, FaMapMarkerAlt, FaHeart, FaShoppingCart, FaBars } from 'react-icons/fa';
 import { IconButton, Badge, Box, Tooltip, Avatar, Menu, MenuItem, Typography } from "@mui/material";
-import { useAuth } from '../../AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
 import './Navbar.css';
 import { useSelector, useDispatch } from "react-redux";
-import axios from 'axios';
 import { logoutUser } from "../../redux/apiCalls/authApiCalls";
 
 
-const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
+const Header = ({ onWishlistClick, wishlistItems }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -22,48 +19,49 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
 
   const categories = [
     'All Categories',
-    'Electronics',
-    'Fashion',
+    'Lace',
+    'Elastic',
     'Home',
-    'Beauty',
-    'Grocery',
-    'Sports',
-    'Toys',
-    'addUser'
+    'test',
   ];
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
 
-  const settings = useMemo(() => 
-    user ? ['Profile', 'Logout'] : ['Login', 'Register'], 
-    [user]
-  );
+  const settings = useMemo(() => {
+    if (user?.isAdmin) {
+      return ['Dashboard', 'Profile', 'Logout'];
+    }
+    return user ? ['Profile', 'Logout'] : ['Login', 'Register'];
+  }, [user]);
+  
 
   const handleMenuItemClick = (setting) => {
     switch (setting.toLowerCase()) {
+      case 'dashboard':
+        navigate('/admin/dashboard');
+        break;
       case 'profile':
         if (user?._id) {
           navigate(`/profile/${user._id}`);
         }
         break;
-
       case 'logout':
         dispatch(logoutUser());
         navigate('/Home');
         break;
-
       case 'login':
         navigate('/login');
         break;
-
       case 'register':
         navigate('/register');
         break;
     }
     handleCloseUserMenu();
   };
+
+
 
 
 
@@ -166,7 +164,7 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
                 </Badge>
             </IconButton> */}
               <Box sx={{ flexGrow: 0 }}>
-                
+
                 <Tooltip title={user ? 'Account Settings' : 'Login'}>
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                     {user ? (
@@ -195,8 +193,18 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
+
                   {settings.map((setting) => (
-                    <MenuItem key={setting}>
+                    <MenuItem
+                      key={setting}
+                      onClick={() => handleMenuItemClick(setting)}
+                      sx={{
+                        backgroundColor: setting === 'Dashboard' ? '#f0f8ff' : 'inherit',
+                        '&:hover': {
+                          backgroundColor: setting === 'Dashboard' ? '#e3f2fd' : 'inherit'
+                        }
+                      }}
+                    >
                       <Link
                         to={
                           setting.toLowerCase() === 'profile'
@@ -211,13 +219,12 @@ const Header = ({ onCartClick, onWishlistClick, wishlistItems }) => {
                           handleCloseUserMenu();
                         }}
                       >
-                        <Typography textAlign="center">{setting}</Typography>
+                        <Typography textAlign="center">
+                          {setting}
+                        </Typography>
                       </Link>
                     </MenuItem>
                   ))}
-
-
-
                 </Menu>
               </Box>
 

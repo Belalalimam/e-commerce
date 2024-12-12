@@ -38,38 +38,36 @@ export function fetchProductsBasedOnCategory(category) {
   };
 }
 
-// // Create Post
-// export function createPost(newPost) {
-//   return async (dispatch, getState) => {
-//     try {
-//       dispatch(productActions.setLoading());
-//       await request.post(`/api/posts`, newPost, {
-//         headers: {
-//           Authorization: "Bearer " + getState().auth.user.token,
-//           "Content-Type": "multipart/form-data",
-//         },
-//       });
+// Create Product
+export const createProduct = (formData) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: "CREATE_PRODUCT_REQUEST" });
+    const response = await request.post('/products/newProduct', formData,{
+      headers: {
+        authorization: 'Bearer ' + getState().auth.user.token,
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    dispatch({ type: "CREATE_PRODUCT_SUCCESS", payload: response.data });
+    return response.data;
+  } catch (error) {
+    dispatch({ type: "CREATE_PRODUCT_FAIL", payload: error.message });
+    throw error;
+  }
+};
 
-//       dispatch(productActions.setIsPostCreated());
-//       setTimeout(() => dispatch(productActions.clearIsPostCreated()), 2000); // 2s
-//     } catch (error) {
-//       toast.error(error.response.data.message);
-//       dispatch(productActions.clearLoading());
-//     }
-//   };
-// }
 
-// // Fetch Single Post
-// export function fetchSinglePost(postId) {
-//   return async (dispatch) => {
-//     try {
-//       const { data } = await request.get(`/api/posts/${postId}`);
-//       dispatch(productActions.setPost(data));
-//     } catch (error) {
-//       toast.error(error.response.data.message);
-//     }
-//   };
-// }
+// Fetch Single Product
+export function fetchSingleProduct(productId) {
+  return async (dispatch) => {
+    try {
+      const { data } = await request.get(`/Products/getProduct/${productId}`);
+      dispatch(productActions.setSingleProduct(data));
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  };
+}
 
 // // Toggle Like Post
 // export function toggleLikePost(postId) {

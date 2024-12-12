@@ -20,16 +20,13 @@ export function putLikeForProduct(productId) {
     return async (dispatch, getState) => {
         try{
             const state = getState();
-            console.log("🚀 ~ return ~ state:", state.auth.user.token)
             const {data} = await request.put(`/Products/like/${productId}`,{}, {
                 headers: {
                     authorization: 'Bearer ' + state.auth.user.token
                 }
             }); 
             dispatch(likeActions.setlike(data))
-            console.log("🚀 ~ return ~ data:", data)
         }catch(error){
-            console.log(error)
             toast.error(error.response.data.message);
         }
 

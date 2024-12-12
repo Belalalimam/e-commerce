@@ -26,77 +26,30 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import SecurityIcon from "@mui/icons-material/Security";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import { ToastContainer, toast } from "react-toastify";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { putLikeForProduct } from '../../redux/apiCalls/likeApiCalls';
-
-
-const API_BASE_URL = "https://myserverbackend.up.railway.app";
+import { fetchSingleProduct } from "../../redux/apiCalls/productApiCalls";
 
 const CategoryPage = () => {
-  const { productId } = useParams();
   const navigate = useNavigate();
-  const [product, setProduct] = useState({});
-  const [similarProducts, setSimilarProducts] = useState([]);
-  const [quantity, setQuantity] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [cartItems, setCartItems] = useState([]);
-  const [favorites, setFavorites] = useState([]);
-
+  const { productId } = useParams();
   const dispatch = useDispatch();
 
+  const [quantity, setQuantity] = useState(1);
+  const [cartItems, setCartItems] = useState([]);
+
   useEffect(() => {
-    const fetchProductData = async () => {
-      try {
-        const [productResponse, allProductsResponse] = await Promise.all([
-          axios.get(`${API_BASE_URL}/Products/getProduct/${productId}`),
-          axios.get(`${API_BASE_URL}/Products`),
-        ]);
+    dispatch(fetchSingleProduct(productId));
+  }, []);
 
-        // Store the response data directly
-        setProduct(productResponse.data);
-
-        // Filter similar products from the correct data path
-        const similar = allProductsResponse.data
-          .filter(
-            (p) =>
-              p.productCategory === productResponse.data.productCategory &&
-              p._id !== productId
-          )
-          .slice(0, 6);
-        setSimilarProducts(similar);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const product = useSelector((state) => state.product.productSingle);
+  
+  const {user} = useSelector((state) => state.auth);
 
 
-    fetchProductData();
-  }, [productId]);
-
-
-  if (loading) {
-    return (
-      <Container>
-        <Typography variant="h6">Loading product details...</Typography>
-      </Container>
-    );
-  }
-
-  if (error) {
-    return (
-      <Container>
-        <Typography variant="h6" color="error">
-          Error: {error}
-        </Typography>
-      </Container>
-    );
-  }
+  // console.log("🚀 ~ CategoryPage ~ user1:", product.likes)
 
   const addToCart = (product) => {
     const existingItem = cartItems.find((item) => item.id === product.id);
@@ -111,74 +64,33 @@ const CategoryPage = () => {
       setCartItems([...cartItems, { ...product, quantity: 1 }]);
     }
   };
-
-  const removeFromCart = (product) => {
-    const updatedCartItems = cartItems.filter((item) => item.id !== product.id);
-    setCartItems(updatedCartItems);
-  };
-
-  const addToFavorites = (product) => {
-    const existingFavorite = favorites.find((favorite) => favorite.id === product.id);
-    if (!existingFavorite) {
-      setFavorites([...favorites, product]);
-    }
-  };
-
-  const removeFromFavorites = (product) => {
-    const updatedFavorites = favorites.filter((favorite) => favorite.id !== product.id);
-    setFavorites(updatedFavorites);
-  };
-
-  const handleProductClick = (product) => {
-    setSelectedProduct(product);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedProduct(null);
-  };
-
   const handleAddToCart = (e, product) => {
     e.stopPropagation(); // Prevent opening modal when clicking cart button
     addToCart(product);
     toast.success("Product added to cart!");
   };
-
-  const handleRemoveFromCart = (product) => {
-    removeFromCart(product);
-    toast.success('Product removed from cart!');
-  };
-
   const handleAddToFavorites = (e) => {
     e.stopPropagation(); // Prevent opening modal when clicking favorite button
+    if (!user) {
+      // Show toast notification if user is not logged in
+      toast.error("Please login to add items to favorites!");
+      return;
+    }
+
     if (product?._id) {
       dispatch(putLikeForProduct(product._id));
+      toast.success("Product like status updated!");
+    }
+  };
+
+  if (!product) {
+    console.log("🚀 Product not found");
+    return <div>Loading...</div>;
   }
-  };
-
-
-
-  const handleCardClick = (product) => {
-    navigate(`/product/${product._id}`);
-  };
-
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
-
-
-      <ToastContainer
-        position="top-left"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-        transition:Bounce
-      />
+      <ToastContainer />
 
       {product && (
         <>
@@ -186,10 +98,10 @@ const CategoryPage = () => {
             <Link onClick={() => navigate('/')} underline="hover">
               Home
             </Link>
-            <Link onClick={() => navigate(`/${product.productCategory}`)} underline="hover">
-              {product.productCategory}
+            <Link onClick={() => navigate(`/${product?.productCategory}`)} underline="hover">
+              {product?.productCategory}
             </Link>
-            <Typography color="text.primary">{product.productName}</Typography>
+            <Typography color="text.primary">{product?.productName}</Typography>
           </Breadcrumbs>
 
           <Grid container spacing={4}>
@@ -197,8 +109,8 @@ const CategoryPage = () => {
               <Paper elevation={0}>
                 <Box
                   component="img"
-                  src={"https://res.cloudinary.com/dqgv2opxi/image/upload/v1732903373/dcst8vyre6t5462j5wvu.png"}
-                  alt={product.productName}
+                  src={product?.productImage.url}
+                  alt={product?.productName}
                   sx={{
                     width: "100%",
                     height: "50%",
@@ -210,7 +122,7 @@ const CategoryPage = () => {
 
             <Grid item xs={12} md={4}>
               <Typography variant="h4" gutterBottom>
-                {product.productName}
+                {product?.productName}
               </Typography>
               <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
                 <Rating value={4.5} precision={0.5} readOnly />
@@ -220,23 +132,23 @@ const CategoryPage = () => {
               </Box>
               <Divider sx={{ my: 2 }} />
               <Typography variant="h5" color="primary" gutterBottom>
-                ${product.productPrice}
+                ${product?.productPrice}
               </Typography>
               <Typography variant="body1" paragraph>
-                {product.productDescription}
+                {product?.productDescription}
               </Typography>
 
               <List>
                 <ListItem>
                   <ListItemText
                     primary="Category"
-                    secondary={product.productCategory}
+                    secondary={product?.productCategory}
                   />
                 </ListItem>
                 <ListItem>
                   <ListItemText
                     primary="Size"
-                    secondary={product.productCategorySize}
+                    secondary={product?.productCategorySize}
                   />
                 </ListItem>
               </List>
@@ -245,7 +157,7 @@ const CategoryPage = () => {
             <Grid item xs={12} md={3}>
               <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
                 <Typography variant="h4" color="primary" gutterBottom>
-                  ${product.productPrice}
+                  ${product?.productPrice}
                 </Typography>
 
                 <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
@@ -283,7 +195,7 @@ const CategoryPage = () => {
                   onClick={handleAddToFavorites}
                   fullWidth
                 >
-                  Add to Wishlist
+                  {product?.likes?.includes(user?._id) ? 'Remove from Wishlist' : 'Add to Wishlist'}
                 </Button>
 
                 <Box sx={{ mt: 3, p: 2, bgcolor: "grey.100", borderRadius: 1 }}>
@@ -303,7 +215,7 @@ const CategoryPage = () => {
             <Typography variant="h5" gutterBottom>
               Similar Products
             </Typography>
-            <Grid container spacing={2}>
+            {/* <Grid container spacing={2}>
               {similarProducts.map((similarProduct) => (
                 <Grid item xs={6} sm={4} md={2} key={similarProduct._id}>
                   <Card
@@ -334,7 +246,7 @@ const CategoryPage = () => {
                   </Card>
                 </Grid>
               ))}
-            </Grid>
+            </Grid> */}
           </Box>
         </>
       )}

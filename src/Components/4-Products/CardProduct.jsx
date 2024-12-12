@@ -77,21 +77,20 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
   const { id } = useParams();
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [categories, setCategories] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const [favorites, setFavorites] = useState([]);
-
-  useEffect(() => {
-    dispatch(fetchProduct());
-  }, [dispatch]);
-
   const Products = useSelector((state) => state.product.product);
+     
+  useEffect(() => {  
+    dispatch(fetchProduct());
+  }, [dispatch]); 
+
 
 
 
   const handleAddToCart = (e, product) => {
 
-  };
+  };  
 
   const handleAddToFavorites = async (e, product) => {
     e.stopPropagation();
@@ -119,7 +118,7 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
             <Grid item xs={12} md={6}>
               <CardMedia
                 component="img"
-                src={`https://myserverbackend.up.railway.app/uploads/${product.productImage}`}
+                src={product.productImage.url}
                 alt={product.productTitle}
                 style={{ width: "100%", height: "75%", borderRadius: "8px" }}
               />
@@ -165,23 +164,7 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
 
   return (
     <Box sx={{ py: 8, backgroundColor: "#fff" }}>
-
-
-      <ToastContainer
-        position="top-left"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-        transition="Bounce"
-      />
-
-
+      <ToastContainer />
       <Container maxWidth="xl">
         <Typography
           variant="h3"
@@ -198,13 +181,10 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
           Discover our handpicked selection of premium lace fabrics and wedding
           materials
         </Typography>
-
-        {/* <CategoryFilter /> */}
-
         <Grid container spacing={4}>
-          {
+          {Array.isArray(Products) && Products.length > 0 ? (
             Products.map((product) => (
-              <Grid item key={product._id} xs={12} sm={6} md={3}>
+              <Grid key={product._id} xs={12} sm={6} md={3}>
                 <StyledCard onClick={() => setSelectedProduct(product)}>
                   <ProductImage
                     image={product.productImage.url}
@@ -263,7 +243,7 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
                       <Box sx={{ display: "flex", alignItems: "center" }}>
                         <LocalShippingIcon
                           sx={{ fontSize: 16, color: "success.main", mr: 0.5 }}
-                        />
+                        /> 
                         <Typography variant="caption" color="success.main">
                           Free Shipping
                         </Typography>
@@ -272,7 +252,11 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
                   </CardContent>
                 </StyledCard>
               </Grid>
-            ))}
+            ))) : (
+            <Typography variant="h6" align="center" sx={{ width: '100%' }}>
+              No products available
+            </Typography>
+          )}
         </Grid>
       </Container>
 

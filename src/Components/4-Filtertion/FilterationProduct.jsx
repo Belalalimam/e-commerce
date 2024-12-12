@@ -150,7 +150,7 @@ const FeaturedProducts = ({ name }) => {
 
   const products = useSelector((state) => state.product.product);
   const productsCount = useSelector((state) => state.product.product);
-  console.log("🚀 ~ FeaturedProducts ~ productsCount:", productsCount)
+  // console.log("🚀 ~ FeaturedProducts ~ productsCount:", productsCount)
 
 
   // const pages = Math.ceil( products.length / PRODUCT_PER_PAGE)
@@ -175,9 +175,7 @@ const FeaturedProducts = ({ name }) => {
   }, [])
 
   const getFilteredProducts = () => {
-
     if (!Array.isArray(products)) {
-      console.log('Products is not an array:', products);
       return [products];
     }
 
@@ -313,12 +311,13 @@ const FeaturedProducts = ({ name }) => {
 
         <Grid container spacing={4}>
           {getFilteredProducts().map((product) => (
-            <Grid item key={product._id} xs={12} sm={6} md={3}>
+            product?.productImage?.url ? (
+            <Grid key={product} xs={12} sm={6} md={3}>
               <StyledCard onClick={() => setSelectedProduct(product)}>
                 <ProductImage
                   component="img"
-                  image={product.productImage}
-                  title={product.productTitle}
+                  image={product.productImage.url}
+                    title={product.productImage}
                 />
                 {/* <ProductActions className="product-actions">
                     <IconButton
@@ -381,6 +380,7 @@ const FeaturedProducts = ({ name }) => {
                 </CardContent>
               </StyledCard>
             </Grid>
+            ) : null
           ))}
         </Grid>
 
@@ -392,9 +392,9 @@ const FeaturedProducts = ({ name }) => {
         />
       </Container>
 
-      <div className="flex justify-center"> 
+      {/* <div className="flex justify-center"> 
         <Pagination count={PRODUCT_PER_PAGE} currentPage={currentPage} setCurrentPage={setCurrentPage} color="primary" />
-      </div>
+      </div> */}
 
     </Box>
   );
