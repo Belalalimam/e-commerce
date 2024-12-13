@@ -80,10 +80,15 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
   const [cartItems, setCartItems] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const Products = useSelector((state) => state.product.product);
+  const { like } = useSelector(state => state.like);
+
      
   useEffect(() => {  
+    if(id) {
+      dispatch(getUserProfileLike(id))
+    }
     dispatch(fetchProduct());
-  }, [dispatch]); 
+  }, [dispatch, id]); 
 
 
 
@@ -92,9 +97,9 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
 
   };  
 
-  const handleAddToFavorites = async (e, product) => {
+  const handleAddToFavorites = (e, productId) => {
     e.stopPropagation();
-    dispatch(putLikeForProduct(id))
+    dispatch(putLikeForProduct(productId));
   };
 
   const handleCardClick = (product) => {
@@ -191,21 +196,24 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
                     title={product.productTitle}
                     id='bell'
                   >
+
+
                     <ProductActions className="product-actions">
-                      <IconButton
-                        onClick={(e) => handleAddToFavorites(e, product)}
-                        sx={{
-                          color: favorites.some(
-                            (item) => item._id === product._id
-                          )
-                            ? "red"
-                            : "white",
-                          backgroundColor: "rgba(255,255,255,0.2)",
-                          "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
-                        }}
-                      >
-                        <FavoriteIcon />
-                      </IconButton>
+
+                    <IconButton
+                      onClick={(e) => handleAddToFavorites(e, product._id)}
+                      sx={{
+                        color: Array.isArray(like) && like.some(item => item._id === product._id) ? "red" : "white",
+                        backgroundColor: "rgba(255,255,255,0.2)",
+                        "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
+                        zIndex: 2 // Ensure button stays above other elements
+                      }}
+                    >
+                      <FavoriteIcon />
+                    </IconButton>
+
+
+
                       <IconButton
                         onClick={(e) => handleAddToCart(e, product)}
                         sx={{
@@ -221,6 +229,9 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
                         <ShoppingCartIcon />
                       </IconButton>
                     </ProductActions>
+
+
+
                   </ProductImage>
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography gutterBottom variant="h6">

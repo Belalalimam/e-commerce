@@ -36,6 +36,9 @@ const productSlice = createSlice({
         clearIsProductCreated(state) {
             state.isProductCreated = false;
         },
+        deleteProduct(state,action) {
+            state.product = state.product.filter(p => p._id !== action.payload);        
+        },
 
 
     }

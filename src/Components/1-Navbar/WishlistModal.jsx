@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Box, Typography, Button, Divider, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useSelector, useDispatch } from "react-redux";
-import { getUserProfileLike } from '../../redux/apiCalls/likeApiCalls'
+import { getUserProfileLike, putLikeForProduct } from '../../redux/apiCalls/likeApiCalls'
  
 const style = {
   position: "absolute",
@@ -22,17 +22,23 @@ const WishlistModal = ({ open, onClose }) => {
   const dispatch = useDispatch();
   const id = localStorage.getItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo"))._id : null;
   
+
+  const handleRemoveFromWishlist = (likeId) => {
+    dispatch(putLikeForProduct(likeId));
+    dispatch(getUserProfileLike(id));
+  };
+
   useEffect(() => {
     if(id) {
       dispatch(getUserProfileLike(id))
     }
-  }, [dispatch, id, open]) // Added open as dependency
+  }, [dispatch, id, open, like]) // Added open as dependency
 
   const likeItems = Array.isArray(like) ? like : [];
 
   return (
     <Modal open={open} onClose={onClose}>
-      <Box sx={style}>
+      <Box sx={style} className='overscroll-auto'>
         <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
           My Wishlist ({likeItems?.length})
         </Typography>
@@ -66,12 +72,12 @@ const WishlistModal = ({ open, onClose }) => {
                 </Typography>
               </Box>
             </Box>
-            {/* <IconButton
+            <IconButton
               onClick={() => handleRemoveFromWishlist(item._id)}
               color="error"
             >
               <DeleteIcon />
-            </IconButton> */}
+            </IconButton>
           </Box>
         ))}
         <Button

@@ -18,6 +18,7 @@ import Profial from "./Profial";
 import Test from './test'
 import "./App.css"
 import Dashboard from "./Dashboard";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const { user } = useSelector((state) => state.auth);
@@ -48,6 +49,7 @@ function App() {
   return (
     <>
         <ThemeProvider theme={theme}>
+          <ToastContainer />
           <NavContainer />
 
           <Routes>
@@ -63,9 +65,9 @@ function App() {
 
             <Route path="/" element={<FeaturedProducts name="Featured Products" />} />
 
-            <Route path="/profile/:id" element={<Profial />} />
-            <Route path="/login" element={!user ? <Login /> : <Navigate to="/profile/:id" />} />
-            <Route path="/register" element={!user ? <Register /> : <Navigate to="/profile/:id" />} />
+            <Route path="/profile" element={<Profial />} />
+            <Route path="/login" element={!user ? <Login /> : <Navigate to="/profile" />} />
+            <Route path="/register" element={!user ? <Register /> : <Navigate to="/profile" />} />
 
             <Route path="/admin/dashboard" element={<Dashboard />} />
 
