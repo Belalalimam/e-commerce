@@ -3,7 +3,8 @@ import { authReducer } from "./slices/authSlic";
 import { profileReducer } from "../redux/slices/profileSlic"
 import { likeReducer } from "./slices/likeReducer";
 import { productReducer } from './slices/productSlice'
-// import { catrReducer } from "./slices/catrReducer";
+import { cartReducer } from "./slices/cartReducer";
+import { categoryReducer } from "./slices/categoriesReducer";
 // import { passwordReducer } from "./slices/passwordSlice";
 
 const Store = configureStore({
@@ -12,7 +13,8 @@ const Store = configureStore({
        profile: profileReducer,
        like: likeReducer,
        product: productReducer,
-    //    catr: catrReducer,
+       cart: cartReducer,
+       category: categoryReducer,
     //    password: passwordReducer, 
     }
 });

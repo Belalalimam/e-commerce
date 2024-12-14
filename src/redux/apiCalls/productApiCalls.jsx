@@ -30,7 +30,7 @@ export function getProductsCount() {
 export function fetchProductsBasedOnCategory(category) {
   return async (dispatch) => {
     try {
-      const { data } = await request.get(`/api/products?category=${category}`);
+      const { data } = await request.get(`/products?category=${category}`);
       dispatch(productActions.setPostsCate(data));
     } catch (error) {
       toast.error(error.response.data.message);
@@ -134,6 +134,23 @@ export function deleteProduct(productId) {
       toast.error(error.response.data.message);
     }
   };
+}
+
+export function putCartForProduct(productId) {
+  return async (dispatch, getState) => {
+      try{
+          const state = getState();
+          const {data} = await request.put(`/Products/cart/${productId}`,{}, {
+              headers: {
+                  authorization: 'Bearer ' + state.auth.user.token
+              }
+          }); 
+          dispatch(productActions.setCart(data))
+      }catch(error){
+          toast.error(error.response.data.message);
+      }
+
+  }
 }
 
 // // Get All Posts

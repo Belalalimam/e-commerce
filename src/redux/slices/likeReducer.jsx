@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const likeSlice = createSlice({
     name: "like",
     initialState: {
-        like: null,
+        like: null, 
     },
     reducers: {
         setlike(state, action) {

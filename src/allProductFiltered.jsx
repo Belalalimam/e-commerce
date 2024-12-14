@@ -1,4 +1,4 @@
-// FilteredProductPage.jsx
+ // FilteredProductPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
@@ -23,12 +23,18 @@ import {
 import FilterListIcon from '@mui/icons-material/FilterList';
 import axios from 'axios';
 import FeaturedProducts from './Components/4-Products/CardProduct';
+import { fetchProductsBasedOnCategory } from './redux/apiCalls/productApiCalls'
+import { useDispatch, useSelector } from 'react-redux';
 
 const FilteredProductPage = () => {
   const { category } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch()
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const { productsCate } = useSelector(state => state.product)
+  console.log("🚀 ~ FilteredProductPage ~ productsCate:", productsCate)
 
   const [filters, setFilters] = useState({
     priceRange: [0, 1000],
@@ -41,6 +47,11 @@ const FilteredProductPage = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    dispatch(fetchProductsBasedOnCategory(category));
+    window.scrollTo(0, 0);
+  }, [category]);
 
   const handleFilterChange = (type, value) => {
     setFilters(prev => ({

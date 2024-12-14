@@ -295,7 +295,7 @@ const handleDeleteConfirm = () => {
                       onChange={handleInputChange}
                     >
                       <MenuItem value="lace">Lace</MenuItem>
-                      <MenuItem value="elastic">Elastic</MenuItem>
+                      <MenuItem value="fabric">fabric</MenuItem>
                       <MenuItem value="home">Home</MenuItem>
                     </Select>
                   </FormControl>
@@ -478,7 +478,7 @@ const handleDeleteConfirm = () => {
                     }
                   >
                     <MenuItem value="lace">Lace</MenuItem>
-                    <MenuItem value="elastic">Elastic</MenuItem>
+                    <MenuItem value="fabric">fabric</MenuItem>
                     <MenuItem value="home">Home</MenuItem>
                   </Select>
                 </FormControl>

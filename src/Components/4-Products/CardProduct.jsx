@@ -29,6 +29,7 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { putLikeForProduct } from '../../redux/apiCalls/likeApiCalls';
+import { putCartForProduct, getUserProfileCart } from '../../redux/apiCalls/cartApiCalls';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 import { fetchProduct } from "../../redux/apiCalls/productApiCalls";
@@ -77,9 +78,8 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
   const { id } = useParams();
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [cartItems, setCartItems] = useState([]);
-  const [favorites, setFavorites] = useState([]);
   const Products = useSelector((state) => state.product.product);
+  const { cart } = useSelector(state => state.cart)
   const { like } = useSelector(state => state.like);
 
      
@@ -87,15 +87,18 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
     if(id) {
       dispatch(getUserProfileLike(id))
     }
+    if(id) {
+      dispatch(getUserProfileCart(id))
+    }
     dispatch(fetchProduct());
   }, [dispatch, id]); 
 
 
 
-
-  const handleAddToCart = (e, product) => {
-
-  };  
+  const handleAddToCart = (e, productId) => {
+    e.stopPropagation(); // Prevent modal from opening
+    dispatch(putCartForProduct(productId));
+  }; 
 
   const handleAddToFavorites = (e, productId) => {
     e.stopPropagation();
@@ -214,20 +217,17 @@ const FeaturedProducts = ({ name, typey, category, initialCategory = 'all' }) =>
 
 
 
-                      <IconButton
-                        onClick={(e) => handleAddToCart(e, product)}
-                        sx={{
-                          color: cartItems.some(
-                            (item) => item._id === product._id
-                          )
-                            ? "#4CAF50"
-                            : "white",
-                          backgroundColor: "rgba(255,255,255,0.2)",
-                          "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
-                        }}
-                      >
-                        <ShoppingCartIcon />
-                      </IconButton>
+                    <IconButton
+                      onClick={(e) => handleAddToCart(e, product._id)}
+                      sx={{
+                        color: Array.isArray(cart) && cart.some(item => item._id === product._id) ? "#4CAF50" : "white",
+                        backgroundColor: "rgba(255,255,255,0.2)",
+                        "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
+                        zIndex: 2
+                      }}
+                    >
+                      <ShoppingCartIcon />
+                    </IconButton>
                     </ProductActions>
 
 

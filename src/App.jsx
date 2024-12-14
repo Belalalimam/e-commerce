@@ -65,9 +65,9 @@ function App() {
 
             <Route path="/" element={<FeaturedProducts name="Featured Products" />} />
 
-            <Route path="/profile" element={<Profial />} />
-            <Route path="/login" element={!user ? <Login /> : <Navigate to="/profile" />} />
-            <Route path="/register" element={!user ? <Register /> : <Navigate to="/profile" />} />
+            <Route path="/profile/:id" element={<Profial />} />
+            <Route path="/login" element={!user ? <Login /> : <Navigate to="/profile/:id" />} />
+            <Route path="/register" element={!user ? <Register /> : <Navigate to="/profile/:id" />} />
 
             <Route path="/admin/dashboard" element={<Dashboard />} />
 

@@ -39,6 +39,9 @@ const productSlice = createSlice({
         deleteProduct(state,action) {
             state.product = state.product.filter(p => p._id !== action.payload);        
         },
+        setCart(state,action) {
+          state.product.cart = action.payload.cart;
+        },
 
 
     }

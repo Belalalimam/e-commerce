@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../../redux/apiCalls/authApiCalls";
 
 
-const Header = ({ onWishlistClick, wishlistItems }) => {
+const Header = ({ onWishlistClick, wishlistItems, onCartClick }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -149,7 +149,7 @@ const Header = ({ onWishlistClick, wishlistItems }) => {
             </Link>
 
             <Link to="/" className="action-item">
-              <IconButton color="inherit" onClick={handleCartClick}>
+              <IconButton color="inherit" onClick={onCartClick}>
                 <Badge badgeContent={cartCount} color="secondary">
                   <FaShoppingCart />
                 </Badge>

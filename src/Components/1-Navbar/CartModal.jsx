@@ -1,10 +1,10 @@
-// WishlistModal.js
-import React, { useEffect, useState } from 'react';
+// Update the imports
+import React, { useEffect } from 'react';
 import { Modal, Box, Typography, Button, Divider, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useSelector, useDispatch } from "react-redux";
-import { getUserProfileLike, putLikeForProduct } from '../../redux/apiCalls/likeApiCalls'
- 
+import { getUserProfileCart, putCartForProduct } from '../../redux/apiCalls/cartApiCalls'
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -17,33 +17,31 @@ const style = {
   borderRadius: "10px",
 };
 
-const WishlistModal = ({ open, onClose }) => {
-  const { like } = useSelector(state => state.like);
+const CartModal = ({ open, onClose }) => {
+  const { cart } = useSelector(state => state.cart);
   const dispatch = useDispatch();
   const id = localStorage.getItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo"))._id : null;
-  
 
-  const handleRemoveFromWishlist = (likeId) => {
-    dispatch(putLikeForProduct(likeId));
-    dispatch(getUserProfileLike(id));
+  const handleRemoveFromCart = (cartId) => {
+    dispatch(putCartForProduct(cartId));
   };
 
   useEffect(() => {
     if(id) {
-      dispatch(getUserProfileLike(id))
+      dispatch(getUserProfileCart(id))
     }
-  }, [dispatch, id, open, like]) // Added open as dependency
+  }, [dispatch, id, open, cart])
 
-  const likeItems = Array.isArray(like) ? like : [];
+  const cartItems = Array.isArray(cart) ? cart : [];
 
   return (
     <Modal open={open} onClose={onClose}>
-      <Box sx={style} className='overscroll-auto'>
+      <Box sx={style}>
         <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
-          My Wishlist ({likeItems?.length})
+          My Cart ({cartItems?.length})
         </Typography>
         <Divider />
-        {likeItems?.map((item) => (
+        {cartItems?.map((item) => (
           <Box
             key={item._id}
             sx={{
@@ -73,7 +71,7 @@ const WishlistModal = ({ open, onClose }) => {
               </Box>
             </Box>
             <IconButton
-              onClick={() => handleRemoveFromWishlist(item._id)}
+              onClick={() => handleRemoveFromCart(item._id)}
               color="error"
             >
               <DeleteIcon />
@@ -93,4 +91,4 @@ const WishlistModal = ({ open, onClose }) => {
   );
 };
 
-export default WishlistModal;
+export default CartModal;
