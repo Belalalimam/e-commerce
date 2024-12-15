@@ -43,7 +43,7 @@ const Dashboard = () => {
   const handleClose = () => setOpen(false);
   const [open, setOpen] = useState(false);
 // Add Product functions
-const [productData, setProductData] = useState({productName: "", productDescription: "", productCategory: "", productImage: null});
+const [productData, setProductData] = useState({productName: "", productDescription: "", productCategory: "", productCategorySize:"", productColor:"", productImage: null});
 const { loading, isProductCreated } = useSelector((state) => state.product);
 const handleInputChange = (e) => {
   setProductData({
@@ -66,13 +66,14 @@ const handleSubmit = async (e) => {
       productDescription: "",
       productCategory: "",
       productImage: null,
-      // productCategorySize: "",
+      productCategorySize: "",
+      productColor: "",
       // productPrice: "",
-      // productColor: "",
     });
   } catch (error) {
     console.error("Error creating product:", error);
   }
+  handleClose()
 };
 const handleImageChange = (e) => {
   const file = e.target.files[0];
@@ -85,13 +86,15 @@ const handleImageChange = (e) => {
 };
 // Edit Product functions
 const [editModalOpen, setEditModalOpen] = useState(false);
-const [editProductData, setEditProductData] = useState({ productName: "", productDescription: "", productCategory: "", productImage: null });
+const [editProductData, setEditProductData] = useState({ productName: "", productDescription: "", productCategory: "", productCategorySize:"", productColor:"", productImage: null });
 const handleEditOpen = (product) => {
   setEditProductData({
     id: product._id,
     productName: product.productName,
     productDescription: product.productDescription,
     productCategory: product.productCategory,
+    productCategorySize: product.productCategorySize,
+    productColor: product.productColor,
   });
   setEditModalOpen(true);
 };
@@ -176,6 +179,9 @@ const handleDeleteConfirm = () => {
                 <TableCell>Image</TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell>Description</TableCell>
+                <TableCell>Category</TableCell>
+                <TableCell>CategorySize</TableCell>
+                <TableCell>Color</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -196,12 +202,14 @@ const handleDeleteConfirm = () => {
                   <TableCell>{product.productName}</TableCell>
                   <TableCell>{product.productDescription}</TableCell>
                   <TableCell>{product.productCategory}</TableCell>
+                  <TableCell>{product.productCategorySize}</TableCell>
+                  <TableCell>{product.productColor}</TableCell>
                   <TableCell>
                     <Button
                       variant="contained"
                       color="primary"
                       size="small"
-                      sx={{ mr: 1 }}
+                      sx={{ mr: 1, my: 1 }}
                       onClick={() => handleEditOpen(product)}
                     >
                       EditContent
@@ -210,7 +218,7 @@ const handleDeleteConfirm = () => {
                       variant="contained"
                       color="primary"
                       size="small"
-                      sx={{ mr: 1 }}
+                      sx={{ mr: 1, my: 1 }}
                       onClick={() => handleImageEditOpen(product)}
                     >
                       EditImage
@@ -219,6 +227,7 @@ const handleDeleteConfirm = () => {
                       variant="contained" 
                       color="error" 
                       size="small"
+                      sx={{ mr: 1, my: 1 }}
                       onClick={() => handleDeleteOpen(product)}
                     >
                       Delete
@@ -266,10 +275,10 @@ const handleDeleteConfirm = () => {
                 {/* <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
-                    name="productPrice"
+                    name="productCategorySize"
                     label="Price"
                     type="number"
-                    value={productData.productPrice}
+                    value={productData.productCategorySize}
                     onChange={handleInputChange}
                   />
                 </Grid> */}
@@ -295,13 +304,12 @@ const handleDeleteConfirm = () => {
                       onChange={handleInputChange}
                     >
                       <MenuItem value="lace">Lace</MenuItem>
-                      <MenuItem value="fabric">fabric</MenuItem>
-                      <MenuItem value="home">Home</MenuItem>
+                      <MenuItem value="Elastic">Elastic</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
 
-                {/* <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={4}>
                   <FormControl fullWidth>
                     <InputLabel>Size</InputLabel>
                     <Select
@@ -332,7 +340,7 @@ const handleDeleteConfirm = () => {
                       <MenuItem value="blue">Blue</MenuItem>
                     </Select>
                   </FormControl>
-                </Grid> */}
+                </Grid>
 
                 <Grid item xs={12}>
                   <Button variant="contained" component="label">
@@ -480,6 +488,49 @@ const handleDeleteConfirm = () => {
                     <MenuItem value="lace">Lace</MenuItem>
                     <MenuItem value="fabric">fabric</MenuItem>
                     <MenuItem value="home">Home</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={4}>
+                <FormControl fullWidth>
+                  <InputLabel>CategorySize</InputLabel>
+                  <Select
+                    name="productCategorySize"
+                    value={editProductData.productCategorySize}
+                    onChange={(e) =>
+                      setEditProductData({
+                        ...editProductData,
+                        productCategorySize: e.target.value,
+                      })
+                    }
+                  >
+                    <MenuItem value="xs">XS</MenuItem>
+                      <MenuItem value="s">S</MenuItem>
+                      <MenuItem value="m">M</MenuItem>
+                      <MenuItem value="l">L</MenuItem>
+                      <MenuItem value="xl">XL</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={4}>
+                <FormControl fullWidth>
+                  <InputLabel>productColor</InputLabel>
+                  <Select
+                    name="productColor"
+                    value={editProductData.productColor}
+                    onChange={(e) =>
+                      setEditProductData({
+                        ...editProductData,
+                        productColor: e.target.value,
+                      })
+                    }
+                  >
+                    <MenuItem value="black">Black</MenuItem>
+                      <MenuItem value="white">White</MenuItem>
+                      <MenuItem value="red">Red</MenuItem>
+                      <MenuItem value="blue">Blue</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>

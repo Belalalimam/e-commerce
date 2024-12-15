@@ -1,21 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { Container, Card, CardMedia, CardContent, Typography, Button, Dialog, DialogTitle, DialogContent, IconButton, Box } from "@mui/material";
-import Grid from "@mui/material/Grid2";
+import React, { useEffect } from 'react';
+import { Container, Card, CardMedia, CardContent, Typography, IconButton, Box, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useNavigate, useParams } from 'react-router-dom';
-import { useSelector, useDispatch } from "react-redux";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import CloseIcon from "@mui/icons-material/Close";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import { useNavigate, useParams } from 'react-router-dom';
+import { ToastContainer } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { putLikeForProduct } from './redux/apiCalls/likeApiCalls';
+import { putCartForProduct } from './redux/apiCalls/cartApiCalls';
+import { fetchProductsBasedOnCategory } from './redux/apiCalls/productApiCalls';
 
-import { putLikeForProduct } from '../../redux/apiCalls/likeApiCalls';
-import { putCartForProduct, getUserProfileCart } from '../../redux/apiCalls/cartApiCalls';
-import { fetchProduct } from "../../redux/apiCalls/productApiCalls";
-
-// Styled Components
 const StyledCard = styled(Card)(({ theme }) => ({
   height: "100%",
   width: "300px",
@@ -28,7 +23,6 @@ const StyledCard = styled(Card)(({ theme }) => ({
     boxShadow: theme.shadows[10],
   },
 }));
-
 const ProductImage = styled(CardMedia)({
   height: 300,
   position: "relative",
@@ -39,7 +33,6 @@ const ProductImage = styled(CardMedia)({
     },
   },
 });
-
 const ProductActions = styled(Box)({
   position: "absolute",
   bottom: 0,
@@ -54,58 +47,18 @@ const ProductActions = styled(Box)({
   gap: "10px",
 });
 
-// Modal Component
-const CategoryModal = ({ product, open, onClose, handleCardClick }) => {
-  if (!product) return null;
-
-  return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ m: 0, p: 2 }}>
-        <IconButton onClick={onClose} sx={{ position: "absolute", right: 8, top: 8 }}>
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent onClick={() => handleCardClick(product)}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
-            <CardMedia
-              component="img"
-              src={product.productImage.url}
-              alt={product.productName}
-              style={{ width: "100%", height: "auto", borderRadius: "8px" }}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Typography variant="h4" gutterBottom>{product.productName}</Typography>
-            <Typography variant="body1" paragraph>{product.productDescription}</Typography>
-            <Typography variant="body2">Category: {product.productCategory}</Typography>
-            <Typography variant="body2">Color: {product.productColor}</Typography>
-            <Typography variant="body2">Size: {product.productCategorySize}</Typography>
-          </Grid>
-        </Grid>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-// Main Component
-const FeaturedProducts = ({ name }) => {
+const FilteredCategory = () => {
   const dispatch = useDispatch();
-  const { id } = useParams();
+  const { category } = useParams();
   const navigate = useNavigate();
-  const [selectedProduct, setSelectedProduct] = useState(null);
 
-  const Products = useSelector((state) => state.product.product);
+  const { productsCate } = useSelector((state) => state.product);
   const { cart } = useSelector(state => state.cart);
   const { like } = useSelector(state => state.like);
 
   useEffect(() => {
-    if (id) {
-      dispatch(getUserProfileLike(id));
-      dispatch(getUserProfileCart(id));
-    }
-    dispatch(fetchProduct());
-  }, [dispatch, id]);
+    dispatch(fetchProductsBasedOnCategory(category));
+  }, [dispatch, category]);
 
   const handleAddToCart = (e, productId) => {
     e.stopPropagation();
@@ -125,16 +78,23 @@ const FeaturedProducts = ({ name }) => {
     <Box sx={{ py: 8, backgroundColor: "#fff" }}>
       <ToastContainer />
       <Container maxWidth="xl">
-        <Typography variant="h3" align="center" sx={{ mb: 5, fontWeight: 600, color: "#1a1a1a" }}>
-          {name}
+        <Typography
+          variant="h3"
+          align="center"
+          sx={{ mb: 5, fontWeight: 600, color: "#1a1a1a" }}
+        >
+          {category?.charAt(0).toUpperCase() + category?.slice(1)} Collection
         </Typography>
 
         <Grid container spacing={4}>
-          {Array.isArray(Products) && Products.length > 0 ? (
-            Products.map((product) => (
+          {productsCate?.length > 0 ? (
+            productsCate.map((product) => (
               <Grid key={product._id} xs={12} sm={6} md={3}>
-                <StyledCard onClick={() => setSelectedProduct(product)}>
-                  <ProductImage image={product.productImage.url} title={product.productTitle}>
+                <StyledCard onClick={() => handleCardClick(product)}>
+                  <ProductImage
+                    image={product.productImage.url}
+                    title={product.productTitle}
+                  >
                     <ProductActions className="product-actions">
                       <IconButton
                         onClick={(e) => handleAddToFavorites(e, product._id)}
@@ -147,6 +107,7 @@ const FeaturedProducts = ({ name }) => {
                       >
                         <FavoriteIcon />
                       </IconButton>
+
                       <IconButton
                         onClick={(e) => handleAddToCart(e, product._id)}
                         sx={{
@@ -161,14 +122,22 @@ const FeaturedProducts = ({ name }) => {
                     </ProductActions>
                   </ProductImage>
                   <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography gutterBottom variant="h6">{product.productName}</Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    <Typography gutterBottom variant="h6">
+                      {product.productName}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 2 }}
+                    >
                       {product.productCategory}
                     </Typography>
                     <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <Box sx={{ display: "flex", alignItems: "center" }}>
                         <LocalShippingIcon sx={{ fontSize: 16, color: "success.main", mr: 0.5 }} />
-                        <Typography variant="caption" color="success.main">Free Shipping</Typography>
+                        <Typography variant="caption" color="success.main">
+                          Free Shipping
+                        </Typography>
                       </Box>
                     </Box>
                   </CardContent>
@@ -177,20 +146,13 @@ const FeaturedProducts = ({ name }) => {
             ))
           ) : (
             <Typography variant="h6" align="center" sx={{ width: '100%' }}>
-              No products available
+              No products available in this category
             </Typography>
           )}
         </Grid>
-
-        <CategoryModal
-          product={selectedProduct}
-          open={selectedProduct !== null}
-          onClose={() => setSelectedProduct(null)}
-          handleCardClick={handleCardClick}
-        />
       </Container>
     </Box>
   );
 };
 
-export default FeaturedProducts;
+export default FilteredCategory;

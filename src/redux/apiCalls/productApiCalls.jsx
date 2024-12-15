@@ -27,11 +27,12 @@ export function getProductsCount() {
 }
 
 // Fetch Posts Based On Category
-export function fetchProductsBasedOnCategory(category) {
+export function fetchProductsBasedOnCategory(productCategory) {
   return async (dispatch) => {
     try {
-      const { data } = await request.get(`/products?category=${category}`);
-      dispatch(productActions.setPostsCate(data));
+      const { data } = await request.get(`/Products?productCategory=${productCategory}`);
+      dispatch(productActions.setProductCate(data));
+      console.log("🚀 ~ return ~ data:", data)
     } catch (error) {
       toast.error(error.response.data.message);
     }
@@ -41,18 +42,19 @@ export function fetchProductsBasedOnCategory(category) {
 // Create Product
 export const createProduct = (formData) => async (dispatch, getState) => {
   try {
-    dispatch({ type: "CREATE_PRODUCT_REQUEST" });
-    const response = await request.post('/products/newProduct', formData,{
+    dispatch(productActions.setLoading())
+    await request.post('/products/newProduct', formData,{
       headers: {
         authorization: 'Bearer ' + getState().auth.user.token,
         'Content-Type': 'multipart/form-data'
       }
     });
-    dispatch({ type: "CREATE_PRODUCT_SUCCESS", payload: response.data });
-    return response.data;
+    toast.success("Product created successfully!");
+    dispatch(productActions.setIsProductCreated());
+    setTimeout(() => dispatch(productActions.clearIsProductCreated()), 2000);
   } catch (error) {
-    dispatch({ type: "CREATE_PRODUCT_FAIL", payload: error.message });
-    throw error;
+    dispatch(productActions.clearLoading());
+    toast.error(`Failed to create product ${error.response.data.message}`);
   }
 };
 

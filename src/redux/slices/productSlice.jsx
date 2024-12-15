@@ -14,11 +14,11 @@ const productSlice = createSlice({
         setProducts(state, action) {
             state.product = action.payload
         },
-        setProductCate(state, action) {
-            state.product = action.payload
-        },
         setProductCount(state, action) {
-            state.product = action.payload
+            state.productsCount = action.payload
+        },
+        setProductCate(state, action) {
+            state.productsCate = action.payload
         },
         setSingleProduct(state, action) {
             state.productSingle = action.payload

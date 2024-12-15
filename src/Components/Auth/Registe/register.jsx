@@ -28,17 +28,16 @@ const Register = () => {
 
   };
 
-  if (registerMessage) {
+  if(registerMessage) {
     swal({
-      title: "Success",
-      text: registerMessage,
-      icon: "success",
+        title: registerMessage,
+        icon: "success"
     }).then(isOk => {
-      if (isOk) {
-        navigate('/login');
-      }
+        if(isOk) {
+           navigate("/login");
+        }
     })
-  }
+}
 
   return (
     <Box

@@ -21,8 +21,10 @@ const Header = ({ onWishlistClick, wishlistItems, onCartClick }) => {
     'All Categories',
     'Lace',
     'Elastic',
-    'Home',
-    'test',
+    '1 >>> 5',
+    '5 >>> 10',
+    '10 >>> 20',
+    'No Limits',
   ];
 
   const dispatch = useDispatch();
@@ -35,7 +37,7 @@ const Header = ({ onWishlistClick, wishlistItems, onCartClick }) => {
     }
     return user ? ['Profile', 'Logout'] : ['Login', 'Register'];
   }, [user]);
-  
+
 
   const handleMenuItemClick = (setting) => {
     switch (setting.toLowerCase()) {
@@ -61,10 +63,6 @@ const Header = ({ onWishlistClick, wishlistItems, onCartClick }) => {
     handleCloseUserMenu();
   };
 
-
-
-
-
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -72,11 +70,16 @@ const Header = ({ onWishlistClick, wishlistItems, onCartClick }) => {
     setAnchorElUser(null);
   };
 
-
   const handleCartClick = () => {
     navigate('/cart');
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${searchQuery}&category=${selectedCategory}`);
+    }
+  };
 
 
   return (
@@ -125,17 +128,17 @@ const Header = ({ onWishlistClick, wishlistItems, onCartClick }) => {
                 ))}
               </select>
             </div>
-            <div className="search-input">
+            <form onSubmit={handleSearch} className="search-input">
               <input
                 type="text"
                 placeholder="What are you looking for?"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <button className="search-btn">
+              <button type="submit" className="search-btn">
                 <FaSearch />
               </button>
-            </div>
+            </form>
           </div>
 
           <div className="user-actions">
@@ -148,7 +151,7 @@ const Header = ({ onWishlistClick, wishlistItems, onCartClick }) => {
               <span className="desktop-only">Wishlist</span>
             </Link>
 
-            <Link to="/" className="action-item">
+            <Link to="#" className="action-item">
               <IconButton color="inherit" onClick={onCartClick}>
                 <Badge badgeContent={cartCount} color="secondary">
                   <FaShoppingCart />

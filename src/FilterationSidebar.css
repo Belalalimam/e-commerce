@@ -1,0 +1,196 @@
+.color-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.color-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.color-option:hover {
+  background-color: #f5f5f5;
+}
+
+.color-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #eee;
+}
+
+.size-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.size-btn {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.size-btn.selected {
+  background: #1976d2;
+  color: white;
+  border-color: #1976d2;
+}
+
+.main-container1 {
+  display: flex;
+  gap: 30px;
+  position: relative;
+  padding: 20px;
+}
+
+.filter-sidebar1 {
+  width: 100%;
+  height: 100vh;
+  flex-shrink: 0;
+  background: #722828;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  /* height: fit-content; */
+  position: sticky;
+  top: 20px;
+}
+
+.products-area1 {
+  flex: 1;
+}
+
+
+
+.filter-toggle1 {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  background: #f5f5f5;
+  cursor: pointer;
+}
+.search-results-container {
+  padding: 32px 0;
+  background-color: #fff;
+}
+
+.search-results-layout {
+  display: flex;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.filter-sidebar-container {
+  width: 280px;
+  border-right: 1px solid #eee;
+  flex-shrink: 0;
+}
+
+.products-container {
+  flex-grow: 1;
+  padding-left: 24px;
+}
+
+.search-title {
+  font-size: 24px;
+  margin-bottom: 24px;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+.no-results {
+  text-align: center;
+  width: 100%;
+  font-size: 18px;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .search-results-layout {
+    flex-direction: column;
+  }
+
+  .filter-sidebar-container {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 24px;
+  }
+
+  .products-container {
+    padding-left: 0;
+  }
+}
+
+
+/* Responsive Breakpoints */
+@media (max-width: 1024px) {
+  .product-container1 {
+    grid-template-columns: 240px 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .product-container1 {
+    grid-template-columns: 1fr;
+  }
+  
+  .filter-sidebar1 {
+    position: static;
+    margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .filter-toggle1 {
+    display: flex;
+  }
+
+  .filter-sidebar1 {
+    display: none;
+  }
+
+  .filter-sidebar.show {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 280px;
+    background: white;
+    z-index: 1000;
+    overflow-y: auto;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+  }
+
+  .filterContainer1{
+    display: block;
+  }
+}
+
+@media (max-width: 992px) {
+  .main-container1 {
+    flex-direction: column;
+  }
+  
+  .filter-sidebar1 {
+    width: 100%;
+    position: static;
+  }
+}

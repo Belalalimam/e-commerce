@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { FaFilter } from "react-icons/fa";
-import axios from "axios";
 import {
   Container,
   Card,
@@ -11,7 +10,6 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
   IconButton,
   Box,
   Divider,
@@ -21,13 +19,19 @@ import { styled } from "@mui/material/styles";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import CloseIcon from "@mui/icons-material/Close";
-import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProduct, getProductsCount } from "../../redux/apiCalls/productApiCalls";
-import Pagination from '@mui/material/Pagination';
+import {
+  fetchProduct,
+  getProductsCount,
+} from "../../redux/apiCalls/productApiCalls";
+import { putLikeForProduct } from "../../redux/apiCalls/likeApiCalls";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import Pagination from "@mui/material/Pagination";
 import "./Filteration.css";
 
+// Your existing styled components
 const StyledCard = styled(Card)(({ theme }) => ({
   height: "100%",
   width: "300px",
@@ -67,93 +71,24 @@ const ProductActions = styled(Box)({
 });
 
 
-const handleCardClick = (product) => {
-  navigate(`/product/${product._id}`);
-};
 
-const CategoryModal = ({ product, open, onClose }) => {
-  if (!product) return null;
-
-  return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ m: 0, p: 2 }}>
-        <IconButton
-          onClick={onClose}
-          sx={{ position: "absolute", right: 8, top: 8 }}
-        >
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent onClick={() => handleCardClick(product)}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
-            <CardMedia
-              component="img"
-              src={`https://myserverbackend.up.railway.app/uploads/${product.productImage}`}
-              alt={product.productTitle}
-              style={{ width: "100%", height: "auto", borderRadius: "8px" }}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Typography variant="h4" gutterBottom>
-              {product.productName}
-            </Typography>
-            <Typography variant="body1" paragraph>
-              {product.productDescription}
-            </Typography>
-            <Typography variant="body2">
-              Category: {product.productCategory}
-            </Typography>
-            <Typography variant="body2">
-              Color: {product.productColor}
-            </Typography>
-            <Typography variant="body2">Size: {product.productSize}</Typography>
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="h6" color="primary" gutterBottom>
-              ${product.productPrice}
-            </Typography>
-          </Grid>
-        </Grid>
-      </DialogContent>
-      {/* <DialogActions sx={{ p: 3 }}>
-        <Button
-          variant="contained"
-          startIcon={<ShoppingBagIcon />}
-          onClick={(e) => handleAddToCart(e, product)}
-        >
-          Add to Wishlist
-        </Button>
-        <Button
-          variant="outlined"
-          startIcon={<FavoriteIcon />}
-          onClick={(e) => handleAddToFavorites(e, product)}
-        >
-          Add to Cart
-        </Button>
-      </DialogActions> */}
-    </Dialog>
-  );
-};
 
 const FeaturedProducts = ({ name }) => {
   const dispatch = useDispatch();
-  const PRODUCT_PER_PAGE = 3;
+  const navigate = useNavigate();
+  const PRODUCTS_PER_PAGE = 10;
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
-  const [currentPage, setCurrentPage] = useState(PRODUCT_PER_PAGE)
+  const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
     colors: [],
     categories: [],
     sizes: [],
   });
 
-
-  const products = useSelector((state) => state.product.product);
-  const productsCount = useSelector((state) => state.product.product);
-  // console.log("🚀 ~ FeaturedProducts ~ productsCount:", productsCount)
-
-
-  // const pages = Math.ceil( products.length / PRODUCT_PER_PAGE)
+  const { user } = useSelector((state) => state.auth);
+  const { product } = useSelector((state) => state.product);
+  const { productsCount } = useSelector((state) => state.product);
 
   const colors = [
     { id: 1, name: "Black", hex: "#000000" },
@@ -163,32 +98,80 @@ const FeaturedProducts = ({ name }) => {
     { id: 5, name: "Green", hex: "#00FF00" },
   ];
 
-  const categories = ["lace", "fabric", "etylo"];
-  const sizes = ["xs", "s", "m"];
+  const categories = ["lace", "fabric", "elastic"];
+  const sizes = ["xs", "s", "m", "l", "xl"];
+
+
+
+  const CategoryModal = ({ product, open, onClose }) => {
+    if (!product) return null;
+
+    return (
+      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+        <DialogTitle sx={{ m: 0, p: 2 }}>
+          <IconButton
+            onClick={onClose}
+            sx={{ position: "absolute", right: 8, top: 8 }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent onClick={() => handleCardClick(product)}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6}>
+              <CardMedia
+                component="img"
+                src={product.productImage.url}
+                alt={product.productName}
+                style={{ width: "100%", height: "auto", borderRadius: "8px" }}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Typography variant="h4" gutterBottom>
+                {product.productName}
+              </Typography>
+              <Typography variant="body1" paragraph>
+                {product.productDescription}
+              </Typography>
+              <Typography variant="body2">
+                Category: {product.productCategory}
+              </Typography>
+              <Typography variant="body2">
+                Color: {product.productColor}
+              </Typography>
+              <Typography variant="body2">
+                Size: {product.productCategorySize}
+              </Typography>
+            </Grid>
+          </Grid>
+        </DialogContent>
+      </Dialog>
+    );
+  };
+
+  const handleCardClick = (product) => {
+    navigate(`/getProduct/${product._id}`);
+  };
 
   useEffect(() => {
     dispatch(fetchProduct(currentPage));
-  }, [currentPage])
-
-  useEffect(() => {
     dispatch(getProductsCount());
-  }, [])
+  }, [currentPage, dispatch]);
 
   const getFilteredProducts = () => {
-    if (!Array.isArray(products)) {
-      return [products];
-    }
+    if (!Array.isArray(product)) return [];
 
-    return products?.filter((product) => {
+    return product.filter((product) => {
       const colorMatch =
         filters.colors.length === 0 ||
-        filters.colors.includes(product.productColor);
+        filters.colors.includes(product.productColor?.toLowerCase());
       const categoryMatch =
         filters.categories.length === 0 ||
-        filters.categories.includes(product.productCategory);
+        filters.categories.includes(product.productCategory?.toLowerCase());
       const sizeMatch =
         filters.sizes.length === 0 ||
-        filters.sizes.includes(product.productCategorySize);
+        filters.sizes.includes(product.productCategorySize?.toLowerCase());
+
       return colorMatch && categoryMatch && sizeMatch;
     });
   };
@@ -200,6 +183,19 @@ const FeaturedProducts = ({ name }) => {
         ? prev[type].filter((item) => item !== value)
         : [...prev[type], value],
     }));
+  };
+
+  const handleLike = async (productId) => {
+    if (!user) {
+      toast.error("Please login to like products");
+      return;
+    }
+    try {
+      await dispatch(putLikeForProduct(productId));
+      toast.success("Product like updated successfully");
+    } catch (error) {
+      toast.error("Failed to update like");
+    }
   };
 
   const clearFilters = () => {
@@ -215,25 +211,19 @@ const FeaturedProducts = ({ name }) => {
       <Container maxWidth="xl" className="flex filterContainer">
         <Typography
           variant="h3"
-          className=""
           align="center"
-          sx={{ mb: 2, fontWeight: 600, color: "#1a1a1a" }}
+          sx={{ mb: 4, fontWeight: 600, color: "#1a1a1a" }}
         >
           {name}
         </Typography>
 
-        <div
-          className="filter-toggle"
-          onClick={() => setShowMobileFilters(!showMobileFilters)}
-        >
+        <div className="filter-toggle" onClick={() => setShowMobileFilters(!showMobileFilters)}>
           <FaFilter />
-          <span>Show Filters</span>
+          <span>Filters</span>
         </div>
 
         <div className="main-container">
-          <aside
-            className={`filter-sidebar ${showMobileFilters ? "show" : ""}`}
-          >
+          <aside className={`filter-sidebar ${showMobileFilters ? "show" : ""}`}>
             <div className="filter-group">
               <Typography variant="subtitle2" gutterBottom>
                 Colors
@@ -242,14 +232,13 @@ const FeaturedProducts = ({ name }) => {
                 {colors.map((color) => (
                   <div
                     key={color.id}
-                    className={`color-option ${filters.colors.includes(color.name) ? "selected" : ""
-                      }`}
-                    onClick={() => handleFilterChange("colors", color.name)}
+                    className={`color-option ${filters.colors.includes(color.name.toLowerCase()) ? "selected" : ""}`}
+                    onClick={() => handleFilterChange("colors", color.name.toLowerCase())}
                   >
                     <span
                       className="color-circle"
                       style={{ backgroundColor: color.hex }}
-                    ></span>
+                    />
                     <span>{color.name}</span>
                   </div>
                 ))}
@@ -264,11 +253,7 @@ const FeaturedProducts = ({ name }) => {
                 {categories.map((category) => (
                   <Button
                     key={category}
-                    variant={
-                      filters.categories.includes(category)
-                        ? "contained"
-                        : "outlined"
-                    }
+                    variant={filters.categories.includes(category) ? "contained" : "outlined"}
                     onClick={() => handleFilterChange("categories", category)}
                     sx={{ m: 0.5 }}
                     fullWidth
@@ -288,8 +273,7 @@ const FeaturedProducts = ({ name }) => {
                 {sizes.map((size) => (
                   <button
                     key={size}
-                    className={`size-btn ${filters.sizes.includes(size) ? "selected" : ""
-                      }`}
+                    className={`size-btn ${filters.sizes.includes(size) ? "selected" : ""}`}
                     onClick={() => handleFilterChange("sizes", size)}
                   >
                     {size}
@@ -309,80 +293,89 @@ const FeaturedProducts = ({ name }) => {
           </aside>
         </div>
 
-        <Grid container spacing={4}>
-          {getFilteredProducts().map((product) => (
-            product?.productImage?.url ? (
-            <Grid key={product} xs={12} sm={6} md={3}>
-              <StyledCard onClick={() => setSelectedProduct(product)}>
-                <ProductImage
-                  component="img"
-                  image={product.productImage.url}
-                    title={product.productImage}
-                />
-                {/* <ProductActions className="product-actions">
-                    <IconButton
-                      onClick={(e) => handleAddToFavorites(e, product)}
-                      sx={{
-                        color: favorites.some(
-                          (item) => item._id === product._id
-                        )
-                          ? "red"
-                          : "white",
-                        backgroundColor: "rgba(255,255,255,0.2)",
-                        "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
-                      }}
-                    >
-                      <FavoriteIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={(e) => handleAddToCart(e, product)}
-                      sx={{
-                        color: cartItems.some(
-                          (item) => item._id === product._id
-                        )
-                          ? "#4CAF50"
-                          : "white",
-                        backgroundColor: "rgba(255,255,255,0.2)",
-                        "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
-                      }}
-                    >
-                      <ShoppingCartIcon />
-                    </IconButton>
-                  </ProductActions> */}
 
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography gutterBottom variant="h6">
-                    {product.productName}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 2 }}
+        <Grid container spacing={2} className="products-area">
+          {Array.isArray(product) && product.length > 0 ? (
+            getFilteredProducts().map((product) => (
+              <Grid key={product._id} xs={12} sm={6} md={3}>
+                <StyledCard onClick={() => setSelectedProduct(product)}>
+                  <ProductImage
+                    image={product.productImage.url}
+                    title={product.productTitle}
+                    id='bell'
                   >
-                    {product.productCategory}
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <LocalShippingIcon
-                        sx={{ fontSize: 16, color: "success.main", mr: 0.5 }}
-                      />
-                      <Typography variant="caption" color="success.main">
-                        Free Shipping
-                      </Typography>
+
+
+                    {/* <ProductActions className="product-actions">
+
+                          <IconButton
+                            onClick={(e) => handleAddToFavorites(e, product._id)}
+                            sx={{
+                              color: Array.isArray(like) && like.some(item => item._id === product._id) ? "red" : "white",
+                              backgroundColor: "rgba(255,255,255,0.2)",
+                              "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
+                              zIndex: 2 // Ensure button stays above other elements
+                            }}
+                          >
+                            <FavoriteIcon />
+                          </IconButton>
+
+
+
+                          <IconButton
+                            onClick={(e) => handleAddToCart(e, product._id)}
+                            sx={{
+                              color: Array.isArray(cart) && cart.some(item => item._id === product._id) ? "#4CAF50" : "white",
+                              backgroundColor: "rgba(255,255,255,0.2)",
+                              "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
+                              zIndex: 2
+                            }}
+                          >
+                            <ShoppingCartIcon />
+                          </IconButton>
+                        </ProductActions> */}
+
+                  </ProductImage>
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Typography gutterBottom variant="h6">
+                      {product.productName}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 2 }}
+                    >
+                      {product.productCategory}
+                    </Typography>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <LocalShippingIcon
+                          sx={{ fontSize: 16, color: "success.main", mr: 0.5 }}
+                        />
+                        <Typography variant="caption" color="success.main">
+                          Free Shipping
+                        </Typography>
+                      </Box>
                     </Box>
-                  </Box>
-                </CardContent>
-              </StyledCard>
-            </Grid>
-            ) : null
-          ))}
+                  </CardContent>
+                </StyledCard>
+              </Grid>
+            ))
+          ) : (
+            <Typography variant="h6" align="center" sx={{ width: '100%', mt: 3 }}>
+              No products available
+            </Typography>
+          )}
         </Grid>
+
+
+
 
 
         <CategoryModal
@@ -391,11 +384,15 @@ const FeaturedProducts = ({ name }) => {
           onClose={() => setSelectedProduct(null)}
         />
       </Container>
-
-      {/* <div className="flex justify-center"> 
-        <Pagination count={PRODUCT_PER_PAGE} currentPage={currentPage} setCurrentPage={setCurrentPage} color="primary" />
-      </div> */}
-
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+        <Pagination
+          count={Math.ceil(productsCount / PRODUCTS_PER_PAGE)}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          onChange={(e, value) => setCurrentPage(value)}
+          color="primary"
+        />
+      </Box>
     </Box>
   );
 };
