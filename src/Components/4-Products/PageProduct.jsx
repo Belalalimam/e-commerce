@@ -6,15 +6,17 @@ import CloseIcon from "@mui/icons-material/Close";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import SecurityIcon from "@mui/icons-material/Security";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import RemoveIcon from '@mui/icons-material/Remove';
+import AddIcon from '@mui/icons-material/Add';
 
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { styled } from "@mui/material/styles";
- 
+
 import { putLikeForProduct, getUserProfileLike } from "../../redux/apiCalls/likeApiCalls";
-import { fetchSingleProduct, putCartForProduct, fetchProduct } from "../../redux/apiCalls/productApiCalls";
-import { getUserProfileCart } from "../../redux/apiCalls/cartApiCalls";
+import { fetchSingleProduct, fetchProduct } from "../../redux/apiCalls/productApiCalls";
+import { getUserProfileCart, putCartForProduct } from "../../redux/apiCalls/cartApiCalls";
 import { getCategories } from "../../redux/apiCalls/categoryApiCalls";
 
 // Styled Components
@@ -126,7 +128,7 @@ const CategoryPage = () => {
   const handleAddToCart = (e) => {
     e.stopPropagation();
     if (productSingle?._id) {
-      dispatch(putCartForProduct(productSingle._id));
+      dispatch(putCartForProduct(productSingle._id, quantity));
       toast.success("Product added to cart!");
     }
   };
@@ -219,14 +221,26 @@ const CategoryPage = () => {
                   <Typography color="success.main">Free Delivery</Typography>
                 </Box>
 
-                <FormControl fullWidth sx={{ mb: 2 }}>
-                  <InputLabel>Quantity</InputLabel>
-                  <Select value={quantity} onChange={(e) => setQuantity(e.target.value)}>
-                    {[1, 2, 3, 4, 5].map((num) => (
-                      <MenuItem key={num} value={num}>{num}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                  <Typography>Quantity:</Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', border: '1px solid #ddd', borderRadius: 1 }}>
+                    <IconButton
+                      onClick={() => quantity > 1 && setQuantity(quantity - 1)}
+                      disabled={quantity <= 1}
+                    >
+                      <RemoveIcon />
+                    </IconButton>
+                    <Typography sx={{ mx: 2, minWidth: '20px', textAlign: 'center' }}>
+                      {quantity}
+                    </Typography>
+                    <IconButton
+                      onClick={() => setQuantity(quantity + 1)}
+                      disabled={quantity >= 10}
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </Box>
+                </Box>
 
                 <Button
                   variant="contained"

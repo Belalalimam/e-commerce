@@ -32,7 +32,6 @@ export function fetchProductsBasedOnCategory(productCategory) {
     try {
       const { data } = await request.get(`/Products?productCategory=${productCategory}`);
       dispatch(productActions.setProductCate(data));
-      console.log("🚀 ~ return ~ data:", data)
     } catch (error) {
       toast.error(error.response.data.message);
     }

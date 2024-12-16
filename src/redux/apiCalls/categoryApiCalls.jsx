@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 export function getCategories() { 
     return async (dispatch) => {
         try {
-            const {data} = await request.get(`/api/categories/`);
+            const {data} = await request.get(`/api/categories`);
             dispatch(categoryActions.setCategory(data));
         } catch(error) {
             toast.error(error.response.data.message);

@@ -162,7 +162,6 @@ const handleDeleteOpen = (product) => {
 };
 const handleDeleteClose = () => {
   setDeleteModalOpen(false);
-  setDeleteProductId(null);
 };
 const handleDeleteConfirm = () => {
   dispatch(deleteProduct(deleteProductData.id));
@@ -272,22 +271,10 @@ const handleDeleteConfirm = () => {
                   />
                 </Grid>
 
-                {/* <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    name="productCategorySize"
-                    label="Price"
-                    type="number"
-                    value={productData.productCategorySize}
-                    onChange={handleInputChange}
-                  />
-                </Grid> */}
-
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                   <TextField
                     fullWidth
                     multiline
-                    rows={4}
                     name="productDescription"
                     label="Description"
                     value={productData.productDescription}
@@ -311,17 +298,16 @@ const handleDeleteConfirm = () => {
 
                 <Grid item xs={12} sm={4}>
                   <FormControl fullWidth>
-                    <InputLabel>Size</InputLabel>
+                    <InputLabel>CategorySize</InputLabel>
                     <Select
                       name="productCategorySize"
                       value={productData.productCategorySize}
                       onChange={handleInputChange}
                     >
-                      <MenuItem value="xs">XS</MenuItem>
-                      <MenuItem value="s">S</MenuItem>
-                      <MenuItem value="m">M</MenuItem>
-                      <MenuItem value="l">L</MenuItem>
-                      <MenuItem value="xl">XL</MenuItem>
+                      <MenuItem value="1>>>5">{'1>>>5'}</MenuItem>
+                      <MenuItem value="5>>>10">{'5>>>10'}</MenuItem>
+                      <MenuItem value="10>>>20">{'10>>>20'}</MenuItem>
+                      <MenuItem value="NoLimits">NoLimits</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
@@ -493,26 +479,20 @@ const handleDeleteConfirm = () => {
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                <FormControl fullWidth>
-                  <InputLabel>CategorySize</InputLabel>
-                  <Select
-                    name="productCategorySize"
-                    value={editProductData.productCategorySize}
-                    onChange={(e) =>
-                      setEditProductData({
-                        ...editProductData,
-                        productCategorySize: e.target.value,
-                      })
-                    }
-                  >
-                    <MenuItem value="xs">XS</MenuItem>
-                      <MenuItem value="s">S</MenuItem>
-                      <MenuItem value="m">M</MenuItem>
-                      <MenuItem value="l">L</MenuItem>
-                      <MenuItem value="xl">XL</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
+                  <FormControl fullWidth>
+                    <InputLabel>CategorySize</InputLabel>
+                    <Select
+                      name="productCategorySize"
+                      value={productData.productCategorySize}
+                      onChange={handleInputChange}
+                    >
+                      <MenuItem value="1>>>5">{'1>>>5'}</MenuItem>
+                      <MenuItem value="5>>>10">{'5>>>10'}</MenuItem>
+                      <MenuItem value="10>>>20">{'10>>>20'}</MenuItem>
+                      <MenuItem value="NoLimits">NoLimits</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
 
               <Grid item xs={12} sm={4}>
                 <FormControl fullWidth>

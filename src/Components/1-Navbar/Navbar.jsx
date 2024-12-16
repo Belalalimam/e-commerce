@@ -142,17 +142,17 @@ const Header = ({ onWishlistClick, wishlistItems, onCartClick }) => {
           </div>
 
           <div className="user-actions">
-            <Link to="#" className="action-item">
+            <div className="action-item">
               <IconButton onClick={onWishlistClick}>
                 <Badge badgeContent={wishlistItems} color="primary">
                   <FaHeart />
                 </Badge>
               </IconButton>
               <span className="desktop-only">Wishlist</span>
-            </Link>
+            </div>
 
-            <Link to="#" className="action-item">
-              <IconButton color="inherit" onClick={onCartClick}>
+            <Link to="/cart" className="action-item">
+              <IconButton color="inherit">
                 <Badge badgeContent={cartCount} color="secondary">
                   <FaShoppingCart />
                 </Badge>
@@ -160,7 +160,7 @@ const Header = ({ onWishlistClick, wishlistItems, onCartClick }) => {
               <span className="desktop-only">Cart</span>
             </Link>
 
-            <Link className="action-item">
+            <div className="action-item">
               {/* <IconButton onClick={onProfialClick}>
             <Badge color="primary">
               <FaUser />
@@ -234,7 +234,7 @@ const Header = ({ onWishlistClick, wishlistItems, onCartClick }) => {
 
               <span className="desktop-only">{user?.name || 'Account'}</span>
 
-            </Link>
+            </div>
           </div>
         </div>
       </div>
