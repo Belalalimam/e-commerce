@@ -41,7 +41,7 @@ function App() {
   const homepage = (
     <>
       <Swiper />
-      <Categories />
+      {/* <Categories /> */}
       <FeaturedProducts name={"New Arivve"} />
       {/* <FeaturedProducts name={"Featured Products"} /> */}
       <FilterationProduct />

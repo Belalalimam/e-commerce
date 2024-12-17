@@ -20,7 +20,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import {createProduct,fetchProduct,EditProduct,updateProductImage,deleteProduct} from "./redux/apiCalls/productApiCalls";
+import { createProduct, fetchProduct, EditProduct, updateProductImage, deleteProduct } from "./redux/apiCalls/productApiCalls";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 const modalStyle = {
@@ -42,208 +42,208 @@ const Dashboard = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [open, setOpen] = useState(false);
-// Add Product functions
-const [productData, setProductData] = useState({productName: "", productDescription: "", productCategory: "", productCategorySize:"", productColor:"", productImage: null});
-const { loading, isProductCreated } = useSelector((state) => state.product);
-const handleInputChange = (e) => {
-  setProductData({
-    ...productData,
-    [e.target.name]: e.target.value,
-  });
-};
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  const formData = new FormData();
-  Object.keys(productData).forEach((key) => {
-    formData.append(key, productData[key]);
-  });
-
-  try {
-    dispatch(createProduct(formData));
-    setProductData({
-      productName: "",
-      productDescription: "",
-      productCategory: "",
-      productImage: null,
-      productCategorySize: "",
-      productColor: "",
-      // productPrice: "",
-    });
-  } catch (error) {
-    console.error("Error creating product:", error);
-  }
-  handleClose()
-};
-const handleImageChange = (e) => {
-  const file = e.target.files[0];
-  if (file) {
+  // Add Product functions
+  const [productData, setProductData] = useState({ productName: "", productDescription: "", productCategory: "", productCategorySize: "", productColor: "", productImage: null });
+  const { loading, isProductCreated } = useSelector((state) => state.product);
+  const handleInputChange = (e) => {
     setProductData({
       ...productData,
-      productImage: file,
+      [e.target.name]: e.target.value,
     });
-  }
-};
-// Edit Product functions
-const [editModalOpen, setEditModalOpen] = useState(false);
-const [editProductData, setEditProductData] = useState({ productName: "", productDescription: "", productCategory: "", productCategorySize:"", productColor:"", productImage: null });
-const handleEditOpen = (product) => {
-  setEditProductData({
-    id: product._id,
-    productName: product.productName,
-    productDescription: product.productDescription,
-    productCategory: product.productCategory,
-    productCategorySize: product.productCategorySize,
-    productColor: product.productColor,
-  });
-  setEditModalOpen(true);
-};
-const handleEditClose = () => {
-  setEditModalOpen(false);
-};
-const handleEditSubmit = (e) => {
-  e.preventDefault();
-  const formData = new FormData();
-  Object.keys(editProductData).forEach((key) => {
-    if (key !== 'id') {  // Keep the ID separate from formData
-      formData.append(key, editProductData[key]);
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    Object.keys(productData).forEach((key) => {
+      formData.append(key, productData[key]);
+    });
+
+    try {
+      dispatch(createProduct(formData));
+      setProductData({
+        productName: "",
+        productDescription: "",
+        productCategory: "",
+        productImage: null,
+        productCategorySize: "",
+        productColor: "",
+        // productPrice: "",
+      });
+    } catch (error) {
+      console.error("Error creating product:", error);
     }
-  });
+    handleClose()
+  };
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProductData({
+        ...productData,
+        productImage: file,
+      });
+    }
+  };
+  // Edit Product functions
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editProductData, setEditProductData] = useState({ productName: "", productDescription: "", productCategory: "", productCategorySize: "", productColor: "", productImage: null });
+  const handleEditOpen = (product) => {
+    setEditProductData({
+      id: product._id,
+      productName: product.productName,
+      productDescription: product.productDescription,
+      productCategory: product.productCategory,
+      productCategorySize: product.productCategorySize,
+      productColor: product.productColor,
+    });
+    setEditModalOpen(true);
+  };
+  const handleEditClose = () => {
+    setEditModalOpen(false);
+  };
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    Object.keys(editProductData).forEach((key) => {
+      if (key !== 'id') {  // Keep the ID separate from formData
+        formData.append(key, editProductData[key]);
+      }
+    });
 
-  // Pass id and formData separately to EditProduct action
-  dispatch(EditProduct(formData, editProductData.id));
-  handleEditClose();
-};
-// Edit Image Product functions
-const [editImageModalOpen, setEditImageModalOpen] = useState(false);
-const [file, setFile] = useState(null);
-const handleImageEditOpen = (product) => {
-  setEditProductData({
-    id: product._id,
-    productImage: product.productImage,
-  });
-  setEditImageModalOpen(true);
-};
-const handleEditImageClose = () => {
-  setEditImageModalOpen(false);
-};
-const updateImageSubmitHandler = (e) => {
-  e.preventDefault();
-  if (!file) return toast.warning("there is no file!");
+    // Pass id and formData separately to EditProduct action
+    dispatch(EditProduct(formData, editProductData.id));
+    handleEditClose();
+  };
+  // Edit Image Product functions
+  const [editImageModalOpen, setEditImageModalOpen] = useState(false);
+  const [file, setFile] = useState(null);
+  const handleImageEditOpen = (product) => {
+    setEditProductData({
+      id: product._id,
+      productImage: product.productImage,
+    });
+    setEditImageModalOpen(true);
+  };
+  const handleEditImageClose = () => {
+    setEditImageModalOpen(false);
+  };
+  const updateImageSubmitHandler = (e) => {
+    e.preventDefault();
+    if (!file) return toast.warning("there is no file!");
 
-  const formData = new FormData();
-  formData.append("productImage", file);
-  dispatch(updateProductImage(formData, editProductData.id));
-  handleEditImageClose()
-};
-// Fetch All Product functions
-const Products = useSelector((state) => state.product.product);
-useEffect(() => {
-dispatch(fetchProduct());
-}, [dispatch]);
-useEffect(() => {
-  if (isProductCreated) {
-    handleClose();
-    navigate("/");
-  }
-}, [isProductCreated]);
-// Delete Product functions
-const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-const [deleteProductData, setDeleteProductData] = useState({
-  id: null,
-  name: ''
-});
-const handleDeleteOpen = (product) => {
-  setDeleteProductData({
-    id: product._id,
-    name: product.productName
+    const formData = new FormData();
+    formData.append("productImage", file);
+    dispatch(updateProductImage(formData, editProductData.id));
+    handleEditImageClose()
+  };
+  // Fetch All Product functions
+  const Products = useSelector((state) => state.product.product);
+  useEffect(() => {
+    dispatch(fetchProduct());
+  }, [dispatch]);
+  useEffect(() => {
+    if (isProductCreated) {
+      handleClose();
+      navigate("/");
+    }
+  }, [isProductCreated]);
+  // Delete Product functions
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteProductData, setDeleteProductData] = useState({
+    id: null,
+    name: ''
   });
-  setDeleteModalOpen(true);
-};
-const handleDeleteClose = () => {
-  setDeleteModalOpen(false);
-};
-const handleDeleteConfirm = () => {
-  dispatch(deleteProduct(deleteProductData.id));
-  handleDeleteClose();
-};
+  const handleDeleteOpen = (product) => {
+    setDeleteProductData({
+      id: product._id,
+      name: product.productName
+    });
+    setDeleteModalOpen(true);
+  };
+  const handleDeleteClose = () => {
+    setDeleteModalOpen(false);
+  };
+  const handleDeleteConfirm = () => {
+    dispatch(deleteProduct(deleteProductData.id));
+    handleDeleteClose();
+  };
 
-// Modules
+  // Modules
   const ProductTable = ({ products }) => {
-      return (
-        <TableContainer component={Paper} sx={{ mt: 2, mb: 2 }}>
-          <Table sx={{ minWidth: 650 }} aria-label="product table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Image</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Description</TableCell>
-                <TableCell>Category</TableCell>
-                <TableCell>CategorySize</TableCell>
-                <TableCell>Color</TableCell>
-                <TableCell>Actions</TableCell>
+    return (
+      <TableContainer component={Paper} sx={{ mt: 2, mb: 2 }}>
+        <Table sx={{ minWidth: 650 }} aria-label="product table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Image</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Description</TableCell>
+              <TableCell>Category</TableCell>
+              <TableCell>CategorySize</TableCell>
+              <TableCell>Color</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {products?.map((product) => (
+              <TableRow key={product._id}>
+                <TableCell>
+                  <img
+                    src={product.productImage.url}
+                    alt={product.productName}
+                    style={{
+                      width: "50px",
+                      height: "50px",
+                      objectFit: "cover",
+                    }}
+                  />
+                </TableCell>
+                <TableCell>{product.productName}</TableCell>
+                <TableCell>{product.productDescription}</TableCell>
+                <TableCell>{product.productCategory}</TableCell>
+                <TableCell>{product.productCategorySize}</TableCell>
+                <TableCell>{product.productColor}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    sx={{ mr: 1, my: 1 }}
+                    onClick={() => handleEditOpen(product)}
+                  >
+                    EditContent
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    sx={{ mr: 1, my: 1 }}
+                    onClick={() => handleImageEditOpen(product)}
+                  >
+                    EditImage
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    size="small"
+                    sx={{ mr: 1, my: 1 }}
+                    onClick={() => handleDeleteOpen(product)}
+                  >
+                    Delete
+                  </Button>
+                </TableCell>
               </TableRow>
-            </TableHead>
-            <TableBody>
-              {products?.map((product) => (
-                <TableRow key={product._id}>
-                  <TableCell>
-                    <img
-                      src={product.productImage.url}
-                      alt={product.productName}
-                      style={{
-                        width: "50px",
-                        height: "50px",
-                        objectFit: "cover",
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell>{product.productName}</TableCell>
-                  <TableCell>{product.productDescription}</TableCell>
-                  <TableCell>{product.productCategory}</TableCell>
-                  <TableCell>{product.productCategorySize}</TableCell>
-                  <TableCell>{product.productColor}</TableCell>
-                  <TableCell>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                      sx={{ mr: 1, my: 1 }}
-                      onClick={() => handleEditOpen(product)}
-                    >
-                      EditContent
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                      sx={{ mr: 1, my: 1 }}
-                      onClick={() => handleImageEditOpen(product)}
-                    >
-                      EditImage
-                    </Button>
-                    <Button 
-                      variant="contained" 
-                      color="error" 
-                      size="small"
-                      sx={{ mr: 1, my: 1 }}
-                      onClick={() => handleDeleteOpen(product)}
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      );
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
   };
 
   const AddProduct = (
     <>
       <div className="fixed bottom-10 left-5">
-        <Button  variant="contained" onClick={handleOpen} sx={{ mb: 2 }}>
+        <Button variant="contained" onClick={handleOpen} sx={{ mb: 2 }}>
           Add New Product
         </Button>
       </div>
@@ -290,7 +290,7 @@ const handleDeleteConfirm = () => {
                       value={productData.productCategory}
                       onChange={handleInputChange}
                     >
-                      <MenuItem value="lace">Lace</MenuItem>
+                      <MenuItem value="Lace">Lace</MenuItem>
                       <MenuItem value="Elastic">Elastic</MenuItem>
                     </Select>
                   </FormControl>
@@ -385,14 +385,14 @@ const handleDeleteConfirm = () => {
                     hidden
                     accept="image/*"
                     onChange={(e) => setFile(e.target.files[0])}
-                    // onChange={handleImageChange}
+                  // onChange={handleImageChange}
                   />
                 </Button>
-                  {file && (
-                    <Typography variant="body2" sx={{ mt: 1 }}>
-                      Selected file: {file.name}
-                    </Typography>
-                  )}
+                {file && (
+                  <Typography variant="body2" sx={{ mt: 1 }}>
+                    Selected file: {file.name}
+                  </Typography>
+                )}
               </Grid>
 
               <Grid item xs={12}>
@@ -471,28 +471,27 @@ const handleDeleteConfirm = () => {
                       })
                     }
                   >
-                    <MenuItem value="lace">Lace</MenuItem>
-                    <MenuItem value="fabric">fabric</MenuItem>
-                    <MenuItem value="home">Home</MenuItem>
+                    <MenuItem value="Lace">Lace</MenuItem>
+                    <MenuItem value="Elastic">Elastic</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                  <FormControl fullWidth>
-                    <InputLabel>CategorySize</InputLabel>
-                    <Select
-                      name="productCategorySize"
-                      value={productData.productCategorySize}
-                      onChange={handleInputChange}
-                    >
-                      <MenuItem value="1>>>5">{'1>>>5'}</MenuItem>
-                      <MenuItem value="5>>>10">{'5>>>10'}</MenuItem>
-                      <MenuItem value="10>>>20">{'10>>>20'}</MenuItem>
-                      <MenuItem value="NoLimits">NoLimits</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
+                <FormControl fullWidth>
+                  <InputLabel>CategorySize</InputLabel>
+                  <Select
+                    name="productCategorySize"
+                    value={productData.productCategorySize}
+                    onChange={handleInputChange}
+                  >
+                    <MenuItem value="1>>>5">{'1>>>5'}</MenuItem>
+                    <MenuItem value="5>>>10">{'5>>>10'}</MenuItem>
+                    <MenuItem value="10>>>20">{'10>>>20'}</MenuItem>
+                    <MenuItem value="NoLimits">No Limits</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
 
               <Grid item xs={12} sm={4}>
                 <FormControl fullWidth>
@@ -508,9 +507,9 @@ const handleDeleteConfirm = () => {
                     }
                   >
                     <MenuItem value="black">Black</MenuItem>
-                      <MenuItem value="white">White</MenuItem>
-                      <MenuItem value="red">Red</MenuItem>
-                      <MenuItem value="blue">Blue</MenuItem>
+                    <MenuItem value="white">White</MenuItem>
+                    <MenuItem value="red">Red</MenuItem>
+                    <MenuItem value="blue">Blue</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
@@ -547,15 +546,15 @@ const handleDeleteConfirm = () => {
             Are you sure you want to delete " {deleteProductData.name} " ?
           </Typography>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-            <Button 
-              variant="outlined" 
+            <Button
+              variant="outlined"
               onClick={handleDeleteClose}
             >
               Cancel
             </Button>
-            <Button 
-              variant="contained" 
-              color="error" 
+            <Button
+              variant="contained"
+              color="error"
               onClick={handleDeleteConfirm}
             >
               Delete

@@ -28,9 +28,23 @@ export function getProductsCount() {
 
 // Fetch Posts Based On Category
 export function fetchProductsBasedOnCategory(productCategory) {
+  console.log("🚀 ~ fetchProductsBasedOnCategory ~ productCategory:", productCategory)
   return async (dispatch) => {
     try {
       const { data } = await request.get(`/Products?productCategory=${productCategory}`);
+      dispatch(productActions.setProductCate(data));
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  };
+}
+
+// Fetch Posts Based On CategorySize
+export function fetchProductsBasedOnCategorySize(productCategorySize) {
+  console.log("🚀 ~ fetchProductsBasedOnCategorySize ~ productCategorySize:", productCategorySize)
+  return async (dispatch) => {
+    try {
+      const { data } = await request.get(`/Products?productCategorySize=${productCategorySize}`);
       dispatch(productActions.setProductCate(data));
     } catch (error) {
       toast.error(error.response.data.message);

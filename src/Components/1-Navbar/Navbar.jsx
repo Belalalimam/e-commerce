@@ -6,26 +6,16 @@ import { useNavigate } from 'react-router-dom';
 import './Navbar.css';
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../../redux/apiCalls/authApiCalls";
+import { fetchProductsBasedOnCategorySize, fetchProductsBasedOnCategory,fetchProduct } from '../../redux/apiCalls/productApiCalls'
 
 
-const Header = ({ onWishlistClick, wishlistItems, onCartClick }) => {
+const Header = ({ onWishlistClick, wishlistItems }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [cartCount, setCartCount] = useState(0);
 
-
-
-  const categories = [
-    'All Categories',
-    'Lace',
-    'Elastic',
-    '1 >>> 5',
-    '5 >>> 10',
-    '10 >>> 20',
-    'No Limits',
-  ];
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -38,6 +28,45 @@ const Header = ({ onWishlistClick, wishlistItems, onCartClick }) => {
     return user ? ['Profile', 'Logout'] : ['Login', 'Register'];
   }, [user]);
 
+  const categories = useMemo(() => {
+    return ['All Categories', 'Lace', 'Elastic', '1>>>5', '5>>>10', '10>>>20', 'NoLimits',]
+  })
+
+
+  const handleMenuCategoryClick = (categorie) => {
+    switch (categorie) {
+      case 'All Categories':
+        dispatch(fetchProduct(1));
+        navigate('/All Categories');
+        break;
+      case 'Lace':
+        dispatch(fetchProductsBasedOnCategory(categorie));
+        navigate('/Lace');
+        break;
+      case 'Elastic':
+        dispatch(fetchProductsBasedOnCategory(categorie));
+        navigate('/Elastic');
+        break;
+      case '1>>>5':
+        dispatch(fetchProductsBasedOnCategorySize(categorie));
+        navigate('/1>>>5');
+        break;
+      case '5>>>10':
+        dispatch(fetchProductsBasedOnCategorySize(categorie));
+        navigate('/5>>>10');
+        break;
+      case '10>>>20':
+        dispatch(fetchProductsBasedOnCategorySize(categorie));
+        navigate('/10>>>20');
+        break;
+      case 'NoLimits':
+        dispatch(fetchProductsBasedOnCategorySize(categorie));
+        navigate('/NoLimits');
+        break;
+
+    }
+    handleCloseUserMenu();
+  };
 
   const handleMenuItemClick = (setting) => {
     switch (setting.toLowerCase()) {
@@ -66,12 +95,9 @@ const Header = ({ onWishlistClick, wishlistItems, onCartClick }) => {
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
+
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
-  };
-
-  const handleCartClick = () => {
-    navigate('/cart');
   };
 
   const handleSearch = (e) => {
@@ -198,16 +224,7 @@ const Header = ({ onWishlistClick, wishlistItems, onCartClick }) => {
                 >
 
                   {settings.map((setting) => (
-                    <MenuItem
-                      key={setting}
-                      onClick={() => handleMenuItemClick(setting)}
-                      sx={{
-                        backgroundColor: setting === 'Dashboard' ? '#f0f8ff' : 'inherit',
-                        '&:hover': {
-                          backgroundColor: setting === 'Dashboard' ? '#e3f2fd' : 'inherit'
-                        }
-                      }}
-                    >
+                    <MenuItem key={setting} onClick={() => handleMenuItemClick(setting)}>
                       <Link
                         to={
                           setting.toLowerCase() === 'profile'
@@ -243,8 +260,9 @@ const Header = ({ onWishlistClick, wishlistItems, onCartClick }) => {
         <div className="container">
           <ul>
             {categories.map((category) => (
-              <li key={category}>
-                <Link to={`/${category.toLowerCase()}`}>{category}</Link>
+              <li onClick={() => handleMenuCategoryClick(category)} key={category}>
+                <Link to={category}>{category}</Link>
+                {/* <Link to={`/${category.toLowerCase()}`}>{category}</Link> */}
               </li>
             ))}
           </ul>

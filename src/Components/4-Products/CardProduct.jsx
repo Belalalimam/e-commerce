@@ -11,6 +11,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import CloseIcon from "@mui/icons-material/Close";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 
+
 import { putLikeForProduct } from '../../redux/apiCalls/likeApiCalls';
 import { putCartForProduct, getUserProfileCart } from '../../redux/apiCalls/cartApiCalls';
 import { fetchProduct } from "../../redux/apiCalls/productApiCalls";
@@ -90,26 +91,28 @@ const CategoryModal = ({ product, open, onClose, handleCardClick }) => {
 
 // Main Component
 const FeaturedProducts = ({ name }) => {
+  const [quantity, setQuantity] = useState(1);
   const dispatch = useDispatch();
   const { id } = useParams();
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const Products = useSelector((state) => state.product.product);
-  const { cart } = useSelector(state => state.cart);
+  const item = useSelector(state => state.cart.item.items);
   const { like } = useSelector(state => state.like);
-
+  
   useEffect(() => {
     if (id) {
       dispatch(getUserProfileLike(id));
       dispatch(getUserProfileCart(id));
     }
     dispatch(fetchProduct());
+    // console.log("🚀 ~ FeaturedProducts ~ cart:", item[0]._id)
   }, [dispatch, id]);
 
   const handleAddToCart = (e, productId) => {
     e.stopPropagation();
-    dispatch(putCartForProduct(productId));
+    dispatch(putCartForProduct(productId,quantity));
   };
 
   const handleAddToFavorites = (e, productId) => {
@@ -150,7 +153,7 @@ const FeaturedProducts = ({ name }) => {
                       <IconButton
                         onClick={(e) => handleAddToCart(e, product._id)}
                         sx={{
-                          color: Array.isArray(cart) && cart.some(item => item._id === product._id) ? "#4CAF50" : "white",
+                          color: Array.isArray(item) && item.some(item => item._id === product._id) ? "#4CAF50" : "white",
                           backgroundColor: "rgba(255,255,255,0.2)",
                           "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
                           zIndex: 2
@@ -181,6 +184,8 @@ const FeaturedProducts = ({ name }) => {
             </Typography>
           )}
         </Grid>
+
+        
 
         <CategoryModal
           product={selectedProduct}

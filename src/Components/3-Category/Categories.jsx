@@ -16,7 +16,6 @@ const CategoriesCarousel = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { category } = useSelector((state) => state.category);
-  console.log("🚀 ~ CategoriesCarousel ~ productsCate:", category)
 
   useEffect(() => {
     dispatch(getCategories());
