@@ -19,7 +19,10 @@ import { fetchProduct } from "../../redux/apiCalls/productApiCalls";
 // Styled Components
 const StyledCard = styled(Card)(({ theme }) => ({
   height: "100%",
-  width: "300px",
+  width: "180px", // Half of 300px for xs screens
+  [theme.breakpoints.up('sm')]: {
+    width: "300px",
+  },
   display: "flex",
   flexDirection: "column",
   position: "relative",
@@ -132,10 +135,10 @@ const FeaturedProducts = ({ name }) => {
           {name}
         </Typography>
 
-        <Grid container spacing={4}>
+        <Grid container spacing={4} justifyContent={"center"}>
           {Array.isArray(Products) && Products.length > 0 ? (
             Products.map((product) => (
-              <Grid key={product._id} xs={12} sm={6} md={3}>
+              <Grid key={product._id} xs={6} sm={6} md={3}>
                 <StyledCard onClick={() => setSelectedProduct(product)}>
                   <ProductImage image={product.productImage.url} title={product.productTitle}>
                     <ProductActions className="product-actions">

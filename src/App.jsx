@@ -68,7 +68,7 @@ function App() {
             <Route path="/search" element={<SearchResults />} />
 
             <Route path="/profile/:id" element={<Profial />} />
-            <Route path="/login" element={!user ? <Login /> : <Navigate to="/profile/:id" />} />
+            <Route path="/login" element={!user ? <Login /> : <Navigate to={`/profile/${user?._id}`} />} />
             <Route path="/register" element={!user ? <Register /> : <Navigate to="/profile/:id" />} />
             <Route path="/users/:userId/verify/:token" element={!user ? <VerifyEmail /> : <Navigate to="/" />}/>
 

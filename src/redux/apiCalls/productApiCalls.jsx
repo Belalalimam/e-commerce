@@ -28,7 +28,6 @@ export function getProductsCount() {
 
 // Fetch Posts Based On Category
 export function fetchProductsBasedOnCategory(productCategory) {
-  console.log("🚀 ~ fetchProductsBasedOnCategory ~ productCategory:", productCategory)
   return async (dispatch) => {
     try {
       const { data } = await request.get(`/Products?productCategory=${productCategory}`);

@@ -36,6 +36,9 @@ const UserDashboard = () => {
   const dispatch = useDispatch();
   const { profile } = useSelector((state) => state.profile);
 
+  const { user } = useSelector((state) => state.auth);
+  // console.log("🚀 ~ UserDashboard ~ user:", user)
+
   useEffect(() => {
     setLoading(false);
     dispatch(getUserProfile(id))
@@ -109,7 +112,7 @@ const UserDashboard = () => {
           fontWeight: 'bold',
           textAlign: 'center'
         }}>
-          Welcome back, {profile?.name || 'User'}
+          Welcome back, {user?.name || 'User'}
         </Typography>
 
         <Grid container spacing={3}>

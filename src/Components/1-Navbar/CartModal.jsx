@@ -12,12 +12,23 @@ import CardProucts from '../4-Products/CardProduct'
 
 const CartModal = () => {
   const [quantity, setQuantity] = useState(1);
+  const [logedin, setIsLogedIn] = useState(null);
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const cart = useSelector(state => state.cart.item.items)
+  const { item = { items: [] } } = useSelector(state => state.cart) || {};
+  const { user } = useSelector((state) => state.auth);
   const { like } = useSelector(state => state.like);
   const { product } = useSelector(state => state.product);
   const dispatch = useDispatch();
+
+  const cart = item?.items || [];
+
+  if (user) {
+    setIsLogedIn(true);
+  }
+  const backToHome = () => {
+    "Your Cart is Empty"
+  };
 
   const handleRemoveFromCart = (productId) => {
     dispatch(deleteCartForProduct(productId));
@@ -94,12 +105,17 @@ const CartModal = () => {
             ))
           ) : (
             <Typography variant="h4" align="center" sx={{ width: '100%', mt: 4, mb: 4 }}>
-              No products added
+              {logedin ? "Your Cart is Empty" : (
+                <>
+                  <h1>Your Cart is Empty</h1>
+                  <Button onClick={() => navigate('/login')}>Login to see your cart</Button>
+              </>
+              )}
             </Typography>
           )}
         </Grid>
       </Container>
-      
+
       <CardProucts name={'Related Products'} />
     </>
   );
