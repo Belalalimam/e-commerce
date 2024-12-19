@@ -10,7 +10,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import CloseIcon from "@mui/icons-material/Close";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-
+import { toast } from "react-toastify";
 
 import { putLikeForProduct } from '../../redux/apiCalls/likeApiCalls';
 import { putCartForProduct, getUserProfileCart } from '../../redux/apiCalls/cartApiCalls';
@@ -18,10 +18,38 @@ import { fetchProduct } from "../../redux/apiCalls/productApiCalls";
 
 // Styled Components
 const StyledCard = styled(Card)(({ theme }) => ({
-  height: "100%",
-  width: "180px", // Half of 300px for xs screens
-  [theme.breakpoints.up('sm')]: {
-    width: "300px",
+  cursor: "pointer",
+  // Extra small mobile devices (under 387px)
+  [`@media (max-width: 387px)`]: {
+    width: "130px",
+    // height: "300px",
+    margin: "0 auto",
+    padding: "0px",
+  },
+  // Mobile devices (extra small)
+  [theme.breakpoints.down('sm')]: {
+    width: "150px",
+    // height: "320px",
+    margin: "0 auto",
+    padding: "8px",
+  },
+  // Tablets (small)
+  [theme.breakpoints.between('sm', 'md')]: {
+    width: "220px",
+    // height: "380px",
+    padding: "12px",
+  },
+  // Small laptops (medium)
+  [theme.breakpoints.between('md', 'lg')]: {
+    width: "260px",
+    // height: "420px",
+    padding: "16px",
+  },
+  // Desktops (large)
+  [theme.breakpoints.up('lg')]: {
+    width: "290px",
+    // height: "450px",
+    padding: "20px",
   },
   display: "flex",
   flexDirection: "column",
@@ -33,17 +61,28 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-const ProductImage = styled(CardMedia)({
-  height: 300,
+const ProductImage = styled(CardMedia)(({ theme }) => ({
+  [`@media (max-width: 387px)`]: {
+    height: 190,
+  },
+  [theme.breakpoints.down('sm')]: {
+    height: 190,
+  },
+  [theme.breakpoints.between('sm', 'md')]: {
+    height: 250,
+  },
+  [theme.breakpoints.up('md')]: {
+    height: 300,
+  },
   position: "relative",
+  cursor: "pointer",
   overflow: "hidden",
   "&:hover": {
     "& .product-actions": {
       transform: "translateY(0)",
     },
   },
-});
-
+}));
 const ProductActions = styled(Box)({
   position: "absolute",
   bottom: 0,
@@ -57,34 +96,70 @@ const ProductActions = styled(Box)({
   justifyContent: "center",
   gap: "10px",
 });
-
 // Modal Component
 const CategoryModal = ({ product, open, onClose, handleCardClick }) => {
   if (!product) return null;
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ m: 0, p: 2 }}>
-        <IconButton onClick={onClose} sx={{ position: "absolute", right: 8, top: 8 }}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="md"
+      fullWidth
+      PaperProps={{
+        sx: {
+          width: { xs: '95%', sm: '80%', md: '100%' },
+          margin: { xs: '10px', sm: '20px' }
+        }
+      }}
+    >
+      <DialogTitle sx={{ m: 0, p: { xs: 1, sm: 2 } }}>
+        <IconButton
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            right: { xs: 4, sm: 8 },
+            top: { xs: 4, sm: 8 }
+          }}
+        >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent onClick={() => handleCardClick(product)}>
-        <Grid container spacing={3}>
+      <DialogContent
+        onClick={() => handleCardClick(product)}
+        sx={{ p: { xs: 1, sm: 2 } }}
+      >
+        <Grid container spacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12} md={6}>
             <CardMedia
               component="img"
               src={product.productImage.url}
               alt={product.productName}
-              style={{ width: "100%", height: "auto", borderRadius: "8px" }}
+              style={{
+                width: "100%",
+                height: { xs: "200px", sm: "250px", md: "300px" },
+                objectFit: "cover",
+                borderRadius: "8px"
+              }}
             />
+
           </Grid>
           <Grid item xs={12} md={6}>
-            <Typography variant="h4" gutterBottom>{product.productName}</Typography>
-            <Typography variant="body1" paragraph>{product.productDescription}</Typography>
-            <Typography variant="body2">Category: {product.productCategory}</Typography>
-            <Typography variant="body2">Color: {product.productColor}</Typography>
-            <Typography variant="body2">Size: {product.productCategorySize}</Typography>
+            <Typography variant="h4" sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }} gutterBottom>
+              {product.productName}
+            </Typography>
+            <Typography variant="body1" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }} paragraph>
+              {product.productDescription}
+            </Typography>
+            <Typography variant="body2" sx={{ mt: { xs: 1, sm: 2 } }}>
+              Category: {product.productCategory}
+            </Typography>
+            <Typography variant="body2">
+              Color: {product.productColor}
+            </Typography>
+            <Typography variant="body2">
+              Size: {product.productCategorySize}
+            </Typography>
           </Grid>
         </Grid>
       </DialogContent>
@@ -94,16 +169,18 @@ const CategoryModal = ({ product, open, onClose, handleCardClick }) => {
 
 // Main Component
 const FeaturedProducts = ({ name }) => {
-  const [quantity, setQuantity] = useState(1);
+  const [quantity] = useState(1);
   const dispatch = useDispatch();
   const { id } = useParams();
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const Products = useSelector((state) => state.product.product);
-  const item = useSelector(state => state.cart.item.items);
   const { like } = useSelector(state => state.like);
-  
+  const { user } = useSelector((state) => state.auth);
+  const { item = { items: [] } } = useSelector(state => state.cart) || {};
+    const cart = item?.items || [];
+
   useEffect(() => {
     if (id) {
       dispatch(getUserProfileLike(id));
@@ -115,27 +192,35 @@ const FeaturedProducts = ({ name }) => {
 
   const handleAddToCart = (e, productId) => {
     e.stopPropagation();
-    dispatch(putCartForProduct(productId,quantity));
+    if (!user) {
+      toast.error("Please login to add items to cart!");
+      return;
+    }
+    dispatch(putCartForProduct(productId, quantity));
+    toast.success("Product added to cart!");
   };
-
   const handleAddToFavorites = (e, productId) => {
     e.stopPropagation();
+
+    if (!user) {
+      toast.error("Please login to add items to favorites!");
+      return;
+    }
     dispatch(putLikeForProduct(productId));
   };
-
   const handleCardClick = (product) => {
     navigate(`/getProduct/${product._id}`);
+    window.scrollTo(0, 0);
   };
 
   return (
     <Box sx={{ py: 8, backgroundColor: "#fff" }}>
-      <ToastContainer />
-      <Container maxWidth="xl">
+      <Container maxWidth="xxl" className=" CardProductContaienr">
         <Typography variant="h3" align="center" sx={{ mb: 5, fontWeight: 600, color: "#1a1a1a" }}>
           {name}
         </Typography>
 
-        <Grid container spacing={4} justifyContent={"center"}>
+        <Grid container spacing={4} justifyContent={"center"} className="p-[0px] m-[0px]">
           {Array.isArray(Products) && Products.length > 0 ? (
             Products.map((product) => (
               <Grid key={product._id} xs={6} sm={6} md={3}>
@@ -156,7 +241,7 @@ const FeaturedProducts = ({ name }) => {
                       <IconButton
                         onClick={(e) => handleAddToCart(e, product._id)}
                         sx={{
-                          color: Array.isArray(item) && item.some(item => item._id === product._id) ? "#4CAF50" : "white",
+                          color: Array.isArray(cart) && cart.some(item => item._id === product._id) ? "#4CAF50" : "white",
                           backgroundColor: "rgba(255,255,255,0.2)",
                           "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
                           zIndex: 2
@@ -188,7 +273,7 @@ const FeaturedProducts = ({ name }) => {
           )}
         </Grid>
 
-        
+
 
         <CategoryModal
           product={selectedProduct}

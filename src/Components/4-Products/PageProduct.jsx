@@ -10,7 +10,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 
 import { useNavigate, useParams } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { styled } from "@mui/material/styles";
 
@@ -21,8 +21,39 @@ import { getCategories } from "../../redux/apiCalls/categoryApiCalls";
 
 // Styled Components
 const StyledCard = styled(Card)(({ theme }) => ({
-  height: "100%",
-  width: "300px",
+  cursor: "pointer",
+  // Extra small mobile devices (under 387px)
+  [`@media (max-width: 387px)`]: {
+    width: "130px",
+    // height: "300px",
+    margin: "0 auto",
+    padding: "0px",
+  },
+  // Mobile devices (extra small)
+  [theme.breakpoints.down('sm')]: {
+    width: "150px",
+    // height: "320px",
+    margin: "0 auto",
+    padding: "8px",
+  },
+  // Tablets (small)
+  [theme.breakpoints.between('sm', 'md')]: {
+    width: "220px",
+    // height: "380px",
+    padding: "12px",
+  },
+  // Small laptops (medium)
+  [theme.breakpoints.between('md', 'lg')]: {
+    width: "260px",
+    // height: "420px",
+    padding: "16px",
+  },
+  // Desktops (large)
+  [theme.breakpoints.up('lg')]: {
+    width: "290px",
+    // height: "450px",
+    padding: "20px",
+  },
   display: "flex",
   flexDirection: "column",
   position: "relative",
@@ -33,17 +64,28 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-const ProductImage = styled(CardMedia)({
-  height: 300,
+const ProductImage = styled(CardMedia)(({ theme }) => ({
+  [`@media (max-width: 387px)`]: {
+    height: 190,
+  },
+  [theme.breakpoints.down('sm')]: {
+    height: 190,
+  },
+  [theme.breakpoints.between('sm', 'md')]: {
+    height: 250,
+  },
+  [theme.breakpoints.up('md')]: {
+    height: 300,
+  },
   position: "relative",
+  cursor: "pointer",
   overflow: "hidden",
   "&:hover": {
     "& .product-actions": {
       transform: "translateY(0)",
     },
   },
-});
-
+}));
 const ProductActions = styled(Box)({
   position: "absolute",
   bottom: 0,
@@ -57,45 +99,77 @@ const ProductActions = styled(Box)({
   justifyContent: "center",
   gap: "10px",
 });
-
-// Add this component before the main CategoryPage component
+// Modal Component
 const CategoryModal = ({ product, open, onClose, handleCardClick }) => {
   if (!product) return null;
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ m: 0, p: 2 }}>
-        <IconButton onClick={onClose} sx={{ position: "absolute", right: 8, top: 8 }}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="md"
+      fullWidth
+      PaperProps={{
+        sx: {
+          width: { xs: '95%', sm: '80%', md: '100%' },
+          margin: { xs: '10px', sm: '20px' }
+        }
+      }}
+    >
+      <DialogTitle sx={{ m: 0, p: { xs: 1, sm: 2 } }}>
+        <IconButton
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            right: { xs: 4, sm: 8 },
+            top: { xs: 4, sm: 8 }
+          }}
+        >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent onClick={() => handleCardClick(product)}>
-        <Grid container spacing={3}>
+      <DialogContent
+        onClick={() => handleCardClick(product)}
+        sx={{ p: { xs: 1, sm: 2 } }}
+      >
+        <Grid container spacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12} md={6}>
             <CardMedia
               component="img"
               src={product.productImage.url}
               alt={product.productName}
-              style={{ width: "100%", height: "75%", borderRadius: "8px" }}
+              style={{
+                width: "100%",
+                height: { xs: "200px", sm: "250px", md: "300px" },
+                objectFit: "cover",
+                borderRadius: "8px"
+              }}
             />
+
           </Grid>
           <Grid item xs={12} md={6}>
-            <Typography variant="h4" gutterBottom>{product.productName}</Typography>
-            <Typography variant="body1" paragraph>{product.productDescription}</Typography>
-            <Typography variant="body2">Category: {product.productCategory}</Typography>
-            <Typography variant="body2">Size: {product.productCategorySize}</Typography>
-            <Typography variant="body2">Color: {product.productColor}</Typography>
-            <Divider sx={{ my: 2 }} />
+            <Typography variant="h4" sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }} gutterBottom>
+              {product.productName}
+            </Typography>
+            <Typography variant="body1" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }} paragraph>
+              {product.productDescription}
+            </Typography>
+            <Typography variant="body2" sx={{ mt: { xs: 1, sm: 2 } }}>
+              Category: {product.productCategory}
+            </Typography>
+            <Typography variant="body2">
+              Color: {product.productColor}
+            </Typography>
+            <Typography variant="body2">
+              Size: {product.productCategorySize}
+            </Typography>
           </Grid>
         </Grid>
       </DialogContent>
-      <DialogActions sx={{ p: 3 }}>
-        <Button variant="outlined" startIcon={<FavoriteIcon />}>Add to Wishlist</Button>
-        <Button variant="contained" startIcon={<ShoppingBagIcon />}>Add to Cart</Button>
-      </DialogActions>
     </Dialog>
   );
 };
+
 
 
 // Main Component
@@ -108,7 +182,8 @@ const CategoryPage = () => {
   const [quantity, setQuantity] = useState(1);
 
   const { productSingle, product } = useSelector((state) => state.product);
-  const { cart } = useSelector(state => state.cart);
+  const { item = { items: [] } } = useSelector(state => state.cart) || {};
+  const cart = item?.items || [];
   const { like } = useSelector(state => state.like);
   const { user } = useSelector((state) => state.auth);
 
@@ -116,7 +191,6 @@ const CategoryPage = () => {
     dispatch(fetchSingleProduct(productId));
     dispatch(getCategories());
   }, [dispatch, productId]);
-
   useEffect(() => {
     if (id) {
       dispatch(getUserProfileLike(id));
@@ -124,32 +198,32 @@ const CategoryPage = () => {
     }
     dispatch(fetchProduct());
   }, [dispatch, id]);
-
-  const handleAddToCart = (e) => {
+  const handleAddToCart = (e, productId) => {
     e.stopPropagation();
-    if (productSingle?._id) {
-      dispatch(putCartForProduct(productSingle._id, quantity));
-      toast.success("Product added to cart!");
+    if (!user) {
+      toast.error("Please login to add items to cart!");
+      return;
     }
+    dispatch(putCartForProduct(productId, quantity));
+    toast.success("Product added to cart!");
   };
-
-  const handleAddToFavorites = (e) => {
+  const handleAddToFavorites = (e, productId) => {
     e.stopPropagation();
+
     if (!user) {
       toast.error("Please login to add items to favorites!");
       return;
     }
-    if (productSingle?._id) {
-      dispatch(putLikeForProduct(productSingle._id));
-      toast.success("Product added to wishlist!");
-    }
+    dispatch(putLikeForProduct(productId));
   };
   const handleCardClick = (product) => {
     navigate(`/getProduct/${product._id}`);
+    setSelectedProduct(null)
+    window.scrollTo(0, 0);
   };
 
   if (!productSingle) {
-    return <div>Loading...</div>;
+    return <h1>Loading...</h1>;
   }
 
   const similarProducts = product.filter(
@@ -158,8 +232,7 @@ const CategoryPage = () => {
   ).slice(0, 6);
 
   return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
-      <ToastContainer />
+    <Container maxWidth="xxl" sx={{ py: 4 }}>
       {productSingle && (
         <>
           {/* Breadcrumbs */}
@@ -277,56 +350,58 @@ const CategoryPage = () => {
           {/* Similar Products Section */}
           <Box sx={{ mt: 8 }}>
             <Typography variant="h5" gutterBottom>Similar Products</Typography>
-            <Grid container spacing={2} sx={{ mt: 2 }}>
-              {similarProducts.length > 0 ? similarProducts.map((product) => (
-                <Grid key={product._id} xs={12} sm={6} md={3}>
-                  <StyledCard onClick={() => setSelectedProduct(product)}>
-                    <ProductImage image={product.productImage.url} title={product.productTitle}>
-                      <ProductActions className="product-actions">
-                        <IconButton
-                          onClick={(e) => handleAddToFavorites(e, product._id)}
-                          sx={{
-                            color: Array.isArray(like) && like.some(item => item._id === product._id) ? "red" : "white",
-                            backgroundColor: "rgba(255,255,255,0.2)",
-                            "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
-                            zIndex: 2
-                          }}
-                        >
-                          <FavoriteIcon />
-                        </IconButton>
-                        <IconButton
-                          onClick={(e) => handleAddToCart(e, product._id)}
-                          sx={{
-                            color: Array.isArray(cart) && cart.some(item => item._id === product._id) ? "#4CAF50" : "white",
-                            backgroundColor: "rgba(255,255,255,0.2)",
-                            "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
-                            zIndex: 2
-                          }}
-                        >
-                          <ShoppingCartIcon />
-                        </IconButton>
-                      </ProductActions>
-                    </ProductImage>
-                    <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography gutterBottom variant="h6">{product.productName}</Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                        {product.productCategory}
-                      </Typography>
-                      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                          <LocalShippingIcon sx={{ fontSize: 16, color: "success.main", mr: 0.5 }} />
-                          <Typography variant="caption" color="success.main">Free Shipping</Typography>
+            <Container maxWidth="xxl" className=" CardProductContaienr">
+              <Grid container spacing={4} sx={{ mt: 2 }} justifyContent={"center"} className="p-[0px] m-[0px]">
+                {similarProducts.length > 0 ? similarProducts.map((product) => (
+                  <Grid key={product._id} xs={6} sm={6} md={3}>
+                    <StyledCard onClick={() => setSelectedProduct(product)}>
+                      <ProductImage image={product.productImage.url} title={product.productTitle}>
+                        <ProductActions className="product-actions">
+                          <IconButton
+                            onClick={(e) => handleAddToFavorites(e, product._id)}
+                            sx={{
+                              color: Array.isArray(like) && like.some(item => item._id === product._id) ? "red" : "white",
+                              backgroundColor: "rgba(255,255,255,0.2)",
+                              "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
+                              zIndex: 2
+                            }}
+                          >
+                            <FavoriteIcon />
+                          </IconButton>
+                          <IconButton
+                            onClick={(e) => handleAddToCart(e, product._id)}
+                            sx={{
+                              color: Array.isArray(cart) && cart.some(item => item._id === product._id) ? "#4CAF50" : "white",
+                              backgroundColor: "rgba(255,255,255,0.2)",
+                              "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
+                              zIndex: 2
+                            }}
+                          >
+                            <ShoppingCartIcon />
+                          </IconButton>
+                        </ProductActions>
+                      </ProductImage>
+                      <CardContent sx={{ flexGrow: 1 }}>
+                        <Typography gutterBottom variant="h6">{product.productName}</Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                          {product.productCategory}
+                        </Typography>
+                        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
+                            <LocalShippingIcon sx={{ fontSize: 16, color: "success.main", mr: 0.5 }} />
+                            <Typography variant="caption" color="success.main">Free Shipping</Typography>
+                          </Box>
                         </Box>
-                      </Box>
-                    </CardContent>
-                  </StyledCard>
-                </Grid>
-              )) : (
-                <Typography variant="h6" align="center" sx={{ width: '100%' }}>
-                  No similar products available
-                </Typography>
-              )}
-            </Grid>
+                      </CardContent>
+                    </StyledCard>
+                  </Grid>
+                )) : (
+                  <Typography variant="h6" align="center" sx={{ width: '100%' }}>
+                    No similar products available
+                  </Typography>
+                )}
+              </Grid>
+            </Container>
           </Box>
         </>
       )}

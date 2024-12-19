@@ -17,8 +17,39 @@ import './FilterationSidebar.css'
 
 // Styled Components
 const StyledCard = styled(Card)(({ theme }) => ({
-    height: "100%",
-    width: "300px",
+    cursor: "pointer",
+    // Extra small mobile devices (under 387px)
+    [`@media (max-width: 387px)`]: {
+        width: "130px",
+        // height: "300px",
+        margin: "0 auto",
+        padding: "0px",
+    },
+    // Mobile devices (extra small)
+    [theme.breakpoints.down('sm')]: {
+        width: "150px",
+        // height: "320px",
+        margin: "0 auto",
+        padding: "8px",
+    },
+    // Tablets (small)
+    [theme.breakpoints.between('sm', 'md')]: {
+        width: "220px",
+        // height: "380px",
+        padding: "12px",
+    },
+    // Small laptops (medium)
+    [theme.breakpoints.between('md', 'lg')]: {
+        width: "260px",
+        // height: "420px",
+        padding: "16px",
+    },
+    // Desktops (large)
+    [theme.breakpoints.up('lg')]: {
+        width: "290px",
+        // height: "450px",
+        padding: "20px",
+    },
     display: "flex",
     flexDirection: "column",
     position: "relative",
@@ -28,18 +59,28 @@ const StyledCard = styled(Card)(({ theme }) => ({
         boxShadow: theme.shadows[10],
     },
 }));
-
-const ProductImage = styled(CardMedia)({
-    height: 300,
+const ProductImage = styled(CardMedia)(({ theme }) => ({
+    [`@media (max-width: 387px)`]: {
+        height: 190,
+    },
+    [theme.breakpoints.down('sm')]: {
+        height: 190,
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+        height: 250,
+    },
+    [theme.breakpoints.up('md')]: {
+        height: 300,
+    },
     position: "relative",
+    cursor: "pointer",
     overflow: "hidden",
     "&:hover": {
         "& .product-actions": {
             transform: "translateY(0)",
         },
     },
-});
-
+}));
 const ProductActions = styled(Box)({
     position: "absolute",
     bottom: 0,
@@ -61,25 +102,17 @@ const SearchResults = () => {
     const queryParams = new URLSearchParams(location.search);
     const searchQuery = queryParams.get('q');
     const selectedCategory = queryParams.get('category');
-
     const PRODUCTS_PER_PAGE = 10;
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showMobileFilters, setShowMobileFilters] = useState(false);
-
-    const [filters, setFilters] = useState({
-        colors: [],
-        categories: [],
-        sizes: [],
-        // priceRange: [0, 1000]
-    });
-
+    const [filters, setFilters] = useState({colors: [], categories: [], sizes: []});
     const { product } = useSelector(state => state.product);
-    const { cart } = useSelector(state => state.cart);
+    const { item = { items: [] } } = useSelector(state => state.cart) || {};
+    const cart = item?.items || [];
     const { like } = useSelector(state => state.like);
     const { user } = useSelector((state) => state.auth);
     const { productsCount } = useSelector((state) => state.product);
-
     const colors = [
         { id: 1, name: "Black", hex: "#000000" },
         { id: 2, name: "White", hex: "#FFFFFF" },
@@ -91,14 +124,22 @@ const SearchResults = () => {
     const sizes = ["xs", "s", "m", "l", "xl"];
     const handleAddToCart = (e, productId) => {
         e.stopPropagation();
-        dispatch(putCartForProduct(productId));
+        if (!user) {
+            toast.error("Please login to add items to cart!");
+            return;
+        }
+        dispatch(putCartForProduct(productId, quantity));
+        toast.success("Product added to cart!");
     };
-
     const handleAddToFavorites = (e, productId) => {
         e.stopPropagation();
+
+        if (!user) {
+            toast.error("Please login to add items to favorites!");
+            return;
+        }
         dispatch(putLikeForProduct(productId));
     };
-
     const handleCardClick = (product) => {
         navigate(`/getProduct/${product._id}`);
     };
@@ -106,17 +147,16 @@ const SearchResults = () => {
     useEffect(() => {
         dispatch(fetchProduct());
     }, [dispatch]);
-
-
-
-
-    const clearFilters = () => {
-        setFilters({
-            colors: [],
-            categories: [],
-            sizes: [],
+    useEffect(() => {
+        window.addEventListener("click", (event) => {
+          const target = event.target;
+          if (!target.closest(".filter-sidebar") && showMobileFilters) {
+            setShowMobileFilters(false);
+          }
         });
-    };
+      }, []);
+
+    const clearFilters = () => {setFilters({colors: [], categories: [], sizes: []})};
 
     const filteredProducts = product.filter(item => {
         const searchTerms = searchQuery.toLowerCase();
@@ -124,6 +164,7 @@ const SearchResults = () => {
         const matchesSearch =
             item.productName.toLowerCase().includes(searchTerms) ||
             item.productCategory.toLowerCase().includes(searchTerms) ||
+            item.productCategorySize.toLowerCase().includes(searchTerms) ||
             item.productColor.toLowerCase().includes(searchTerms);
 
         const matchesCategory = selectedCategory === 'All Categories' ||
@@ -142,7 +183,7 @@ const SearchResults = () => {
     });
 
     return (
-        <Box sx={{ py: 8, backgroundColor: "#fff00" }}>
+        <Box sx={{ py: 8, backgroundColor: "#fff00" }} onClick={() => setShowMobileFilters(!showMobileFilters)}>
             <Typography
                 variant="h3"
                 align="center"
@@ -150,15 +191,15 @@ const SearchResults = () => {
             >
                 Search Results for "{searchQuery}"
             </Typography>
-            <Container maxWidth="xxl" className="flex filterContainer1 search-results-container">
-            
-                <div className="filter-toggle1" onClick={() => setShowMobileFilters(!showMobileFilters)}>
+            <Container maxWidth="xxl" className="flex flex-col lg:flex-row CardProductContaienr">
+
+                <div className="filter-toggle" onClick={() => setShowMobileFilters(!showMobileFilters)}>
                     <FaFilter />
                     <span>Filters</span>
                 </div>
 
                 <div className="main-container1">
-                    <aside className={`filter-sidebar1 ${showMobileFilters ? "show" : ""}`}>
+                    <aside className={`filter-sidebar ${showMobileFilters ? "show" : ""}`}>
                         <div className="filter-group1">
                             <Typography variant="subtitle2" gutterBottom>
                                 Colors
@@ -229,46 +270,40 @@ const SearchResults = () => {
                 </div>
 
 
-                <Grid container spacing={2} className="products-area1">
+                <Grid container spacing={2} className="products-area1 p-[0px] m-[0px]" justifyContent={"center"}>
                     {filteredProducts.length > 0 ? (
                         filteredProducts.map((product) => (
-                            <Grid key={product._id} xs={12} sm={6} md={3}>
+                            <Grid key={product._id} xs={6} sm={6} md={3} onClick={() => handleCardClick(product)} justifyContent={"center"}>
                                 <StyledCard onClick={() => setSelectedProduct(product)}>
                                     <ProductImage
                                         image={product.productImage.url}
                                         title={product.productTitle}
-                                        id='bell'
+                                        id={product.productImage.publicId}
                                     >
-
-
-                                        {/* <ProductActions className="product-actions">
-
-                          <IconButton
-                            onClick={(e) => handleAddToFavorites(e, product._id)}
-                            sx={{
-                              color: Array.isArray(like) && like.some(item => item._id === product._id) ? "red" : "white",
-                              backgroundColor: "rgba(255,255,255,0.2)",
-                              "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
-                              zIndex: 2 // Ensure button stays above other elements
-                            }}
-                          >
-                            <FavoriteIcon />
-                          </IconButton>
-
-
-
-                          <IconButton
-                            onClick={(e) => handleAddToCart(e, product._id)}
-                            sx={{
-                              color: Array.isArray(cart) && cart.some(item => item._id === product._id) ? "#4CAF50" : "white",
-                              backgroundColor: "rgba(255,255,255,0.2)",
-                              "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
-                              zIndex: 2
-                            }}
-                          >
-                            <ShoppingCartIcon />
-                          </IconButton>
-                        </ProductActions> */}
+                                        <ProductActions className="product-actions">
+                                            <IconButton
+                                                onClick={(e) => handleAddToFavorites(e, product._id)}
+                                                sx={{
+                                                    color: Array.isArray(like) && like.some(item => item._id === product._id) ? "red" : "white",
+                                                    backgroundColor: "rgba(255,255,255,0.2)",
+                                                    "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
+                                                    zIndex: 2
+                                                }}
+                                            >
+                                                <FavoriteIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                onClick={(e) => handleAddToCart(e, product._id)}
+                                                sx={{
+                                                    color: Array.isArray(cart) && cart.some(item => item._id === product._id) ? "#4CAF50" : "white",
+                                                    backgroundColor: "rgba(255,255,255,0.2)",
+                                                    "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
+                                                    zIndex: 2
+                                                }}
+                                            >
+                                                <ShoppingCartIcon />
+                                            </IconButton>
+                                        </ProductActions>
 
                                     </ProductImage>
                                     <CardContent sx={{ flexGrow: 1 }}>

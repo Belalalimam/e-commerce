@@ -37,14 +37,15 @@ const WishlistModal = ({ open, onClose }) => {
   const likeItems = Array.isArray(like) ? like : [];
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <Box sx={style} className='overscroll-auto'>
+    <Modal open={open} onClose={onClose} className=''>
+      <Box sx={style} className='overscroll-auto '>
         <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
           My Wishlist ({likeItems?.length})
         </Typography>
         <Divider />
+        <div className='overflow-y-auto WishlistModal' >
         {likeItems?.map((item) => (
-          <Box
+            <Box
             key={item._id}
             sx={{
               display: "flex",
@@ -53,10 +54,10 @@ const WishlistModal = ({ open, onClose }) => {
               mt: 2,
               p: 2,
               bgcolor: 'grey.50',
-              borderRadius: 1
+              borderRadius: 1,
             }}
           >
-            <Box sx={{ display: 'flex', gap: 2 }}>
+            <Box sx={{ display: 'flex', gap: 2 }} >
               <img
                 src={item.productImage.url}
                 alt={item.productName}
@@ -66,9 +67,6 @@ const WishlistModal = ({ open, onClose }) => {
                 <Typography variant="subtitle1">{item.productName}</Typography>
                 <Typography variant="body2" color="text.secondary">
                   Category: {item.productCategory}
-                </Typography>
-                <Typography variant="h6" color="primary">
-                  ${item.productPrice}
                 </Typography>
               </Box>
             </Box>
@@ -80,6 +78,7 @@ const WishlistModal = ({ open, onClose }) => {
             </IconButton>
           </Box>
         ))}
+        </div>
         <Button
           variant="contained"
           fullWidth

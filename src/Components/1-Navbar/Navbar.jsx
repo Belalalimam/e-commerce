@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import './Navbar.css';
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../../redux/apiCalls/authApiCalls";
-import { fetchProductsBasedOnCategorySize, fetchProductsBasedOnCategory,fetchProduct } from '../../redux/apiCalls/productApiCalls'
+import { fetchProductsBasedOnCategorySize, fetchProductsBasedOnCategory, fetchProduct } from '../../redux/apiCalls/productApiCalls'
 
 
 const Header = ({ onWishlistClick, wishlistItems }) => {
@@ -65,6 +65,7 @@ const Header = ({ onWishlistClick, wishlistItems }) => {
         break;
 
     }
+    setMobileMenuOpen(false);
     handleCloseUserMenu();
   };
 
@@ -79,8 +80,9 @@ const Header = ({ onWishlistClick, wishlistItems }) => {
         }
         break;
       case 'logout':
-        dispatch(logoutUser());
-        navigate('/Home');
+        localStorage.removeItem("userInfo");
+        dispatch({ type: "LOGOUT" });
+        navigate('/');
         break;
       case 'login':
         navigate('/login');

@@ -8,7 +8,6 @@ import FeaturedProducts from "./Components/4-Products/CardProduct";
 import VerifyEmail from "./Components/6-Verify-Email/VerifyEmail";
 import NavContainer from "./Components/1-Navbar/navContainer";
 import ProductPage from "./Components/4-Products/PageProduct";
-import Categories from "./Components/3-Category/Categories";
 import FilteredProductsCategory from "./FilteredCategory";
 import Register from './Components/Auth/Registe/register';
 import CartModal from "./Components/1-Navbar/CartModal";
@@ -19,7 +18,6 @@ import Profial from "./Profial";
 import Test from './test'
 import "./App.css"
 import Dashboard from "./Dashboard";
-import { ToastContainer } from "react-toastify";
 import SearchResults from "./SearchResults";
 import CTASection from "./CTA";
 
@@ -41,9 +39,7 @@ function App() {
   const homepage = (
     <>
       <Swiper />
-      {/* <Categories /> */}
       <FeaturedProducts name={"New Arivve"} />
-      {/* <FeaturedProducts name={"Featured Products"} /> */}
       <FilterationProduct />
       <FeaturedProducts />
     </>
@@ -60,15 +56,14 @@ function App() {
 
             <Route path="/cart" element={<CartModal />} />
 
-            {/* <Route path="/addProduct" element={<AddUser />} /> */}
             <Route path="/getProduct/:productId" element={<ProductPage />} />
             <Route path="/:category" element={<FilteredProductsCategory />} />
-
 
             <Route path="/search" element={<SearchResults />} />
 
             <Route path="/profile/:id" element={<Profial />} />
             <Route path="/login" element={!user ? <Login /> : <Navigate to={`/profile/${user?._id}`} />} />
+            <Route path="/logout" element={homepage} />
             <Route path="/register" element={!user ? <Register /> : <Navigate to="/profile/:id" />} />
             <Route path="/users/:userId/verify/:token" element={!user ? <VerifyEmail /> : <Navigate to="/" />}/>
 

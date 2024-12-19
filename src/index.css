@@ -21,6 +21,12 @@
   border: 2px solid red !important;
 }
 
+
+.CardProductContaienr{
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 body {
   /* height: 6666px; */
 }

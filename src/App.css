@@ -22,4 +22,18 @@
   .Select{
     height: 30px !important;
   }
+
+  .WishlistModal{
+    height: 400px;
+  }
+  @media (max-width: 540px) {
+    .WishlistModalr {
+      height: 200px;
+    }
+  }
+  @media (max-width: 340px) {
+    .WishlistModalr {
+      height: 200px;
+    }
+  }
  

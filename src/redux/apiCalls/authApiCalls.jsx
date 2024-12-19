@@ -16,12 +16,16 @@ export function loginUser(user) {
     }
 }
 
-export function logoutUser() {
-    return async (dispatch) => {
-        dispatch(authActions.Logout())
-        localStorage.removeItem('userInfo');
+export const logoutUser = () => async (dispatch) => {
+    try {
+      localStorage.removeItem("userInfo");
+      dispatch({ type: "LOGOUT" });
+      window.location.href = '/';  // This will ensure direct navigation to homepage
+    } catch (error) {
+      console.error("Logout failed:", error);
     }
-}
+  };
+  
 
 export function registerUser(user) {
     return async (dispatch) => {

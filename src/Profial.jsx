@@ -34,10 +34,13 @@ const UserDashboard = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
-  const { profile } = useSelector((state) => state.profile);
+  const { like } = useSelector((state) => state.like);
+  const { item = { items: [] } } = useSelector(state => state.cart) || {};
+  const cart = item?.items || [];
+
+  
 
   const { user } = useSelector((state) => state.auth);
-  // console.log("🚀 ~ UserDashboard ~ user:", user)
 
   useEffect(() => {
     setLoading(false);
@@ -48,8 +51,8 @@ const UserDashboard = () => {
 
 
   const userStats = [
-    { title: 'My Orders', value: '12', icon: <ShoppingBag />, color: '#FF6B6B' },
-    { title: 'Wishlist', value: '24', icon: <Favorite />, color: '#4ECDC4' },
+    { title: 'My Orders', value: cart?.length, icon: <ShoppingBag />, color: '#FF6B6B' },
+    { title: 'Wishlist', value:  like?.length, icon: <Favorite />, color: '#4ECDC4' },
     { title: 'Reward Points', value: '2,456', icon: <Star />, color: '#FFD93D' },
     { title: 'Coupons', value: '6', icon: <LocalOffer />, color: '#6C5CE7' }
   ];

@@ -1,6 +1,5 @@
 import React from 'react'
 import Navbar from './Navbar'
-import CartModal from './CartModal'
 import WishlistModal from './WishlistModal'
 
 export default function navContainer() {
@@ -20,7 +19,6 @@ export default function navContainer() {
             onWishlistClick={handleWishlistClick}
             onProfialClick={handleProfialClick}
           />
-          {/* <CartModal /> */}
           <WishlistModal
             open={isWishlistOpen}
             onClose={() => setWishlistOpen(false)}

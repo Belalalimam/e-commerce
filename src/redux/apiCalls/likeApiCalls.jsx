@@ -26,6 +26,7 @@ export function putLikeForProduct(productId) {
                 }
             }); 
             dispatch(likeActions.setlike(data))
+            toast.success("Product added to wishlist!");
         }catch(error){
             toast.error(error.response.data.message);
         }

@@ -14,11 +14,31 @@ import { fetchProductsBasedOnCategory, fetchProductsBasedOnCategorySize, fetchPr
 import { getCategories } from "./redux/apiCalls/categoryApiCalls";
 import Pagination from "@mui/material/Pagination";
 
-
-
+// Styled Components
 const StyledCard = styled(Card)(({ theme }) => ({
-  height: "100%",
-  width: "300px",
+  cursor: "pointer",
+  [`@media (max-width: 370px)`]: {
+    width: "130px",
+    margin: "0 auto",
+    padding: "0px",
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: "150px",
+    margin: "0 auto",
+    padding: "8px",
+  },
+  [theme.breakpoints.between('sm', 'md')]: {
+    width: "220px",
+    padding: "12px",
+  },
+  [theme.breakpoints.between('md', 'lg')]: {
+    width: "260px",
+    padding: "16px",
+  },
+  [theme.breakpoints.up('lg')]: {
+    width: "290px",
+    padding: "20px",
+  },
   display: "flex",
   flexDirection: "column",
   position: "relative",
@@ -28,16 +48,28 @@ const StyledCard = styled(Card)(({ theme }) => ({
     boxShadow: theme.shadows[10],
   },
 }));
-const ProductImage = styled(CardMedia)({
-  height: 300,
+const ProductImage = styled(CardMedia)(({ theme }) => ({
+  [`@media (max-width: 370px)`]: {
+    height: 190,
+  },
+  [theme.breakpoints.down('sm')]: {
+    height: 190,
+  },
+  [theme.breakpoints.between('sm', 'md')]: {
+    height: 250,
+  },
+  [theme.breakpoints.up('md')]: {
+    height: 300,
+  },
   position: "relative",
+  cursor: "pointer",
   overflow: "hidden",
   "&:hover": {
     "& .product-actions": {
       transform: "translateY(0)",
     },
   },
-});
+}));
 const ProductActions = styled(Box)({
   position: "absolute",
   bottom: 0,
@@ -58,15 +90,15 @@ const FilteredCategory = () => {
   const { category } = useParams();
   const PRODUCTS_PER_PAGE = 10;
   const [currentPage, setCurrentPage] = useState(1);
-  const [quantity, setQuantity] = useState(1);
+    const [quantity] = useState(1);
 
   const { productsCate } = useSelector((state) => state.product);
-  const { cart } = useSelector(state => state.cart);
+  const { item = { items: [] } } = useSelector(state => state.cart) || {};
+  const cart = item?.items || [];
   const { like } = useSelector(state => state.like);
   const Products = useSelector((state) => state.product.product);
   const { productsCount } = useSelector((state) => state.product);
 
-  // Replace the existing useEffect at line 76 with:
   useEffect(() => {
     if (category && category !== "All Categories") {
       dispatch(fetchProductsBasedOnCategory(category));
@@ -76,33 +108,39 @@ const FilteredCategory = () => {
     dispatch(getProductsCount());
   }, [dispatch, category, currentPage]);
 
-  // Update the displayProducts line to:
   const displayProducts = category && category !== "All Categories" ? productsCate : Products;
 
   const handleAddToCart = (e, productId) => {
-    e.stopPropagation();
-    dispatch(putCartForProduct(productId,quantity));
-  };
-
-  const handleAddToFavorites = (e, productId) => {
-    e.stopPropagation();
-    dispatch(putLikeForProduct(productId));
-  };
-
-  const handleCardClick = (product) => {
-    navigate(`/getProduct/${product._id}`);
-  };
+      e.stopPropagation();
+      if (!user) {
+        toast.error("Please login to add items to cart!");
+        return;
+      }
+      dispatch(putCartForProduct(productId, quantity));
+      toast.success("Product added to cart!");
+    };
+    const handleAddToFavorites = (e, productId) => {
+      e.stopPropagation();
+  
+      if (!user) {
+        toast.error("Please login to add items to favorites!");
+        return;
+      }
+      dispatch(putLikeForProduct(productId));
+    };
+    const handleCardClick = (product) => {
+      navigate(`/getProduct/${product._id}`);
+    };
 
 
   return (
     <Box sx={{ py: 8, backgroundColor: "#fff" }}>
-      <ToastContainer />
       <Container maxWidth="xl" className='fle'>
 
         <Typography
           variant="h3"
           align="center"
-          sx={{ mb: 13, fontWeight: 600, color: "#1a1a1a" }}
+          sx={{ fontWeight: 600, color: "#1a1a1a", mb:10 }}
         >
           {category?.charAt(0).toUpperCase() + category?.slice(1)} Collection
         </Typography>
@@ -115,6 +153,7 @@ const FilteredCategory = () => {
                   <ProductImage
                     image={product.productImage.url}
                     title={product.productTitle}
+                    id={product.productImage.publicId}
                   >
                     <ProductActions className="product-actions">
                       <IconButton
@@ -128,7 +167,6 @@ const FilteredCategory = () => {
                       >
                         <FavoriteIcon />
                       </IconButton>
-
                       <IconButton
                         onClick={(e) => handleAddToCart(e, product._id)}
                         sx={{

@@ -13,6 +13,13 @@ import './styles.css';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 
 export default function App() {
+  const heightSiwper = {
+    height: {
+      xs: "200px",
+      sm: "300px",
+      md: "400px"
+    }
+  };
   return (
     <>
       <Swiper
@@ -32,17 +39,25 @@ export default function App() {
         modules={[Autoplay, Pagination, Navigation]}
         className="mySwiper"
       >
-        <SwiperSlide style={{height:"400px"}}>
-          <img src="/img/img1.jpg" alt="" />
+        <SwiperSlide style={heightSiwper}>
+          <div className="swiper-slide" style={heightSiwper}>
+            <img src="/img/img1.jpg" alt="" />
+          </div>
         </SwiperSlide>
-        <SwiperSlide style={{height:"400px"}}>
-          <img src="/img/img2.jpg" alt="" />
+        <SwiperSlide style={heightSiwper}>
+          <div className="swiper-slide" style={heightSiwper}>
+            <img src="/img/img2.jpg" alt="" />
+          </div>
         </SwiperSlide>
-        <SwiperSlide style={{height:"400px"}}>
-          <img src="/img/img3.jpg" alt="" />
+        <SwiperSlide style={heightSiwper}>
+          <div className="swiper-slide" style={heightSiwper}>
+            <img src="/img/img3.jpg" alt="" />
+          </div>
         </SwiperSlide>
-        <SwiperSlide style={{height:"400px"}}>
-          <img src="/img/img5.jpg" alt="" />
+        <SwiperSlide style={heightSiwper}>
+          <div className="swiper-slide" style={heightSiwper}>
+            <img src="/img/img5.jpg" alt="" />
+          </div>
         </SwiperSlide>
       </Swiper>
     </>
