@@ -19,36 +19,26 @@ import { fetchProduct } from "../../redux/apiCalls/productApiCalls";
 // Styled Components
 const StyledCard = styled(Card)(({ theme }) => ({
   cursor: "pointer",
-  // Extra small mobile devices (under 387px)
   [`@media (max-width: 387px)`]: {
     width: "130px",
-    // height: "300px",
     margin: "0 auto",
     padding: "0px",
   },
-  // Mobile devices (extra small)
   [theme.breakpoints.down('sm')]: {
     width: "150px",
-    // height: "320px",
     margin: "0 auto",
     padding: "8px",
   },
-  // Tablets (small)
   [theme.breakpoints.between('sm', 'md')]: {
     width: "220px",
-    // height: "380px",
     padding: "12px",
   },
-  // Small laptops (medium)
   [theme.breakpoints.between('md', 'lg')]: {
     width: "260px",
-    // height: "420px",
     padding: "16px",
   },
-  // Desktops (large)
   [theme.breakpoints.up('lg')]: {
     width: "290px",
-    // height: "450px",
     padding: "20px",
   },
   display: "flex",
@@ -104,68 +94,61 @@ const CategoryModal = ({ product, open, onClose, handleCardClick }) => {
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="md"
+      maxWidth="sm"
       fullWidth
-      PaperProps={{
-        sx: {
-          width: { xs: '95%', sm: '80%', md: '100%' },
-          margin: { xs: '10px', sm: '20px' }
-        }
-      }}
+      PaperProps={{ sx: { width: '800px', height: '400px', margin: '20px' } }}
     >
-      <DialogTitle sx={{ m: 0, p: { xs: 1, sm: 2 } }}>
+      <DialogTitle sx={{ m: 0, }} className="flex items-center">
+        <Typography variant="h5" sx={{ m: 0, fontSize: { xs: '1.1rem', sm: '0.9rem' }, fontWeight: 600 }}>
+          {product.productName}
+        </Typography>
         <IconButton
           onClick={onClose}
-          sx={{
-            position: "absolute",
-            right: { xs: 4, sm: 8 },
-            top: { xs: 4, sm: 8 }
-          }}
+          sx={{ position: 'absolute', right: 8, top: 8 }}
         >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
       <DialogContent
+        className=""
         onClick={() => handleCardClick(product)}
-        sx={{ p: { xs: 1, sm: 2 } }}
+        sx={{ p: 2, display: 'flex', gap: 1, flexDirection: { xs: 'column', sm: 'row' } }}
       >
-        <Grid container spacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid item xs={12} md={6}>
-            <CardMedia
-              component="img"
-              src={product.productImage.url}
-              alt={product.productName}
-              style={{
-                width: "100%",
-                height: { xs: "200px", sm: "250px", md: "300px" },
-                objectFit: "cover",
-                borderRadius: "8px"
-              }}
-            />
-
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Typography variant="h4" sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }} gutterBottom>
-              {product.productName}
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }} paragraph>
-              {product.productDescription}
-            </Typography>
-            <Typography variant="body2" sx={{ mt: { xs: 1, sm: 2 } }}>
-              Category: {product.productCategory}
-            </Typography>
-            <Typography variant="body2">
-              Color: {product.productColor}
-            </Typography>
-            <Typography variant="body2">
-              Size: {product.productCategorySize}
-            </Typography>
-          </Grid>
-        </Grid>
+        <Box sx={{ width: '100%', height: '300px' }}>
+          <CardMedia
+            className=""
+            component="img"
+            src={product.productImage.url}
+            alt={product.productName}
+            sx={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              borderRadius: 1,
+              backgroundColor: 'grey.100'
+            }}
+          />
+        </Box>
+        <Box sx={{ width: { xs: '100%', sm: '50%' }, height: '100%' }} className="">
+          <Typography variant="body2" sx={{ mb: 1, fontSize: { xs: '1.3rem', sm: '1.5rem' } }}>
+          <span style={{color:"#052659"}}>Description</span> : {product.productDescription}
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 1, fontSize: { xs: '1.3rem', sm: '1.5rem' } }}>
+            <span style={{color:"#052659"}}>Category</span> : {product.productCategory}
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 1, fontSize: { xs: '1.3rem', sm: '1.5rem' } }}>
+            <span style={{color:"#052659"}}>Color</span> : {product.productColor}
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 1, fontSize: { xs: '1.3rem', sm: '1.5rem' } }}>
+            <span style={{color:"#052659"}}>Size</span> : {product.productCategorySize}
+          </Typography>
+        </Box>
       </DialogContent>
     </Dialog>
   );
 };
+
+
 
 // Main Component
 const FeaturedProducts = ({ name }) => {
@@ -179,7 +162,7 @@ const FeaturedProducts = ({ name }) => {
   const { like } = useSelector(state => state.like);
   const { user } = useSelector((state) => state.auth);
   const { item = { items: [] } } = useSelector(state => state.cart) || {};
-    const cart = item?.items || [];
+  const cart = item?.items || [];
 
   useEffect(() => {
     if (id) {
@@ -214,18 +197,21 @@ const FeaturedProducts = ({ name }) => {
   };
 
   return (
-    <Box sx={{ py: 8, backgroundColor: "#fff" }}>
+    <Box sx={{ py: { xs: 4, md: 8 }, backgroundColor: "#fff" }} className=''>
       <Container maxWidth="xxl" className=" CardProductContaienr">
-        <Typography variant="h3" align="center" sx={{ mb: 5, fontWeight: 600, color: "#1a1a1a" }}>
+        <Typography variant='h3' align="center" sx={{ mb: { xs: 2, sm: 3, md: 5 }, fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }, fontWeight: 600, color: "#1a1a1a" }}>
           {name}
         </Typography>
 
-        <Grid container spacing={4} justifyContent={"center"} className="p-[0px] m-[0px]">
+        <Grid container spacing={{ xs: 2, sm: 3, md: 4 }} justifyContent={"center"} className="p-[0px] m-[0px]">
           {Array.isArray(Products) && Products.length > 0 ? (
             Products.map((product) => (
               <Grid key={product._id} xs={6} sm={6} md={3}>
                 <StyledCard onClick={() => setSelectedProduct(product)}>
-                  <ProductImage image={product.productImage.url} title={product.productTitle}>
+                  <ProductImage
+                    image={product.productImage.url}
+                    title={product.productName}
+                  >
                     <ProductActions className="product-actions">
                       <IconButton
                         onClick={(e) => handleAddToFavorites(e, product._id)}

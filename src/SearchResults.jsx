@@ -106,7 +106,7 @@ const SearchResults = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showMobileFilters, setShowMobileFilters] = useState(false);
-    const [filters, setFilters] = useState({colors: [], categories: [], sizes: []});
+    const [filters, setFilters] = useState({ colors: [], categories: [], sizes: [] });
     const { product } = useSelector(state => state.product);
     const { item = { items: [] } } = useSelector(state => state.cart) || {};
     const cart = item?.items || [];
@@ -149,14 +149,14 @@ const SearchResults = () => {
     }, [dispatch]);
     useEffect(() => {
         window.addEventListener("click", (event) => {
-          const target = event.target;
-          if (!target.closest(".filter-sidebar") && showMobileFilters) {
-            setShowMobileFilters(false);
-          }
+            const target = event.target;
+            if (!target.closest(".filter-sidebar") && showMobileFilters) {
+                setShowMobileFilters(false);
+            }
         });
-      }, []);
+    }, []);
 
-    const clearFilters = () => {setFilters({colors: [], categories: [], sizes: []})};
+    const clearFilters = () => { setFilters({ colors: [], categories: [], sizes: [] }) };
 
     const filteredProducts = product.filter(item => {
         const searchTerms = searchQuery.toLowerCase();
@@ -183,24 +183,20 @@ const SearchResults = () => {
     });
 
     return (
-        <Box sx={{ py: 8, backgroundColor: "#fff00" }} onClick={() => setShowMobileFilters(!showMobileFilters)}>
-            <Typography
-                variant="h3"
-                align="center"
-                sx={{ mb: 4, fontWeight: 600, color: "#1a1a1a" }}
-            >
-                Search Results for "{searchQuery}"
-            </Typography>
-            <Container maxWidth="xxl" className="flex flex-col lg:flex-row CardProductContaienr">
+        <Box sx={{ py: { xs: 4, md: 8 }, backgroundColor: "#fff00" }}>
+            <Typography variant='h3' align="center" sx={{ mb: { xs: 2, sm: 3, md: 5 }, fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }, fontWeight: 600, color: "#1a1a1a" }}>
+                    Search Results for "{searchQuery}"
+                </Typography>
+            <Container maxWidth="xxl" className="flex flex-col lg:flex-row">
+                
 
                 <div className="filter-toggle" onClick={() => setShowMobileFilters(!showMobileFilters)}>
                     <FaFilter />
                     <span>Filters</span>
                 </div>
-
-                <div className="main-container1">
-                    <aside className={`filter-sidebar ${showMobileFilters ? "show" : ""}`}>
-                        <div className="filter-group1">
+                <div className="main-container">
+                    <aside className={`filter-sidebar ${showMobileFilters ? "show" : false}`}>
+                        <div className="filter-group">
                             <Typography variant="subtitle2" gutterBottom>
                                 Colors
                             </Typography>
@@ -221,7 +217,7 @@ const SearchResults = () => {
                             </div>
                         </div>
 
-                        <div className="filter-group1">
+                        <div className="filter-group">
                             <Typography variant="subtitle2" gutterBottom>
                                 Categories
                             </Typography>
@@ -241,7 +237,7 @@ const SearchResults = () => {
                             </div>
                         </div>
 
-                        <div className="filter-group1">
+                        <div className="filter-group">
                             <Typography variant="subtitle2" gutterBottom>
                                 Sizes
                             </Typography>
@@ -268,9 +264,7 @@ const SearchResults = () => {
                         </Button>
                     </aside>
                 </div>
-
-
-                <Grid container spacing={2} className="products-area1 p-[0px] m-[0px]" justifyContent={"center"}>
+                <Grid container spacing={{ xs: 2, sm: 3, md: 4 }} className="products-area1 p-[0px] m-[0px]" justifyContent={"center"}>
                     {filteredProducts.length > 0 ? (
                         filteredProducts.map((product) => (
                             <Grid key={product._id} xs={6} sm={6} md={3} onClick={() => handleCardClick(product)} justifyContent={"center"}>
@@ -343,9 +337,10 @@ const SearchResults = () => {
                         </Typography>
                     )}
                 </Grid>
-
+                
 
             </Container>
+
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
                 <Pagination
                     count={Math.ceil(productsCount / PRODUCTS_PER_PAGE)}

@@ -1,82 +1,59 @@
-/* Navbar.css */
 .header {
   background: #ffffff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
-
 .container {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 1rem;
 }
-
 .top-bar {
   background: #f8f9fa;
   padding: 0.5rem 0;
   font-size: 0.875rem;
 }
-
 .top-bar .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-
 .location {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
-
 .location select {
   border: none;
   background: transparent;
   color: #0066cc;
   font-weight: 500;
 }
-
 .top-links {
   display: flex;
   gap: 1.5rem;
 }
-
 .top-links a {
   color: #666;
   text-decoration: none;
 }
-
 .main-header {
   padding: 1.5rem 0;
 }
-
 .main-header .container {
   display: grid;
   grid-template-columns: auto 1fr auto;
   gap: 2rem;
   align-items: center;
 }
-
 .logo {
   text-decoration: none;
   color: #000000;
   font-size: 1.5rem;
 }
-
-.search-section {
-  display: flex;
-  max-width: 800px;
-  width: 100%;
-  height: 45px;
-  border: 2px solid #000000;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
 .category-select {
   width: 150px;
   border-right: 1px solid #ddd;
 }
-
 .category-select select {
   width: 100%;
   height: 100%;
@@ -84,26 +61,38 @@
   padding: 0 1rem;
   background: #f8f9fa;
 }
-
+/* Search */
+.search-section {
+  display: flex;
+  max-width: 800px;
+  width: 100%;
+  height: 45px;
+  border-radius: 5px;
+  border: 2px solid #000000;
+  overflow: hidden;
+}
 .search-input {
   flex: 1;
   display: flex;
 }
-
 .search-input input {
   flex: 1;
   border: none;
+  /* height: 30px; */
   padding: 0 1rem;
   font-size: 1rem;
 }
-
 .search-btn {
   width: 60px;
   background: #000000;
   color: white;
   border: none;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+/* Search */
 
 .user-actions {
   display: flex;
@@ -205,10 +194,11 @@
 
   .search-input {
     border: 2px solid #000000;
-    border-radius: 8px;
     height: 45px;
   }
-
+  .search-input input {
+    height: 30px;
+  }
   .user-actions {
     gap: 1rem;
   }

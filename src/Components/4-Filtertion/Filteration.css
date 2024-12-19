@@ -45,9 +45,9 @@
   position: relative;
   padding: 20px;
 }
-.products-area {
-  flex: 1;
-}
+
+
+
 .filter-toggle {
   display: none;
   align-items: center;
@@ -55,7 +55,7 @@
   margin-bottom: 16px;
   padding: 10px 20px;
   border-radius: 8px;
-  background: #f5f5f5;
+  background: #5483B3;
   cursor: pointer;
 }
 .filter-sidebar {
@@ -73,7 +73,6 @@
 @media (max-width: 1024px) {
   .filter-toggle {
     display: flex;
-    border: 1px solid red;
     align-items: center;
     gap: 8px;
     cursor: pointer;

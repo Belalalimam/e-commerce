@@ -35,36 +35,26 @@ import "./Filteration.css";
 // Your existing styled components
 const StyledCard = styled(Card)(({ theme }) => ({
   cursor: "pointer",
-  // Extra small mobile devices (under 387px)
   [`@media (max-width: 387px)`]: {
     width: "130px",
-    // height: "300px",
     margin: "0 auto",
     padding: "0px",
   },
-  // Mobile devices (extra small)
   [theme.breakpoints.down('sm')]: {
     width: "150px",
-    // height: "320px",
     margin: "0 auto",
     padding: "8px",
   },
-  // Tablets (small)
   [theme.breakpoints.between('sm', 'md')]: {
     width: "220px",
-    // height: "380px",
     padding: "12px",
   },
-  // Small laptops (medium)
   [theme.breakpoints.between('md', 'lg')]: {
     width: "260px",
-    // height: "420px",
     padding: "16px",
   },
-  // Desktops (large)
   [theme.breakpoints.up('lg')]: {
     width: "290px",
-    // height: "450px",
     padding: "20px",
   },
   display: "flex",
@@ -116,30 +106,58 @@ const CategoryModal = ({ product, open, onClose, handleCardClick }) => {
   if (!product) return null;
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ m: 0, p: 2 }}>
-        <IconButton onClick={onClose} sx={{ position: "absolute", right: 8, top: 8 }}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      PaperProps={{ sx: { width: '800px', height: '400px', margin: '20px' } }}
+    >
+      <DialogTitle sx={{ m: 0, }} className="flex items-center">
+        <Typography variant="h5" sx={{ m: 0, fontSize: { xs: '1.1rem', sm: '0.9rem' }, fontWeight: 600 }}>
+          {product.productName}
+        </Typography>
+        <IconButton
+          onClick={onClose}
+          sx={{ position: 'absolute', right: 8, top: 8 }}
+        >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent onClick={() => handleCardClick(product)}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
-            <CardMedia
-              component="img"
-              src={product.productImage.url}
-              alt={product.productName}
-              style={{ width: "100%", height: "auto", borderRadius: "8px" }}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Typography variant="h4" gutterBottom>{product.productName}</Typography>
-            <Typography variant="body1" paragraph>{product.productDescription}</Typography>
-            <Typography variant="body2">Category: {product.productCategory}</Typography>
-            <Typography variant="body2">Color: {product.productColor}</Typography>
-            <Typography variant="body2">Size: {product.productCategorySize}</Typography>
-          </Grid>
-        </Grid>
+      <DialogContent
+        className=""
+        onClick={() => handleCardClick(product)}
+        sx={{ p: 2, display: 'flex', gap: 1, flexDirection: { xs: 'column', sm: 'row' } }}
+      >
+        <Box sx={{ width: '100%', height: '300px' }}>
+          <CardMedia
+            className=""
+            component="img"
+            src={product.productImage.url}
+            alt={product.productName}
+            sx={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              borderRadius: 1,
+              backgroundColor: 'grey.100'
+            }}
+          />
+        </Box>
+        <Box sx={{ width: { xs: '100%', sm: '50%' }, height: '100%' }} className="">
+          <Typography variant="body2" sx={{ mb: 1, fontSize: { xs: '1.3rem', sm: '1.5rem' } }}>
+          <span style={{color:"#052659"}}>Description</span> : {product.productDescription}
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 1, fontSize: { xs: '1.3rem', sm: '1.5rem' } }}>
+            <span style={{color:"#052659"}}>Category</span> : {product.productCategory}
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 1, fontSize: { xs: '1.3rem', sm: '1.5rem' } }}>
+            <span style={{color:"#052659"}}>Color</span> : {product.productColor}
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 1, fontSize: { xs: '1.3rem', sm: '1.5rem' } }}>
+            <span style={{color:"#052659"}}>Size</span> : {product.productCategorySize}
+          </Typography>
+        </Box>
       </DialogContent>
     </Dialog>
   );
@@ -234,15 +252,8 @@ const FilterationProduct = ({ name }) => {
 
 
   return (
-    <Box sx={{ py: 8, backgroundColor: "#fff" }} onClick={() => setShowMobileFilters(!showMobileFilters)}>
-      <Container maxWidth="xl" className="flex flex-col lg:flex-row">
-        <Typography
-          variant="h3"
-          align="center"
-          sx={{ mb: 4, fontWeight: 600, color: "#1a1a1a" }}
-        >
-          {name}
-        </Typography>
+    <Box sx={{  pb: { xs: 4, md: 8 }, backgroundColor: "#fff" }} className='' >
+      <Container maxWidth="xxl" className="flex flex-col lg:flex-row">
 
         <div className="filter-toggle" onClick={() => setShowMobileFilters(!showMobileFilters)}>
           <FaFilter />
@@ -319,7 +330,7 @@ const FilterationProduct = ({ name }) => {
             </Button>
           </aside>
         </div>
-        <Grid container spacing={2} className="products-area" justifyContent={"center"}>
+        <Grid container spacing={{ xs: 2, sm: 3, md: 4 }} justifyContent={"center"}  className=''>
           {Array.isArray(product) && product.length > 0 ? (
             getFilteredProducts().map((product) => (
               <Grid key={product._id} xs={12} sm={6} md={3}>
@@ -392,6 +403,7 @@ const FilterationProduct = ({ name }) => {
             </Typography>
           )}
         </Grid>
+        
         <CategoryModal
           product={selectedProduct}
           open={selectedProduct !== null}
@@ -413,3 +425,6 @@ const FilterationProduct = ({ name }) => {
 };
 
 export default FilterationProduct;
+
+
+

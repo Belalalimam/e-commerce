@@ -6,18 +6,16 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { useNavigate, useParams } from 'react-router-dom';
-import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { putLikeForProduct } from './redux/apiCalls/likeApiCalls';
 import { putCartForProduct } from './redux/apiCalls/cartApiCalls';
-import { fetchProductsBasedOnCategory, fetchProductsBasedOnCategorySize, fetchProduct, getProductsCount } from './redux/apiCalls/productApiCalls';
-import { getCategories } from "./redux/apiCalls/categoryApiCalls";
+import { fetchProductsBasedOnCategory, fetchProduct, getProductsCount } from './redux/apiCalls/productApiCalls';
 import Pagination from "@mui/material/Pagination";
 
 // Styled Components
 const StyledCard = styled(Card)(({ theme }) => ({
   cursor: "pointer",
-  [`@media (max-width: 370px)`]: {
+  [`@media (max-width: 387px)`]: {
     width: "130px",
     margin: "0 auto",
     padding: "0px",
@@ -49,7 +47,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
 }));
 const ProductImage = styled(CardMedia)(({ theme }) => ({
-  [`@media (max-width: 370px)`]: {
+  [`@media (max-width: 387px)`]: {
     height: 190,
   },
   [theme.breakpoints.down('sm')]: {
@@ -90,7 +88,7 @@ const FilteredCategory = () => {
   const { category } = useParams();
   const PRODUCTS_PER_PAGE = 10;
   const [currentPage, setCurrentPage] = useState(1);
-    const [quantity] = useState(1);
+  const [quantity] = useState(1);
 
   const { productsCate } = useSelector((state) => state.product);
   const { item = { items: [] } } = useSelector(state => state.cart) || {};
@@ -130,25 +128,22 @@ const FilteredCategory = () => {
     };
     const handleCardClick = (product) => {
       navigate(`/getProduct/${product._id}`);
+      window.scrollTo(0, 0);
     };
 
 
   return (
-    <Box sx={{ py: 8, backgroundColor: "#fff" }}>
-      <Container maxWidth="xl" className='fle'>
+    <Box sx={{ py: { xs: 4, md: 8 }, backgroundColor: "#fff" }}>
+      <Container maxWidth="xxl" className=''>
 
-        <Typography
-          variant="h3"
-          align="center"
-          sx={{ fontWeight: 600, color: "#1a1a1a", mb:10 }}
-        >
+        <Typography variant='h3' align="center" sx={{ mb: { xs: 2, sm: 3, md: 5 }, fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }, fontWeight: 600, color: "#1a1a1a" }}>
           {category?.charAt(0).toUpperCase() + category?.slice(1)} Collection
         </Typography>
 
-        <Grid container spacing={4} justifyContent={"center"}>
+        <Grid container spacing={{ xs: 2, sm: 3, md: 4 }}  justifyContent={"center"} className="p-[0px] m-[0px]">
           {displayProducts?.length > 0 ? (
             displayProducts.map((product) => (
-              <Grid key={product._id} xs={6} sm={6} md={2} justifyContent={"center"}>
+              <Grid key={product._id} xs={6} sm={6} md={2}>
                 <StyledCard onClick={() => handleCardClick(product)}>
                   <ProductImage
                     image={product.productImage.url}
