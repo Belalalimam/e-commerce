@@ -140,7 +140,7 @@ const Header = ({ onWishlistClick, wishlistItems }) => {
           </div>
 
           <Link to="/" className="logo">
-            <h1>YourStore</h1>
+            <img src="/img/logo1.png" alt="" />
           </Link>
 
           <div className="search-section">

@@ -14,6 +14,18 @@ export function fetchProduct(pageNumber) {
   };
 }
 
+// Fetch Posts Based On Page Number
+export function fetchProductDashboard() {
+  return async (dispatch) => {
+    try {
+      const { data } = await request.get(`/products`);
+      dispatch(productActions.setProductDashboard(data));
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  };
+}
+
 // Get Posts Count
 export function getProductsCount() {
   return async (dispatch) => { 

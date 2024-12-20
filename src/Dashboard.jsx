@@ -20,7 +20,13 @@ import {
   TableRow,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { createProduct, fetchProduct, EditProduct, updateProductImage, deleteProduct } from "./redux/apiCalls/productApiCalls";
+import {
+  createProduct,
+  fetchProductDashboard,
+  EditProduct,
+  updateProductImage,
+  deleteProduct,
+} from "./redux/apiCalls/productApiCalls";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 const modalStyle = {
@@ -42,8 +48,16 @@ const Dashboard = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [open, setOpen] = useState(false);
+
   // Add Product functions
-  const [productData, setProductData] = useState({ productName: "", productDescription: "", productCategory: "", productCategorySize: "", productColor: "", productImage: null });
+  const [productData, setProductData] = useState({
+    productName: "",
+    productDescription: "",
+    productCategory: "",
+    productCategorySize: "",
+    productColor: "",
+    productImage: null,
+  });
   const { loading, isProductCreated } = useSelector((state) => state.product);
   const handleInputChange = (e) => {
     setProductData({
@@ -51,7 +65,7 @@ const Dashboard = () => {
       [e.target.name]: e.target.value,
     });
   };
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     const formData = new FormData();
@@ -59,22 +73,19 @@ const Dashboard = () => {
       formData.append(key, productData[key]);
     });
 
-    try {
-      dispatch(createProduct(formData));
-      setProductData({
-        productName: "",
-        productDescription: "",
-        productCategory: "",
-        productImage: null,
-        productCategorySize: "",
-        productColor: "",
-        // productPrice: "",
-      });
-    } catch (error) {
-      console.error("Error creating product:", error);
-    }
-    handleClose()
+    dispatch(createProduct(formData));
+    setProductData({
+      productName: "",
+      productDescription: "",
+      productCategory: "",
+      productImage: null,
+      productCategorySize: "",
+      productColor: "",
+    });
+
+    handleClose();
   };
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -84,9 +95,17 @@ const Dashboard = () => {
       });
     }
   };
+
   // Edit Product functions
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [editProductData, setEditProductData] = useState({ productName: "", productDescription: "", productCategory: "", productCategorySize: "", productColor: "", productImage: null });
+  const [editProductData, setEditProductData] = useState({
+    productName: "",
+    productDescription: "",
+    productCategory: "",
+    productCategorySize: "",
+    productColor: "",
+    productImage: null,
+  });
   const handleEditOpen = (product) => {
     setEditProductData({
       id: product._id,
@@ -105,7 +124,8 @@ const Dashboard = () => {
     e.preventDefault();
     const formData = new FormData();
     Object.keys(editProductData).forEach((key) => {
-      if (key !== 'id') {  // Keep the ID separate from formData
+      if (key !== "id") {
+        // Keep the ID separate from formData
         formData.append(key, editProductData[key]);
       }
     });
@@ -114,6 +134,7 @@ const Dashboard = () => {
     dispatch(EditProduct(formData, editProductData.id));
     handleEditClose();
   };
+
   // Edit Image Product functions
   const [editImageModalOpen, setEditImageModalOpen] = useState(false);
   const [file, setFile] = useState(null);
@@ -134,29 +155,31 @@ const Dashboard = () => {
     const formData = new FormData();
     formData.append("productImage", file);
     dispatch(updateProductImage(formData, editProductData.id));
-    handleEditImageClose()
+    handleEditImageClose();
   };
+
   // Fetch All Product functions
-  const Products = useSelector((state) => state.product.product);
+  const Products = useSelector((state) => state.product.productsDashboard);
   useEffect(() => {
-    dispatch(fetchProduct());
-  }, [dispatch]);
+    dispatch(fetchProductDashboard());
+  }, []);
   useEffect(() => {
     if (isProductCreated) {
       handleClose();
-      navigate("/");
+      // navigate("/");
     }
   }, [isProductCreated]);
+
   // Delete Product functions
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteProductData, setDeleteProductData] = useState({
     id: null,
-    name: ''
+    name: "",
   });
   const handleDeleteOpen = (product) => {
     setDeleteProductData({
       id: product._id,
-      name: product.productName
+      name: product.productName,
     });
     setDeleteModalOpen(true);
   };
@@ -175,6 +198,7 @@ const Dashboard = () => {
         <Table sx={{ minWidth: 650 }} aria-label="product table">
           <TableHead>
             <TableRow>
+              <TableCell>No.</TableCell>
               <TableCell>Image</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Description</TableCell>
@@ -185,8 +209,9 @@ const Dashboard = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {products?.map((product) => (
+            {products?.map((product, index) => (
               <TableRow key={product._id}>
+                <TableCell>{index + 1}</TableCell>
                 <TableCell>
                   <img
                     src={product.productImage.url}
@@ -255,8 +280,8 @@ const Dashboard = () => {
       >
         <Box sx={modalStyle}>
           <Paper elevation={3} sx={{ p: 4 }}>
-            <Typography variant="h4" gutterBottom>
-              Create New Product
+          <Typography variant='h3' align="center" sx={{ mb: { xs: 2, sm: 3, md: 5 }, fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }, fontWeight: 600, color: "#1a1a1a" }}>
+          Create New Product
             </Typography>
 
             <Box component="form" onSubmit={handleSubmit} noValidate>
@@ -271,7 +296,7 @@ const Dashboard = () => {
                   />
                 </Grid>
 
-                <Grid item xs={6}>
+                <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
                     multiline
@@ -304,9 +329,9 @@ const Dashboard = () => {
                       value={productData.productCategorySize}
                       onChange={handleInputChange}
                     >
-                      <MenuItem value="1>>>5">{'1>>>5'}</MenuItem>
-                      <MenuItem value="5>>>10">{'5>>>10'}</MenuItem>
-                      <MenuItem value="10>>>20">{'10>>>20'}</MenuItem>
+                      <MenuItem value="1>>>5">{"1>>>5"}</MenuItem>
+                      <MenuItem value="5>>>10">{"5>>>10"}</MenuItem>
+                      <MenuItem value="10>>>20">{"10>>>20"}</MenuItem>
                       <MenuItem value="NoLimits">NoLimits</MenuItem>
                     </Select>
                   </FormControl>
@@ -371,7 +396,16 @@ const Dashboard = () => {
     >
       <Box sx={modalStyle}>
         <Paper elevation={3} sx={{ p: 4 }}>
-          <Typography variant="h4" gutterBottom>
+          <Typography
+            variant="h3"
+            align="center"
+            sx={{
+              mb: { xs: 2, sm: 3, md: 5 },
+              fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+              fontWeight: 600,
+              color: "#1a1a1a",
+            }}
+          >
             Edit Product
           </Typography>
 
@@ -385,7 +419,7 @@ const Dashboard = () => {
                     hidden
                     accept="image/*"
                     onChange={(e) => setFile(e.target.files[0])}
-                  // onChange={handleImageChange}
+                    // onChange={handleImageChange}
                   />
                 </Button>
                 {file && (
@@ -420,7 +454,16 @@ const Dashboard = () => {
     >
       <Box sx={modalStyle}>
         <Paper elevation={3} sx={{ p: 4 }}>
-          <Typography variant="h4" gutterBottom>
+          <Typography
+            variant="h3"
+            align="center"
+            sx={{
+              mb: { xs: 2, sm: 3, md: 5 },
+              fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+              fontWeight: 600,
+              color: "#1a1a1a",
+            }}
+          >
             Edit Product
           </Typography>
 
@@ -441,11 +484,10 @@ const Dashboard = () => {
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
                   multiline
-                  rows={4}
                   name="productDescription"
                   label="Description"
                   value={editProductData.productDescription}
@@ -485,9 +527,9 @@ const Dashboard = () => {
                     value={productData.productCategorySize}
                     onChange={handleInputChange}
                   >
-                    <MenuItem value="1>>>5">{'1>>>5'}</MenuItem>
-                    <MenuItem value="5>>>10">{'5>>>10'}</MenuItem>
-                    <MenuItem value="10>>>20">{'10>>>20'}</MenuItem>
+                    <MenuItem value="1>>>5">{"1>>>5"}</MenuItem>
+                    <MenuItem value="5>>>10">{"5>>>10"}</MenuItem>
+                    <MenuItem value="10>>>20">{"10>>>20"}</MenuItem>
                     <MenuItem value="NoLimits">No Limits</MenuItem>
                   </Select>
                 </FormControl>
@@ -545,11 +587,8 @@ const Dashboard = () => {
           <Typography variant="body1" sx={{ mb: 3 }}>
             Are you sure you want to delete " {deleteProductData.name} " ?
           </Typography>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-            <Button
-              variant="outlined"
-              onClick={handleDeleteClose}
-            >
+          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+            <Button variant="outlined" onClick={handleDeleteClose}>
               Cancel
             </Button>
             <Button

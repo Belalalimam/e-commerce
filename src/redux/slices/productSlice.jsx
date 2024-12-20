@@ -4,6 +4,7 @@ const productSlice = createSlice({
     name: "product",
     initialState: {
         product: [],
+        productsDashboard: [],
         productsCount: null,
         productsCate: [],
         productsCateSize: [],
@@ -14,6 +15,9 @@ const productSlice = createSlice({
     reducers: {
         setProducts(state, action) {
             state.product = action.payload
+        },
+        setProductDashboard(state, action) {
+            state.productsDashboard = action.payload
         },
         setProductCount(state, action) {
             state.productsCount = action.payload

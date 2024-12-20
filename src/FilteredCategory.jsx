@@ -1,15 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Card, CardMedia, CardContent, Typography, IconButton, Box } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  Container,
+  Card,
+  CardMedia,
+  CardContent,
+  Typography,
+  IconButton,
+  Box,
+} from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { styled } from "@mui/material/styles";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { putLikeForProduct } from './redux/apiCalls/likeApiCalls';
-import { putCartForProduct } from './redux/apiCalls/cartApiCalls';
-import { fetchProductsBasedOnCategory, fetchProduct, getProductsCount, fetchProductsBasedOnCategorySize } from './redux/apiCalls/productApiCalls';
+import { putLikeForProduct } from "./redux/apiCalls/likeApiCalls";
+import { putCartForProduct } from "./redux/apiCalls/cartApiCalls";
+import {
+  fetchProductsBasedOnCategory,
+  fetchProduct,
+  getProductsCount,
+  fetchProductsBasedOnCategorySize,
+} from "./redux/apiCalls/productApiCalls";
 import Pagination from "@mui/material/Pagination";
 
 // Styled Components
@@ -20,20 +33,20 @@ const StyledCard = styled(Card)(({ theme }) => ({
     margin: "0 auto",
     padding: "0px",
   },
-  [theme.breakpoints.down('sm')]: {
+  [theme.breakpoints.down("sm")]: {
     width: "150px",
     margin: "0 auto",
     padding: "8px",
   },
-  [theme.breakpoints.between('sm', 'md')]: {
+  [theme.breakpoints.between("sm", "md")]: {
     width: "220px",
     padding: "12px",
   },
-  [theme.breakpoints.between('md', 'lg')]: {
+  [theme.breakpoints.between("md", "lg")]: {
     width: "260px",
     padding: "16px",
   },
-  [theme.breakpoints.up('lg')]: {
+  [theme.breakpoints.up("lg")]: {
     width: "290px",
     padding: "20px",
   },
@@ -50,13 +63,13 @@ const ProductImage = styled(CardMedia)(({ theme }) => ({
   [`@media (max-width: 387px)`]: {
     height: 190,
   },
-  [theme.breakpoints.down('sm')]: {
+  [theme.breakpoints.down("sm")]: {
     height: 190,
   },
-  [theme.breakpoints.between('sm', 'md')]: {
+  [theme.breakpoints.between("sm", "md")]: {
     height: 250,
   },
-  [theme.breakpoints.up('md')]: {
+  [theme.breakpoints.up("md")]: {
     height: 300,
   },
   position: "relative",
@@ -92,9 +105,9 @@ const FilteredCategory = () => {
 
   const { productsCate } = useSelector((state) => state.product);
   const { productsCateSize } = useSelector((state) => state.product);
-  const { item = { items: [] } } = useSelector(state => state.cart) || {};
+  const { item = { items: [] } } = useSelector((state) => state.cart) || {};
   const cart = item?.items || [];
-  const { like } = useSelector(state => state.like);
+  const { like } = useSelector((state) => state.like);
   const Products = useSelector((state) => state.product.product);
   const { productsCount } = useSelector((state) => state.product);
 
@@ -108,44 +121,58 @@ const FilteredCategory = () => {
     dispatch(getProductsCount());
   }, [dispatch, category, currentPage]);
 
-  const displayProducts = category && category !== "All Categories" 
-  ? (productsCateSize?.length > 0 ? productsCateSize : productsCate) 
-  : Products;
-
+  const displayProducts =
+    category && category !== "All Categories"
+      ? productsCateSize?.length > 0
+        ? productsCateSize
+        : productsCate
+      : Products;
 
   const handleAddToCart = (e, productId) => {
-      e.stopPropagation();
-      if (!user) {
-        toast.error("Please login to add items to cart!");
-        return;
-      }
-      dispatch(putCartForProduct(productId, quantity));
-      toast.success("Product added to cart!");
-    };
-    const handleAddToFavorites = (e, productId) => {
-      e.stopPropagation();
-  
-      if (!user) {
-        toast.error("Please login to add items to favorites!");
-        return;
-      }
-      dispatch(putLikeForProduct(productId));
-    };
-    const handleCardClick = (product) => {
-      navigate(`/getProduct/${product._id}`);
-      window.scrollTo(0, 0);
-    };
+    e.stopPropagation();
+    if (!user) {
+      toast.error("Please login to add items to cart!");
+      return;
+    }
+    dispatch(putCartForProduct(productId, quantity));
+    toast.success("Product added to cart!");
+  };
+  const handleAddToFavorites = (e, productId) => {
+    e.stopPropagation();
 
+    if (!user) {
+      toast.error("Please login to add items to favorites!");
+      return;
+    }
+    dispatch(putLikeForProduct(productId));
+  };
+  const handleCardClick = (product) => {
+    navigate(`/getProduct/${product._id}`);
+    window.scrollTo(0, 0);
+  };
 
   return (
     <Box sx={{ py: { xs: 4, md: 8 }, backgroundColor: "#fff" }}>
-      <Container maxWidth="xxl" className=''>
-
-        <Typography variant='h3' align="center" sx={{ mb: { xs: 2, sm: 3, md: 5 }, fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' }, fontWeight: 600, color: "#1a1a1a" }}>
+      <Container maxWidth="xxl" className="">
+        <Typography
+          variant="h3"
+          align="center"
+          sx={{
+            mb: { xs: 2, sm: 3, md: 5 },
+            fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+            fontWeight: 600,
+            color: "#1a1a1a",
+          }}
+        >
           {category?.charAt(0).toUpperCase() + category?.slice(1)} Collection
         </Typography>
 
-        <Grid container spacing={{ xs: 2, sm: 3, md: 4 }}  justifyContent={"center"} className="p-[0px] m-[0px]">
+        <Grid
+          container
+          spacing={{ xs: 2, sm: 3, md: 4 }}
+          justifyContent={"center"}
+          className="p-[0px] m-[0px]"
+        >
           {displayProducts?.length > 0 ? (
             displayProducts.map((product) => (
               <Grid key={product._id} xs={6} sm={6} md={2}>
@@ -159,10 +186,16 @@ const FilteredCategory = () => {
                       <IconButton
                         onClick={(e) => handleAddToFavorites(e, product._id)}
                         sx={{
-                          color: Array.isArray(like) && like.some(item => item._id === product._id) ? "red" : "white",
+                          color:
+                            Array.isArray(like) &&
+                            like.some((item) => item._id === product._id)
+                              ? "red"
+                              : "white",
                           backgroundColor: "rgba(255,255,255,0.2)",
-                          "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
-                          zIndex: 2
+                          "&:hover": {
+                            backgroundColor: "rgba(255,255,255,0.3)",
+                          },
+                          zIndex: 2,
                         }}
                       >
                         <FavoriteIcon />
@@ -170,10 +203,16 @@ const FilteredCategory = () => {
                       <IconButton
                         onClick={(e) => handleAddToCart(e, product._id)}
                         sx={{
-                          color: Array.isArray(cart) && cart.some(item => item._id === product._id) ? "#4CAF50" : "white",
+                          color:
+                            Array.isArray(cart) &&
+                            cart.some((item) => item._id === product._id)
+                              ? "#4CAF50"
+                              : "white",
                           backgroundColor: "rgba(255,255,255,0.2)",
-                          "&:hover": { backgroundColor: "rgba(255,255,255,0.3)" },
-                          zIndex: 2
+                          "&:hover": {
+                            backgroundColor: "rgba(255,255,255,0.3)",
+                          },
+                          zIndex: 2,
                         }}
                       >
                         <ShoppingCartIcon />
@@ -191,9 +230,17 @@ const FilteredCategory = () => {
                     >
                       {product.productCategory}
                     </Typography>
-                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
                       <Box sx={{ display: "flex", alignItems: "center" }}>
-                        <LocalShippingIcon sx={{ fontSize: 16, color: "success.main", mr: 0.5 }} />
+                        <LocalShippingIcon
+                          sx={{ fontSize: 16, color: "success.main", mr: 0.5 }}
+                        />
                         <Typography variant="caption" color="success.main">
                           Free Shipping
                         </Typography>
@@ -204,22 +251,26 @@ const FilteredCategory = () => {
               </Grid>
             ))
           ) : (
-            <Typography variant="h6" align="center" sx={{ width: '100%' }}>
+            <Typography variant="h6" align="center" sx={{ width: "100%" }}>
               No products available in this category
             </Typography>
           )}
         </Grid>
       </Container>
-      {(!category || category === "All Categories") && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-          <Pagination
-            count={Math.ceil(productsCount / PRODUCTS_PER_PAGE)}
-            page={currentPage}
-            onChange={(e, value) => setCurrentPage(value)}
-            color="primary"
-          />
-        </Box>
-      )}
+      {(!category || category === "All Categories") &&
+        productsCount > PRODUCTS_PER_PAGE && (
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+            <Pagination
+              count={Math.ceil(productsCount / PRODUCTS_PER_PAGE)}
+              page={currentPage}
+              onChange={(e, value) => {
+                setCurrentPage(value);
+                window.scrollTo(0, 0);
+            }}
+              color="primary"
+            />
+          </Box>
+        )}
     </Box>
   );
 };

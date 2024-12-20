@@ -49,6 +49,7 @@
   text-decoration: none;
   color: #000000;
   font-size: 1.5rem;
+  width: 120px; /* Base width for default devices */
 }
 .category-select {
   width: 150px;
@@ -136,6 +137,9 @@
   .container {
     padding: 0 1rem;
   }
+  .logo {
+    width: 130px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -201,5 +205,15 @@
   }
   .user-actions {
     gap: 1rem;
+  }
+  .logo {
+    width: 90px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .logo {
+    width: 150px;
+    height: auto;
   }
 }
