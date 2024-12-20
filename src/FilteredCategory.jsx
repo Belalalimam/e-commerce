@@ -9,7 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { putLikeForProduct } from './redux/apiCalls/likeApiCalls';
 import { putCartForProduct } from './redux/apiCalls/cartApiCalls';
-import { fetchProductsBasedOnCategory, fetchProduct, getProductsCount } from './redux/apiCalls/productApiCalls';
+import { fetchProductsBasedOnCategory, fetchProduct, getProductsCount, fetchProductsBasedOnCategorySize } from './redux/apiCalls/productApiCalls';
 import Pagination from "@mui/material/Pagination";
 
 // Styled Components
@@ -91,6 +91,7 @@ const FilteredCategory = () => {
   const [quantity] = useState(1);
 
   const { productsCate } = useSelector((state) => state.product);
+  const { productsCateSize } = useSelector((state) => state.product);
   const { item = { items: [] } } = useSelector(state => state.cart) || {};
   const cart = item?.items || [];
   const { like } = useSelector(state => state.like);
@@ -103,10 +104,14 @@ const FilteredCategory = () => {
     } else {
       dispatch(fetchProduct(currentPage));
     }
+    dispatch(fetchProductsBasedOnCategorySize(category));
     dispatch(getProductsCount());
   }, [dispatch, category, currentPage]);
 
-  const displayProducts = category && category !== "All Categories" ? productsCate : Products;
+  const displayProducts = category && category !== "All Categories" 
+  ? (productsCateSize?.length > 0 ? productsCateSize : productsCate) 
+  : Products;
+
 
   const handleAddToCart = (e, productId) => {
       e.stopPropagation();

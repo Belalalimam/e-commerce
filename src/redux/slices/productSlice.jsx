@@ -6,6 +6,7 @@ const productSlice = createSlice({
         product: [],
         productsCount: null,
         productsCate: [],
+        productsCateSize: [],
         productSingle: null,
         isProductCreated: false,
         loading: false,
@@ -19,6 +20,9 @@ const productSlice = createSlice({
         },
         setProductCate(state, action) {
             state.productsCate = action.payload
+        },
+        setProductCateSize(state, action) {
+            state.productsCateSize = action.payload
         },
         setSingleProduct(state, action) {
             state.productSingle = action.payload

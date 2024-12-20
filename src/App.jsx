@@ -1,6 +1,6 @@
 // Libraries imported 
 import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 // Components imported
 import FilterationProduct from "./Components/4-Filtertion/FilterationProduct";
@@ -20,9 +20,18 @@ import "./App.css"
 import Dashboard from "./Dashboard";
 import SearchResults from "./SearchResults";
 import CTASection from "./CTA";
+import { useEffect } from "react";
+import { fetchProduct, fetchProductsBasedOnCategory, fetchProductsBasedOnCategorySize } from "./redux/apiCalls/productApiCalls";
 
 function App() {
   const { user } = useSelector((state) => state.auth);
+  const { category } = useParams();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchProduct());
+    dispatch(fetchProductsBasedOnCategory(category));
+    dispatch(fetchProductsBasedOnCategorySize(category));
+  }, [dispatch, category]);
   const theme = createTheme({
     palette: {
       primary: {

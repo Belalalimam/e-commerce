@@ -40,11 +40,10 @@ export function fetchProductsBasedOnCategory(productCategory) {
 
 // Fetch Posts Based On CategorySize
 export function fetchProductsBasedOnCategorySize(productCategorySize) {
-  console.log("🚀 ~ fetchProductsBasedOnCategorySize ~ productCategorySize:", productCategorySize)
   return async (dispatch) => {
     try {
       const { data } = await request.get(`/Products?productCategorySize=${productCategorySize}`);
-      dispatch(productActions.setProductCate(data));
+      dispatch(productActions.setProductCateSize(data));
     } catch (error) {
       toast.error(error.response.data.message);
     }
