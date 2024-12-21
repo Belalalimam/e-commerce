@@ -10,7 +10,15 @@ const CTASection = () => {
   return (
     <Link to={user ? '/Lace' : '/login'} onClick={() => window.scrollTo(0, 0)}>
     <Container maxWidth="lg" sx={{ textAlign: 'center', my: 4, py: 4, bgcolor: '#f1f1f1', borderRadius: 2 }} className='CTA-section'>
-      <Typography variant="h4" component="h2" gutterBottom>
+     <Typography
+             variant="h3"
+             align="center"
+             sx={{
+               mb: { xs: 2, sm: 3, md: 5 },
+               fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+               color: "#1a1a1a",
+             }}
+           >
         Don't Miss Our Special Offer!
       </Typography>
       <Typography variant="body1" gutterBottom>
