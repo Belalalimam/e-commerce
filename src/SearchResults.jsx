@@ -117,11 +117,13 @@ const SearchResults = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [setSelectedProduct] = useState(null);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+
   const [filters, setFilters] = useState({
     colors: [],
     categories: [],
     sizes: [],
   });
+
   const { product, productsCount } = useSelector((state) => state.product);
   const { item = { items: [] } } = useSelector((state) => state.cart) || {};
   const cart = item?.items || [];
@@ -134,8 +136,9 @@ const SearchResults = () => {
     { id: 4, name: "Blue", hex: "#0000FF" },
     { id: 5, name: "Green", hex: "#00FF00" },
   ];
-  const categories = ["lace", "fabric", "elastic"];
-  const sizes = ["xs", "s", "m", "l", "xl"];
+  const categories = ["lace", "elastic"];
+  const sizes = ["1>>>5", "5>>>10", "10>>>20", "NoLimits"];
+
   const handleAddToCart = (e, productId) => {
     e.stopPropagation();
     if (!user) {
@@ -161,52 +164,62 @@ const SearchResults = () => {
   useEffect(() => {
     dispatch(fetchProduct(currentPage));
   }, [dispatch, currentPage]);
-  useEffect(() => {
-    window.addEventListener("click", (event) => {
-      const target = event.target;
-      if (!target.closest(".filter-sidebar") && showMobileFilters) {
-        setShowMobileFilters(false);
-      }
-    });
+   useEffect(() => {
+      const handleClickOutside = (event) => {
+          if (!event.target.closest('.filter-sidebar') && !event.target.closest('.filter-toggle')) {
+              setShowMobileFilters(false);
+          }
+      };
+  
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const clearFilters = () => {
-    setFilters({ colors: [], categories: [], sizes: [] });
+  const handleFilterChange = (filterType, value) => {
+    setFilters(prevFilters => {
+      const updatedFilters = { ...prevFilters };
+      
+      if (updatedFilters[filterType].includes(value)) {
+        updatedFilters[filterType] = updatedFilters[filterType].filter(item => item !== value);
+      } else {
+        updatedFilters[filterType] = [...updatedFilters[filterType], value];
+      }
+      
+      return updatedFilters;
+    });
   };
 
   const filteredProducts = product.filter((item) => {
     const searchTerms = searchQuery.toLowerCase();
-
-    // Primary category filter
-    if (selectedCategory && selectedCategory !== "All Categories") {
-      const categoryMatch =
-        item.productCategory.toLowerCase() === selectedCategory.toLowerCase();
-
-      // Apply additional filters only if category matches
-      if (categoryMatch) {
-        const colorMatch =
-          filters.colors.length === 0 ||
-          filters.colors.includes(item.productColor?.toLowerCase());
-
-        const sizeMatch =
-          filters.sizes.length === 0 ||
-          filters.sizes.includes(item.productCategorySize?.toLowerCase());
-
-        return colorMatch && sizeMatch;
-      }
-      return false;
-    }
-
-    // General search across all fields
-    return (
+    
+    // Filter by search terms
+    const matchesSearch = 
       item.productName.toLowerCase().includes(searchTerms) ||
       item.productCategory.toLowerCase().includes(searchTerms) ||
       item.productCategorySize.toLowerCase().includes(searchTerms) ||
-      item.productColor.toLowerCase().includes(searchTerms)
-    );
+      item.productColor.toLowerCase().includes(searchTerms);
+  
+    // Filter by selected filters
+    const matchesColor = filters.colors.length === 0 || 
+      filters.colors.includes(item.productColor?.toLowerCase());
+    
+    const matchesSize = filters.sizes.length === 0 || 
+      filters.sizes.includes(item.productCategorySize?.toLowerCase());
+    
+    const matchesCategory = filters.categories.length === 0 || 
+      filters.categories.includes(item.productCategory?.toLowerCase());
+  
+    return matchesSearch && matchesColor && matchesSize && matchesCategory;
   });
 
-  
+  const clearFilters = () => {
+    setFilters({
+      colors: [],
+      categories: [],
+      sizes: [],
+    });
+  };
+
   return (
     <Box sx={{ py: { xs: 4, md: 8 }, backgroundColor: "#fff00" }}>
       <Typography
@@ -230,89 +243,76 @@ const SearchResults = () => {
           <span>Filters</span>
         </div>
         <div className="main-container">
-          <aside
-            className={`filter-sidebar ${showMobileFilters ? "show" : false}`}
-          >
-            <div className="filter-group">
-              <Typography variant="subtitle2" gutterBottom>
-                Colors
-              </Typography>
-              <div className="color-options">
-                {colors.map((color) => (
-                  <div
-                    key={color.id}
-                    className={`color-option ${
-                      filters.colors.includes(color.name.toLowerCase())
-                        ? "selected"
-                        : ""
-                    }`}
-                    onClick={() =>
-                      handleFilterChange("colors", color.name.toLowerCase())
-                    }
-                  >
-                    <span
-                      className="color-circle"
-                      style={{ backgroundColor: color.hex }}
-                    />
-                    <span>{color.name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+                  <aside className={`filter-sidebar ${showMobileFilters ? "show" : false}`}>
+                    <div className="filter-group">
+                      <Typography variant="subtitle2" gutterBottom>
+                        Colors
+                      </Typography>
+                      <div className="color-options">
+                        {colors.map((color) => (
+                          <div
+                            key={color.id}
+                            className={`color-option ${filters.colors.includes(color.name.toLowerCase()) ? "selected" : ""}`}
+                            onClick={() => handleFilterChange("colors", color.name.toLowerCase())}
+                          >
+                            <span
+                              className="color-circle"
+                              style={{ backgroundColor: color.hex }}
+                            />
+                            <span>{color.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+        
+                    <div className="filter-group">
+                      <Typography variant="subtitle2" gutterBottom>
+                        Categories
+                      </Typography>
+                      <div className="category-options">
+                        {categories.map((category) => (
+                          <Button
+                            key={category}
+                            variant={filters.categories.includes(category) ? "contained" : "outlined"}
+                            onClick={() => handleFilterChange("categories", category)}
+                            sx={{ m: 0.5 }}
+                            fullWidth
+                            size="small"
+                          >
+                            {category}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+        
+                    <div className="filter-group">
+                      <Typography variant="subtitle2" gutterBottom>
+                        Sizes
+                      </Typography>
+                      <div className="size-options">
+                        {sizes.map((size) => (
+                          <button
+                            key={size}
+                            className={`size-btn ${filters.sizes.includes(size) ? "selected" : ""}`}
+                            onClick={() => handleFilterChange("sizes", size)}
+                          >
+                            {size}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+        
+                    <Button
+                      variant="outlined"
+                      onClick={clearFilters}
+                      fullWidth
+                      sx={{ mt: 2 }}
+                    >
+                      Clear All Filters
+                    </Button>
+                  </aside>
+                </div>
 
-            <div className="filter-group">
-              <Typography variant="subtitle2" gutterBottom>
-                Categories
-              </Typography>
-              <div className="category-options">
-                {categories.map((category) => (
-                  <Button
-                    key={category}
-                    variant={
-                      filters.categories.includes(category)
-                        ? "contained"
-                        : "outlined"
-                    }
-                    onClick={() => handleFilterChange("categories", category)}
-                    sx={{ m: 0.5 }}
-                    fullWidth
-                    size="small"
-                  >
-                    {category}
-                  </Button>
-                ))}
-              </div>
-            </div>
-
-            <div className="filter-group">
-              <Typography variant="subtitle2" gutterBottom>
-                Sizes
-              </Typography>
-              <div className="size-options">
-                {sizes.map((size) => (
-                  <button
-                    key={size}
-                    className={`size-btn ${
-                      filters.sizes.includes(size) ? "selected" : ""
-                    }`}
-                    onClick={() => handleFilterChange("sizes", size)}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <Button
-              variant="outlined"
-              onClick={clearFilters}
-              fullWidth
-              sx={{ mt: 2 }}
-            >
-              Clear All Filters
-            </Button>
-          </aside>
-        </div>
         <Grid
           container
           spacing={{ xs: 2, sm: 3, md: 4 }}
@@ -412,19 +412,19 @@ const SearchResults = () => {
       </Container>
 
       {productsCount > PRODUCTS_PER_PAGE && (
-    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-        <Pagination
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+          <Pagination
             count={Math.ceil(productsCount / PRODUCTS_PER_PAGE)}
             page={currentPage}
             onChange={(e, value) => {
-                setCurrentPage(value);
-                window.scrollTo(0, 0);
+              setCurrentPage(value);
+              window.scrollTo(0, 0);
             }}
             color="primary"
             size="large"
-        />
-    </Box>
-)}
+          />
+        </Box>
+      )}
     </Box>
   );
 };

@@ -108,6 +108,7 @@ const FilteredCategory = () => {
   const { item = { items: [] } } = useSelector((state) => state.cart) || {};
   const cart = item?.items || [];
   const { like } = useSelector((state) => state.like);
+  const { user } = useSelector((state) => state.auth);
   const Products = useSelector((state) => state.product.product);
   const { productsCount } = useSelector((state) => state.product);
 

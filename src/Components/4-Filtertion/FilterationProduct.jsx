@@ -185,8 +185,8 @@ const FilterationProduct = ({ name }) => {
     { id: 4, name: "Blue", hex: "#0000FF" },
     { id: 5, name: "Green", hex: "#00FF00" },
   ];
-  const categories = ["lace", "fabric", "elastic"];
-  const sizes = ["xs", "s", "m", "l", "xl"];
+  const categories = ["lace", "elastic"];
+  const sizes = ["1>>>5", "5>>>10", "10>>>20", "NoLimits"];
 
   const handleAddToCart = (e, productId) => {
     e.stopPropagation();
@@ -215,13 +215,15 @@ const FilterationProduct = ({ name }) => {
     dispatch(getProductsCount());
   }, [currentPage, dispatch]);
   useEffect(() => {
-    window.addEventListener("click", (event) => {
-      const target = event.target;
-      if (!target.closest(".filter-sidebar") && showMobileFilters) {
-        setShowMobileFilters(false);
-      }
-    });
-  }, []);
+    const handleClickOutside = (event) => {
+        if (!event.target.closest('.filter-sidebar') && !event.target.closest('.filter-toggle')) {
+            setShowMobileFilters(false);
+        }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+}, []);
 
   const getFilteredProducts = () => {
     if (!Array.isArray(product)) return [];
@@ -261,7 +263,7 @@ const FilterationProduct = ({ name }) => {
         </div>
 
         <div className="main-container">
-          <aside className={`filter-sidebar ${showMobileFilters ? "show" : false}`}>
+          <aside className={`filter-sidebar ${showMobileFilters ? "show" : ""}`}>
             <div className="filter-group">
               <Typography variant="subtitle2" gutterBottom>
                 Colors
@@ -330,6 +332,7 @@ const FilterationProduct = ({ name }) => {
             </Button>
           </aside>
         </div>
+
         <Grid container spacing={{ xs: 2, sm: 3, md: 4 }} justifyContent={"center"}  className=''>
           {Array.isArray(product) && product.length > 0 ? (
             getFilteredProducts().map((product) => (

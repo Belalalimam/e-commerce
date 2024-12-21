@@ -70,6 +70,18 @@
   top: 20px;
   display: none;
 }
+.filter-sidebar.show {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 280px;
+  background: white;
+  z-index: 1000;
+  overflow-y: auto;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+}
 @media (max-width: 1024px) {
   .filter-toggle {
     display: flex;

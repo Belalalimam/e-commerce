@@ -5,7 +5,7 @@ import { Facebook, Instagram, Twitter } from '@mui/icons-material';
 
 const Footer = () => {
   return (
-    <Box sx={{ bgcolor: 'primary.main', color: 'white', py: 4 }} className=''>
+    <Box sx={{ bgcolor: '#f1f1f1', color: 'black', py: 4 }} className=''>
       <Container>
         <Grid container spacing={4}>
           <Grid item xs={12} sm={4}>
@@ -24,16 +24,16 @@ const Footer = () => {
               Home
             </Link>
             <br />
-            <Link href="#" color="inherit" variant="body2">
-              Shop
+            <Link href="/All Categories" color="inherit" variant="body2">
+              All Categories
             </Link>
             <br />
-            <Link href="#" color="inherit" variant="body2">
-              Contact
+            <Link href="/Lace" color="inherit" variant="body2">
+              Lace
             </Link>
             <br />
-            <Link href="#" color="inherit" variant="body2">
-              FAQ
+            <Link href="/Elastic" color="inherit" variant="body2">
+              Elastic
             </Link>
           </Grid>
           <Grid item xs={12} sm={4}>
